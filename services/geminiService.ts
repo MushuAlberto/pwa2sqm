@@ -2,9 +2,9 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { DashboardConfig } from "../types";
 
 // Inicialización directa usando la variable inyectada por Vite
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
 console.log("Gemini API Key cargada:", apiKey ? (apiKey.substring(0, 5) + "...") : "MISSING");
-const ai = new GoogleGenAI({ apiKey });
+const genAI = new GoogleGenAI(apiKey);
 
 const cleanDataForGemini = (data: any[]) => {
   return data.map(item => ({
@@ -29,7 +29,7 @@ export const analyzeLogisticsWithGemini = async (
 
   try {
     console.log("Gemini: Iniciando análisis para", date);
-    const model = ai.getGenerativeModel({
+    const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       generationConfig: {
         responseMimeType: "application/json"
@@ -60,7 +60,7 @@ export const refineJustification = async (product: string, rawText: string): Pro
   if (!rawText || rawText.length < 5) return rawText;
   try {
     console.log("Gemini: Refinando justificativo para", product);
-    const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const prompt = `Actúa como un experto en logística minera de SQM.
       Reescribe de forma profesional, técnica y concisa la siguiente nota de justificación para el producto ${product}.
 
