@@ -1,12 +1,12 @@
 
 import React, { useMemo, useState } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, AreaChart, Area, PieChart, Pie, Cell, Legend, LabelList,
   ComposedChart
 } from 'recharts';
-import { 
-  ClipboardEdit, AlertCircle, Loader2, Sparkles, Package, Clock 
+import {
+  ClipboardEdit, AlertCircle, Loader2, Sparkles, Package, Clock
 } from 'lucide-react';
 import { refineJustification } from '../services/geminiService';
 
@@ -16,7 +16,7 @@ interface ChartCardProps {
   xAxis: string;
   yAxis: string | string[]; // Soporte para múltiples ejes
   title: string;
-  aggregation?: 'sum' | 'avg'; 
+  aggregation?: 'sum' | 'avg';
   isPrinting?: boolean;
 }
 
@@ -39,14 +39,14 @@ const formatDecimalToHHMM = (decimalHours: number): string => {
   return `${hours}:${String(minutes).padStart(2, '0')}`;
 };
 
-const ChartCard: React.FC<ChartCardProps> = ({ 
-  type, 
-  data, 
-  xAxis, 
-  yAxis, 
-  title, 
+const ChartCard: React.FC<ChartCardProps> = ({
+  type,
+  data,
+  xAxis,
+  yAxis,
+  title,
   aggregation = 'sum',
-  isPrinting = false 
+  isPrinting = false
 }) => {
   const [justifications, setJustifications] = useState<Record<string, string>>({});
   const [refiningStatus, setRefiningStatus] = useState<Record<string, boolean>>({});
@@ -55,30 +55,30 @@ const ChartCard: React.FC<ChartCardProps> = ({
 
   const aggregatedData = useMemo((): any[] => {
     if (!data || data.length === 0) return [];
-    
+
     const groups = data.reduce((acc: any, item: any) => {
       const key = String(item[xAxis] || 'S/D').trim();
       if (!key || key === 'undefined' || key === 'null') return acc;
-      
+
       if (!acc[key]) {
         acc[key] = { name: key, _count: 0 };
         yAxes.forEach(y => acc[key][y] = 0);
       }
-      
+
       acc[key]._count += 1;
       yAxes.forEach(y => {
         acc[key][y] += (Number(item[y]) || 0);
       });
-      
+
       return acc;
     }, {});
-    
+
     return Object.values(groups)
       .map((group: any) => {
         const finalObj: any = { name: group.name };
         yAxes.forEach(y => {
-          finalObj[y] = (aggregation === 'avg' || y.toLowerCase().includes('hours')) && group._count > 0 
-            ? group[y] / group._count 
+          finalObj[y] = (aggregation === 'avg' || y.toLowerCase().includes('hours')) && group._count > 0
+            ? group[y] / group._count
             : group[y];
         });
         return finalObj;
@@ -102,7 +102,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
   const handleImproveAI = async (productName: string) => {
     const text = justifications[productName] || '';
     if (text.length < 10 || refiningStatus[productName]) return;
-    
+
     setRefiningStatus(prev => ({ ...prev, [productName]: true }));
     try {
       const improved = await refineJustification(productName, text);
@@ -132,38 +132,38 @@ const ChartCard: React.FC<ChartCardProps> = ({
         return (
           <ComposedChart {...commonProps} barGap={8}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f2f6" />
-            <XAxis 
-              dataKey="name" 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{fontSize: 10, fontWeight: 700, fill: '#64748b'}} 
-              height={50} 
-              interval={0} 
-              angle={-45} 
-              textAnchor="end" 
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 10, fontWeight: 700, fill: '#64748b' }}
+              height={50}
+              interval={0}
+              angle={-45}
+              textAnchor="end"
             />
-            <YAxis yAxisId="left" orientation="left" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#64748b'}} />
-            <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#f59e0b'}} />
-            
-            <Tooltip 
-              cursor={{fill: '#f8fafc'}} 
+            <YAxis yAxisId="left" orientation="left" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b' }} />
+            <YAxis yAxisId="right" orientation="right" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#f59e0b' }} />
+
+            <Tooltip
+              cursor={{ fill: '#f8fafc' }}
               contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
               formatter={(v: any, name: any) => [formatValueForTooltip(v, String(name)), name]}
             />
-            <Legend verticalAlign="top" align="right" wrapperStyle={{paddingBottom: '20px', fontSize: '10px', fontWeight: '900'}} iconType="circle" />
-            
+            <Legend verticalAlign="top" align="right" wrapperStyle={{ paddingBottom: '20px', fontSize: '10px', fontWeight: '900' }} iconType="circle" />
+
             <Bar yAxisId="left" dataKey="Ton_Prog" fill={COLORS[0]} name="Prog. Ton" barSize={18} radius={[4, 4, 0, 0]} isAnimationActive={false}>
-               <LabelList dataKey="Ton_Prog" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[0] }} formatter={(v: any) => Math.round(v)} />
+              <LabelList dataKey="Ton_Prog" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[0] }} formatter={(v: any) => Math.round(v)} />
             </Bar>
             <Bar yAxisId="left" dataKey="Ton_Real" fill={COLORS[1]} name="Real Ton" barSize={18} radius={[4, 4, 0, 0]} isAnimationActive={false}>
-               <LabelList dataKey="Ton_Real" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[1] }} formatter={(v: any) => Math.round(v)} />
+              <LabelList dataKey="Ton_Real" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[1] }} formatter={(v: any) => Math.round(v)} />
             </Bar>
-            
-            <Line yAxisId="right" type="monotone" dataKey="faenaMetaHours" stroke={COLORS[2]} name="Meta Hrs" strokeWidth={2} dot={{r: 4, fill: '#fff', strokeWidth: 2}} isAnimationActive={false}>
-               <LabelList dataKey="faenaMetaHours" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[2] }} formatter={(v: any) => formatDecimalToHHMM(v)} />
+
+            <Line yAxisId="right" type="monotone" dataKey="faenaMetaHours" stroke={COLORS[2]} name="Meta Hrs" strokeWidth={2} dot={{ r: 4, fill: '#fff', strokeWidth: 2 }} isAnimationActive={false}>
+              <LabelList dataKey="faenaMetaHours" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[2] }} formatter={(v: any) => formatDecimalToHHMM(v)} />
             </Line>
-            <Line yAxisId="right" type="monotone" dataKey="faenaRealHours" stroke={COLORS[3]} name="Real Hrs" strokeWidth={3} dot={{r: 5, fill: '#fff', strokeWidth: 3}} isAnimationActive={false}>
-               <LabelList dataKey="faenaRealHours" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[3] }} formatter={(v: any) => formatDecimalToHHMM(v)} />
+            <Line yAxisId="right" type="monotone" dataKey="faenaRealHours" stroke={COLORS[3]} name="Real Hrs" strokeWidth={3} dot={{ r: 5, fill: '#fff', strokeWidth: 3 }} isAnimationActive={false}>
+              <LabelList dataKey="faenaRealHours" position="top" style={{ fontSize: '9px', fontWeight: '900', fill: COLORS[3] }} formatter={(v: any) => formatDecimalToHHMM(v)} />
             </Line>
           </ComposedChart>
         );
@@ -172,10 +172,10 @@ const ChartCard: React.FC<ChartCardProps> = ({
         return (
           <BarChart {...commonProps} barGap={8}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f2f6" />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 700, fill: '#64748b'}} height={50} interval={0} angle={-45} textAnchor="end" />
+            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#64748b' }} height={50} interval={0} angle={-45} textAnchor="end" />
             <YAxis hide />
             <Tooltip formatter={(v: any, name: any) => [formatValueForTooltip(v, String(name)), '']} />
-            {yAxes.length > 1 && <Legend verticalAlign="top" align="right" wrapperStyle={{paddingBottom: '20px', fontSize: '11px', fontWeight: '900'}} iconType="square" />}
+            {yAxes.length > 1 && <Legend verticalAlign="top" align="right" wrapperStyle={{ paddingBottom: '20px', fontSize: '11px', fontWeight: '900' }} iconType="square" />}
             {yAxes.map((y, idx) => (
               <Bar key={y} isAnimationActive={false} dataKey={y} fill={COLORS[idx % COLORS.length]} radius={[4, 4, 0, 0]} barSize={yAxes.length > 1 ? 20 : 35} name={y.replace('_Hours', '').replace('_', ' ')}>
                 <LabelList dataKey={y} position="top" offset={10} style={{ fill: COLORS[idx % COLORS.length], fontSize: '9px', fontWeight: '900' }} formatter={(v) => formatValueForTooltip(v, y)} />
@@ -187,7 +187,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
         return (
           <LineChart {...commonProps}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f2f6" />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#555'}} height={50} interval={0} angle={-45} textAnchor="end" />
+            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#555' }} height={50} interval={0} angle={-45} textAnchor="end" />
             <YAxis hide />
             <Tooltip formatter={(v: any, name: any) => [formatValueForTooltip(v, String(name)), '']} />
             {yAxes.map((y, idx) => (
@@ -214,7 +214,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
   return (
     <div className={`bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col ${type === 'composed' ? 'min-h-[620px]' : 'h-[450px]'}`}>
       <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 border-b border-slate-50 pb-2">{title}</h3>
-      
+
       <div className="w-full h-[350px]">
         <ResponsiveContainer width="100%" height="100%">
           {renderChartContent()}
@@ -238,7 +238,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
                 {aggregatedData.map((row, idx) => {
                   const isUnderperformingTon = row.Ton_Prog > 0 && row.Ton_Real < (row.Ton_Prog * 0.85);
                   const isTimeDeviated = row.faenaRealHours > 0 && row.faenaMetaHours > 0 && (row.faenaRealHours - row.faenaMetaHours) >= (10 / 60);
-                  
+
                   return (
                     <tr key={idx} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
                       <td className="py-2.5 px-4 text-[10px] font-black text-slate-700 truncate max-w-[120px]">{row.name}</td>
@@ -301,28 +301,34 @@ const ChartCard: React.FC<ChartCardProps> = ({
                     </div>
 
                     <div className="relative group">
-                      <textarea 
+                      <textarea
                         value={justifications[prod.name] || ''}
                         onChange={(e) => setJustifications(prev => ({ ...prev, [prod.name]: e.target.value }))}
-                        onBlur={() => handleImproveAI(prod.name)}
                         placeholder={`Describa las causas de la desviación de ${prod.name}...`}
-                        className="w-full h-24 bg-white border-2 border-slate-100 rounded-2xl p-4 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:border-rose-300 focus:ring-0 transition-all shadow-inner resize-none"
+                        className="w-full h-24 bg-white border-2 border-slate-100 rounded-2xl p-4 pr-32 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:border-[#003595]/30 focus:ring-0 transition-all shadow-inner resize-none"
                       />
-                      {refiningStatus[prod.name] && (
-                        <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center rounded-2xl z-10">
-                          <Loader2 className="w-5 h-5 animate-spin text-indigo-500" />
-                        </div>
-                      )}
+                      <button
+                        onClick={() => handleImproveAI(prod.name)}
+                        disabled={refiningStatus[prod.name] || (justifications[prod.name] || '').length < 5}
+                        className="absolute bottom-3 right-3 px-3 py-1.5 bg-[#003595]/5 hover:bg-[#003595]/10 text-[#003595] rounded-xl transition-all flex items-center gap-2 border border-[#003595]/10 disabled:opacity-50 disabled:cursor-not-allowed group-hover:scale-105 active:scale-95 shadow-sm"
+                      >
+                        {refiningStatus[prod.name] ? (
+                          <Loader2 size={12} className="animate-spin" />
+                        ) : (
+                          <Sparkles size={12} className="text-indigo-500" />
+                        )}
+                        <span className="text-[9px] font-black uppercase tracking-widest">Refinar con IA</span>
+                      </button>
                     </div>
 
                     <div className="flex justify-between items-center px-2">
-                       <div className="flex items-center gap-2 text-[8px] font-black text-slate-400 uppercase tracking-widest">
-                         <div className={`w-2 h-2 rounded-full ${(justifications[prod.name]?.length || 0) > 15 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                         {(justifications[prod.name]?.length || 0) > 0 ? (refiningStatus[prod.name] ? 'Procesando...' : 'Justificación Lista') : 'Esperando Entrada'}
-                       </div>
-                       <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">
-                          LARGO: {justifications[prod.name]?.length || 0} CARACTERES
-                       </p>
+                      <div className="flex items-center gap-2 text-[8px] font-black text-slate-400 uppercase tracking-widest">
+                        <div className={`w-2 h-2 rounded-full ${(justifications[prod.name]?.length || 0) > 15 ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                        {(justifications[prod.name]?.length || 0) > 0 ? (refiningStatus[prod.name] ? 'Procesando...' : 'Justificación Lista') : 'Esperando Entrada'}
+                      </div>
+                      <p className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">
+                        LARGO: {justifications[prod.name]?.length || 0} CARACTERES
+                      </p>
                     </div>
                   </div>
                 ))}
