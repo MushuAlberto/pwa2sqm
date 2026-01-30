@@ -9,7 +9,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer
 } from 'recharts';
-import { normalizeCompanyName, formatDateToCL } from '../utils/dataProcessor.ts';
+import { normalizeCompanyName, formatDateToCL } from '../utils/dataProcessor';
 
 interface ArrivalData {
   fecha: string;

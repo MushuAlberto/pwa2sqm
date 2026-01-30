@@ -5,13 +5,13 @@ import {
   Upload, Brain, Loader2,
   Download, Home, ArrowLeft, Truck, Image as ImageIcon
 } from 'lucide-react';
-import { analyzeLogisticsWithGemini } from '../services/geminiService.ts';
-import ChartCard from './ChartCard.tsx';
-import ProductDetailSection from './ProductDetailSection.tsx';
-import MainMenu from './MainMenu.tsx';
-import { LlegadaEquipos } from './LlegadaEquipos.tsx';
-import ReportFooter from './ReportFooter.tsx';
-import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL } from '../utils/dataProcessor.ts';
+import { analyzeLogisticsWithGemini } from '../services/geminiService';
+import ChartCard from './ChartCard';
+import ProductDetailSection from './ProductDetailSection';
+import MainMenu from './MainMenu';
+import { LlegadaEquipos } from './LlegadaEquipos';
+import ReportFooter from './ReportFooter';
+import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL } from '../utils/dataProcessor';
 
 const FIXED_CHARTS: any[] = [
   {

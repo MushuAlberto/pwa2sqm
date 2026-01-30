@@ -8,7 +8,8 @@ import {
 import {
   ClipboardEdit, AlertCircle, Loader2, Sparkles, Package, Clock
 } from 'lucide-react';
-import { refineJustification } from '../services/geminiService.ts';
+import { refineJustification } from '../services/geminiService';
+import { formatDateToCL } from '../utils/dataProcessor';
 
 interface ChartCardProps {
   type: 'bar' | 'line' | 'pie' | 'area' | 'composed';
