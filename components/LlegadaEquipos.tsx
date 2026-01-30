@@ -47,53 +47,99 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
       try {
         const bstr = e.target?.result;
         const workbook = XLSX.read(bstr, { type: 'binary', cellDates: true });
-        const sheetName = workbook.SheetNames.find(n => n.includes("Base")) || workbook.SheetNames[0];
+        // Intentar buscar la pestana correcta
+        const sheetName = workbook.SheetNames.find(n =>
+          n.toUpperCase().includes("BASE") ||
+          n.toUpperCase().includes("LLEGADA") ||
+          n.toUpperCase().includes("DATOS")
+        ) || workbook.SheetNames[0];
+
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
 
         if (jsonData.length < 2) throw new Error("Archivo vacío.");
 
-        // Indices basados en el script de Streamlit: 0: Fecha, 3: Destino, 11: Empresa, 14: Hora
-        const processed: ArrivalData[] = jsonData.slice(1).map(row => {
+        // 1. Encontrar la fila de cabecera (no siempre es la 0)
+        let headerIdx = -1;
+        for (let i = 0; i < Math.min(jsonData.length, 10); i++) {
+          const row = jsonData[i].map(c => String(c || '').toUpperCase());
+          if (row.includes('FECHA') || row.includes('EMPRESA') || row.includes('PRODUCTO')) {
+            headerIdx = i;
+            break;
+          }
+        }
+
+        // Si no se encuentra, asumir fila 0
+        const startRow = headerIdx !== -1 ? headerIdx : 0;
+        const headers = jsonData[startRow].map(h => String(h || '').toUpperCase().trim());
+
+        const getIdx = (name: string, fallback: number) => {
+          const found = headers.findIndex(h => h.includes(name.toUpperCase()));
+          return found !== -1 ? found : fallback;
+        };
+
+        const idx = {
+          fecha: getIdx("FECHA", 0),
+          destino: getIdx("DESTINO", 3),
+          empresa: getIdx("EMPRESA", 11),
+          hora: getIdx("HORA", 14)
+        };
+
+        const processed: ArrivalData[] = jsonData.slice(startRow + 1).map(row => {
+          if (!row || row.length < 2) return null;
+
+          // Procesamiento robusto de Fecha
           let dateStr = '';
-          const rawDate = row[0];
+          const rawDate = row[idx.fecha];
           if (rawDate instanceof Date) {
             dateStr = rawDate.toISOString().split('T')[0];
           } else if (typeof rawDate === 'number') {
             const d = new Date((rawDate - 25569) * 86400 * 1000);
             if (!isNaN(d.getTime())) dateStr = d.toISOString().split('T')[0];
+          } else if (typeof rawDate === 'string') {
+            // Intentar parsear string "DD/MM/YYYY" o "YYYY-MM-DD"
+            const parts = rawDate.split(/[-/]/);
+            if (parts.length === 3) {
+              if (parts[0].length === 4) dateStr = `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+              else dateStr = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+            }
           }
 
+          if (!dateStr) return null;
+
+          // Procesamiento robusto de Hora
           let horaNum = 0;
-          const rawHora = row[14];
+          const rawHora = row[idx.hora];
           if (rawHora instanceof Date) {
             horaNum = rawHora.getHours() + (rawHora.getMinutes() / 60);
           } else if (typeof rawHora === 'string' && rawHora.includes(':')) {
-            const [h, m] = rawHora.split(':').map(Number);
-            horaNum = (h || 0) + ((m || 0) / 60);
+            const parts = rawHora.split(':').map(Number);
+            horaNum = (parts[0] || 0) + ((parts[1] || 0) / 60);
           } else if (typeof rawHora === 'number') {
-            // Excel time serial
             horaNum = rawHora * 24;
           }
 
           return {
             fecha: dateStr,
-            destino: String(row[3] || 'SIN DESTINO').trim().toUpperCase(),
-            empresa: normalizeCompanyName(row[11]),
+            destino: String(row[idx.destino] || 'SIN DESTINO').trim().toUpperCase(),
+            empresa: normalizeCompanyName(row[idx.empresa]),
             hora: horaNum
           };
-        }).filter(r => r.fecha);
+        }).filter((r): r is ArrivalData => r !== null && !!r.fecha && !!r.empresa);
+
+        if (processed.length === 0) throw new Error("No se procesaron datos.");
 
         setData(processed);
         const dates = [...new Set(processed.map(r => r.fecha))].sort().reverse();
         if (dates.length > 0) {
           setSelectedDate(dates[0]);
           const dayData = processed.filter(r => r.fecha === dates[0]);
-          const companies = [...new Set(dayData.map(r => r.empresa))].sort();
-          if (companies.length > 0) setSelectedCompany(companies[0]);
+          const cos = [...new Set(dayData.map(r => r.empresa))].sort();
+          if (cos.length > 0) setSelectedCompany(cos[0]);
         }
       } catch (err) {
         console.error("Error procesando Excel:", err);
+        alert("Error al cargar el archivo. Verifica que las columnas FECHA, EMPRESA, DESTINO y HORA existan.");
       } finally {
         setLoading(false);
       }
@@ -243,8 +289,8 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
                         key={dest}
                         onClick={() => setSelectedDestinations(prev => prev.includes(dest) ? prev.filter(d => d !== dest) : [...prev, dest])}
                         className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border ${selectedDestinations.includes(dest)
-                            ? 'bg-[#003595] text-white border-[#003595] shadow-md shadow-blue-500/20'
-                            : 'bg-slate-50 text-slate-400 border-slate-100 hover:bg-slate-100'
+                          ? 'bg-[#003595] text-white border-[#003595] shadow-md shadow-blue-500/20'
+                          : 'bg-slate-50 text-slate-400 border-slate-100 hover:bg-slate-100'
                           }`}
                       >
                         {dest}
