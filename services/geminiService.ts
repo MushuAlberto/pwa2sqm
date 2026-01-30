@@ -72,8 +72,16 @@ export const refineJustification = async (product: string, rawText: string): Pro
   if (!rawText || rawText.length < 5) return rawText;
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
-      contents: `Refina esta nota técnica de SQM para el producto ${product}: "${rawText}"`,
+      model: "gemini-2.0-flash",
+      contents: `Actúa como un experto en logística minera de SQM. 
+      Reescribe de forma profesional, técnica y concisa la siguiente nota de justificación para el producto ${product}.
+      
+      REGLAS CRÍTICAS:
+      1. RESPONDE ÚNICAMENTE con el texto refinado.
+      2. No des opciones, no expliques nada y no incluyas introducciones ni conclusiones.
+      3. El tono debe ser de gestión de activos y productividad (ej: "Saturación de infraestructura", "Restricción de flujo").
+      
+      Texto a refinar: "${rawText}"`,
     });
     return response.text?.trim() || rawText;
   } catch (error) {
