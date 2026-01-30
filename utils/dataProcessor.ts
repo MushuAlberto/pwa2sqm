@@ -66,3 +66,9 @@ export const normalizeCompanyName = (name: any): string => {
 
   return equivalencias[cleanName] || cleanName;
 };
+
+export const formatDateToCL = (dateStr: string): string => {
+  if (!dateStr || !dateStr.includes('-')) return dateStr;
+  const [y, m, d] = dateStr.split('-');
+  return `${d}-${m}-${y}`;
+};

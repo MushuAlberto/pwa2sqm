@@ -11,7 +11,7 @@ import ProductDetailSection from './ProductDetailSection.tsx';
 import MainMenu from './MainMenu.tsx';
 import { LlegadaEquipos } from './LlegadaEquipos.tsx';
 import ReportFooter from './ReportFooter.tsx';
-import { cleanNumeric, parseExcelTime, formatHoursToTime } from '../utils/dataProcessor.ts';
+import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL } from '../utils/dataProcessor.ts';
 
 const FIXED_CHARTS: any[] = [
   {
@@ -162,7 +162,7 @@ const App: React.FC = () => {
     if (!element) return;
     const opt = {
       margin: [5, 5, 5, 5],
-      filename: `informe_litio_${selectedDate}.pdf`,
+      filename: `informe_litio_${formatDateToCL(selectedDate)}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
@@ -231,7 +231,7 @@ const App: React.FC = () => {
             <div className="space-y-2">
               <p className="text-sm font-medium text-slate-700">Seleccionar Fecha</p>
               <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#ff4b4b]/20">
-                {[...new Set(rawData.map(r => r.Fecha))].sort().reverse().map(d => <option key={d} value={d}>{d}</option>)}
+                {[...new Set(rawData.map(r => r.Fecha))].sort().reverse().map((d: any) => <option key={d} value={d}>{formatDateToCL(d)}</option>)}
               </select>
             </div>
           )}
@@ -282,7 +282,7 @@ const App: React.FC = () => {
                     </div>
                     <div className="text-right flex flex-col items-end">
                       <p className="text-slate-400 font-bold text-[8px] tracking-widest uppercase mb-0.5">Fecha Reporte</p>
-                      <p className="text-3xl font-black text-[#89B821] tracking-tight">{selectedDate}</p>
+                      <p className="text-3xl font-black text-[#89B821] tracking-tight">{formatDateToCL(selectedDate)}</p>
                     </div>
                   </div>
 

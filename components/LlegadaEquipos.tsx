@@ -9,7 +9,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer
 } from 'recharts';
-import { normalizeCompanyName } from '../utils/dataProcessor.ts';
+import { normalizeCompanyName, formatDateToCL } from '../utils/dataProcessor.ts';
 
 interface ArrivalData {
   fecha: string;
@@ -230,7 +230,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
               onChange={(e) => setSelectedDate(e.target.value)}
               className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-black uppercase outline-none focus:ring-2 focus:ring-[#003595]/10 cursor-pointer"
             >
-              {[...new Set(data.map(d => d.fecha))].sort().reverse().map(d => <option key={d} value={d}>{d}</option>)}
+              {[...new Set(data.map(d => d.fecha))].sort().reverse().map((d: any) => <option key={d} value={d}>{formatDateToCL(d)}</option>)}
             </select>
           )}
           <label className="flex items-center gap-2 bg-[#003595] hover:bg-[#002a75] text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-lg shadow-blue-900/10">
@@ -238,7 +238,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
             <input type="file" className="hidden" accept=".xlsx,.xlsm" onChange={e => e.target.files?.[0] && processFile(e.target.files[0])} />
           </label>
         </div>
-      </header>
+      </header >
 
       <main className="flex-1 p-8 max-w-[1400px] mx-auto w-full space-y-8">
         {data.length === 0 ? (
@@ -317,7 +317,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
                   </div>
                   <div className="mb-2">
                     <h2 className="text-3xl font-black text-white tracking-tighter uppercase leading-none">{selectedCompany}</h2>
-                    <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Reporte de Flujo de Equipos • {selectedDate}</p>
+                    <p className="text-white/60 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Reporte de Flujo de Equipos • {formatDateToCL(selectedDate)}</p>
                   </div>
                 </div>
               </div>
@@ -440,6 +440,6 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
         </div>
         <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] text-center md:text-right">Proyecto Dashboard Operativo • Confidencial</p>
       </footer>
-    </div>
+    </div >
   );
 };
