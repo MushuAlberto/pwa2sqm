@@ -153,6 +153,30 @@ const App: React.FC = () => {
   const filteredData = useMemo(() => rawData.filter(r => r.Fecha === selectedDate), [rawData, selectedDate]);
   const productList = useMemo(() => [...new Set(filteredData.map(r => r.Producto))].sort(), [filteredData]);
 
+  const fixedKPIs = useMemo(() => {
+    if (filteredData.length === 0) return [];
+
+    const tonProg = filteredData.reduce((acc, curr) => acc + (curr.Ton_Prog || 0), 0);
+    const tonReal = filteredData.reduce((acc, curr) => acc + (curr.Ton_Real || 0), 0);
+    const eqProg = filteredData.reduce((acc, curr) => acc + (curr.Eq_Prog || 0), 0);
+    const eqReal = filteredData.reduce((acc, curr) => acc + (curr.Eq_Real || 0), 0);
+    const totalReg = filteredData.reduce((acc, curr) => acc + (curr.Regulacion_Real || 0), 0);
+
+    const faenaRealList = filteredData.map(d => d.faenaRealHours).filter(v => v > 0);
+    const faenaMetaList = filteredData.map(d => d.faenaMetaHours).filter(v => v > 0);
+    const avgReal = faenaRealList.length > 0 ? (faenaRealList.reduce((a, b) => a + b, 0) / faenaRealList.length) : 0;
+    const avgMeta = faenaMetaList.length > 0 ? (faenaMetaList.reduce((a, b) => a + b, 0) / faenaMetaList.length) : 0;
+    const timeDiff = avgReal - avgMeta;
+
+    return [
+      { label: "Cumplimiento Tonelaje", value: `${tonProg > 0 ? ((tonReal / tonProg) * 100).toFixed(1) : 0}%`, color: "text-[#89B821]" },
+      { label: "Carga Promedio (Ton/EQ)", value: eqReal > 0 ? (tonReal / eqReal).toFixed(2) : "0.00", color: "text-[#1e293b]" },
+      { label: "Uso de Flota (Real vs Prog)", value: `${eqProg > 0 ? ((eqReal / eqProg) * 100).toFixed(1) : 0}%`, color: "text-[#1e293b]" },
+      { label: "Desviación Tiempo Faena", value: `${timeDiff > 0 ? '+' : ''}${formatHoursToTime(timeDiff)}`, color: timeDiff > (10 / 60) ? "text-rose-600" : "text-[#89B821]" },
+      { label: "Total Regulaciones", value: totalReg.toString(), color: "text-[#1e293b]" }
+    ];
+  }, [filteredData]);
+
   const confirmExportPDF = async () => {
     const html2pdfLib = (window as any).html2pdf;
     if (!html2pdfLib) return;
@@ -296,14 +320,17 @@ const App: React.FC = () => {
                         <h2 className="text-3xl font-black text-[#1e293b] tracking-tighter uppercase">Estado de Operación</h2>
                       </div>
                       <p className="text-lg font-medium leading-snug italic text-slate-600 max-w-4xl font-serif">"{config.summary}"</p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-                        {config.suggestedKPIs.map((kpi: any, idx: number) => (
-                          <div key={idx} className="bg-slate-50/50 p-5 rounded-2xl border border-slate-100 flex flex-col gap-1 shadow-sm hover:shadow-md transition-all">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{kpi.label}</span>
-                            <span className="text-2xl font-black text-[#89B821] tracking-tighter leading-none">{kpi.value}</span>
-                          </div>
-                        ))}
-                      </div>
+                    </div>
+                  )}
+
+                  {fixedKPIs.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 pt-4">
+                      {fixedKPIs.map((kpi: any, idx: number) => (
+                        <div key={idx} className="bg-white p-6 rounded-[1.8rem] border border-slate-100 flex flex-col gap-1 shadow-sm hover:shadow-md transition-all border-b-4 border-b-slate-50">
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">{kpi.label}</span>
+                          <span className={`text-2xl font-black ${kpi.color} tracking-tighter leading-none`}>{kpi.value}</span>
+                        </div>
+                      ))}
                     </div>
                   )}
 
