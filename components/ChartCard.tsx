@@ -8,7 +8,7 @@ import {
 import {
   ClipboardEdit, AlertCircle, Loader2, Sparkles, Package, Clock
 } from 'lucide-react';
-import { refineJustification } from '../services/geminiService';
+import { refineJustification } from '../services/geminiService.ts';
 
 interface ChartCardProps {
   type: 'bar' | 'line' | 'pie' | 'area' | 'composed';
@@ -95,13 +95,13 @@ const ChartCard: React.FC<ChartCardProps> = ({
     }).map(row => ({
       name: row.name,
       tonIssue: row.Ton_Prog > 0 && row.Ton_Real < (row.Ton_Prog * 0.85),
-      timeIssue: row.faenaRealHours > 0 && row.faenaMetaHours > 0 && (row.faenaRealHours - row.faenaMetaHours) >= (10 / 60)
+      timeIssue: row.faenaRealHours > 0 && row.faenaMetaHours > 0 && (row.faenaRealHours - row.faenaMetaHours) >= (5 / 60)
     }));
   }, [aggregatedData]);
 
   const handleImproveAI = async (productName: string) => {
     const text = justifications[productName] || '';
-    if (text.length < 10 || refiningStatus[productName]) return;
+    if (text.length < 5 || refiningStatus[productName]) return;
 
     setRefiningStatus(prev => ({ ...prev, [productName]: true }));
     try {
