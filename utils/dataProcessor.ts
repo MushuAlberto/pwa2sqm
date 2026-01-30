@@ -33,3 +33,36 @@ export const formatHoursToTime = (hours: number): string => {
   const m = Math.round((hours - h) * 60);
   return `${h}:${String(m).padStart(2, '0')}`;
 };
+
+export const normalizeCompanyName = (name: any): string => {
+  let cleanName = String(name || '').trim().toUpperCase();
+  cleanName = cleanName.replace(/\./g, '').replace(/&/g, 'AND');
+  cleanName = cleanName.replace(/\s+/g, ' '); // Normalize multiple spaces
+
+  const equivalencias: Record<string, string> = {
+    "JORQUERA TRANSPORTE S A": "JORQUERA TRANSPORTE S. A.",
+    "MINING SERVICES AND DERIVATES": "M S & D SPA",
+    "MINING SERVICES AND DERIVATES SPA": "M S & D SPA",
+    "M S AND D": "M S & D SPA",
+    "M S AND D SPA": "M S & D SPA",
+    "MSANDD SPA": "M S & D SPA",
+    "M S D": "M S & D SPA",
+    "M S D SPA": "M S & D SPA",
+    "M S & D": "M S & D SPA",
+    "M S & D SPA": "M S & D SPA",
+    "MS&D SPA": "M S & D SPA",
+    "M AND Q SPA": "M&Q SPA",
+    "M AND Q": "M&Q SPA",
+    "M Q SPA": "M&Q SPA",
+    "MQ SPA": "M&Q SPA",
+    "M&Q SPA": "M&Q SPA",
+    "MANDQ SPA": "M&Q SPA",
+    "MINING AND QUARRYING SPA": "M&Q SPA",
+    "MINING AND QUARRYNG SPA": "M&Q SPA",
+    "AG SERVICE SPA": "AG SERVICES SPA",
+    "AG SERVICES SPA": "AG SERVICES SPA",
+    "COSEDUCAM S A": "COSEDUCAM S A"
+  };
+
+  return equivalencias[cleanName] || cleanName;
+};
