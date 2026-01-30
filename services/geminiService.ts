@@ -2,7 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { DashboardConfig } from "../types";
 
 // Inicialización directa usando la variable inyectada por Vite
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 const cleanDataForGemini = (data: any[]) => {
   return data.map(item => ({
@@ -18,8 +18,8 @@ const cleanDataForGemini = (data: any[]) => {
 };
 
 export const analyzeLogisticsWithGemini = async (
-  data: any[], 
-  date: string, 
+  data: any[],
+  date: string,
   frontendKPIs?: { avgSda: string, avgPang: string }
 ): Promise<DashboardConfig> => {
   const cleanedData = cleanDataForGemini(data);
@@ -29,7 +29,7 @@ export const analyzeLogisticsWithGemini = async (
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: prompt,
-      config: { 
+      config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
