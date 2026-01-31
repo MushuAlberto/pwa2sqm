@@ -14,8 +14,9 @@ export default defineConfig(({ mode }) => {
     base: './',
     plugins: [react()],
     define: {
-      // Inyectamos la API_KEY para el SDK de Gemini
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || process.env.API_KEY),
+      // Inyectamos la llave exacta que configuraste en Vercel
+      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
+      'process.env.API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
     },
     resolve: {
       alias: {

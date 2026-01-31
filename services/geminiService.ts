@@ -3,23 +3,12 @@ import type { DashboardConfig } from "../types";
 
 // Helper to get the API Key with extensive debugging
 const getApiKey = () => {
-  const sources: any = {
-    vite_standard: import.meta.env.VITE_GEMINI_API_KEY,
-    vite_process: (import.meta as any).env?.VITE_GEMINI_API_KEY,
-    env_direct: typeof process !== 'undefined' ? process.env.VITE_GEMINI_API_KEY : undefined,
-    env_api_key: typeof process !== 'undefined' ? (process as any).env?.API_KEY : undefined,
-    window_key: (window as any).VITE_GEMINI_API_KEY
-  };
+  const key = import.meta.env.VITE_GEMINI_API_KEY ||
+    (typeof process !== 'undefined' ? (process.env.VITE_GEMINI_API_KEY || (process as any).env?.API_KEY) : undefined) ||
+    (window as any).VITE_GEMINI_API_KEY;
 
-  // Log summary for the user (masked for security)
-  const available = Object.entries(sources)
-    .filter(([_, val]) => !!val && val !== "undefined")
-    .map(([name]) => name);
-
-  console.log("Gemini Debug: Fuentes detectadas:", available.length > 0 ? available.join(", ") : "NINGUNA");
-
-  // Return the first valid key found
-  return sources.vite_standard || sources.env_direct || sources.env_api_key || sources.vite_process || sources.window_key || "";
+  if (key && key !== "undefined") return key;
+  return "";
 };
 
 let genAIInstance: any = null;
