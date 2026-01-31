@@ -3,10 +3,16 @@ import type { DashboardConfig } from "../types";
 
 // Helper to get the API Key from various possible sources in Vite/Vercel
 const getApiKey = () => {
-  return import.meta.env.VITE_GEMINI_API_KEY ||
-    (import.meta as any).env?.VITE_GEMINI_API_KEY ||
-    (typeof process !== 'undefined' ? (process.env.VITE_GEMINI_API_KEY || (process as any).env?.API_KEY) : "") ||
-    (window as any).VITE_GEMINI_API_KEY || "";
+  const vKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (vKey) return vKey;
+
+  // Literal process.env.API_KEY para que Vite lo inyecte
+  try {
+    const pKey = process.env.API_KEY;
+    if (pKey && pKey !== "undefined") return pKey;
+  } catch (e) { }
+
+  return "";
 };
 
 let genAIInstance: any = null;
