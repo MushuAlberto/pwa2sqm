@@ -1,10 +1,20 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import type { DashboardConfig } from "../types";
 
 // Inicialización directa usando la variable inyectada por Vite
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
-console.log("Gemini API Key cargada:", apiKey ? (apiKey.substring(0, 5) + "...") : "MISSING");
-const genAI = new GoogleGenAI(apiKey);
+
+let genAI: any = null;
+try {
+  if (apiKey) {
+    genAI = new GoogleGenAI(apiKey);
+    console.log("Gemini SDK inicializado correctamente.");
+  } else {
+    console.warn("Gemini: VITE_GEMINI_API_KEY no encontrada.");
+  }
+} catch (err) {
+  console.error("Gemini SDK Error de Inicialización:", err);
+}
 
 const cleanDataForGemini = (data: any[]) => {
   return data.map(item => ({
@@ -28,29 +38,27 @@ export const analyzeLogisticsWithGemini = async (
   const prompt = `Analiza la jornada del ${date}. Datos: ${JSON.stringify(cleanedData.slice(0, 30))}. Genera un resumen ejecutivo de máximo 3 líneas y sugiere 5 KPIs clave.`;
 
   try {
-    console.log("Gemini: Iniciando análisis para", date);
+    if (!genAI) throw new Error("IA no inicializada.");
+
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
-      generationConfig: {
-        responseMimeType: "application/json"
-      }
+      generationConfig: { responseMimeType: "application/json" }
     });
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
-    console.log("Gemini: Respuesta de análisis recibida");
-    if (!text) throw new Error("No response text");
+    if (!text) throw new Error("Respuesta vacía de la IA.");
     return JSON.parse(text);
   } catch (error: any) {
-    console.error("Gemini Error (Analysis):", error);
+    console.error("Gemini Error (Análisis):", error);
     return {
-      summary: "Análisis operativo disponible localmente por el momento. (Error: " + (error.message || "Desconocido") + ")",
+      summary: "Análisis operativo disponible localmente. " + (error.message ? `(${error.message})` : ""),
       suggestedKPIs: [
         { label: "Tiempo SdA", value: frontendKPIs?.avgSda || "0:00" },
         { label: "Tiempo PANG", value: frontendKPIs?.avgPang || "0:00" },
-        { label: "Servicio", value: "Local Mode" }
+        { label: "Modo", value: "Local" }
       ]
     };
   }
@@ -59,28 +67,26 @@ export const analyzeLogisticsWithGemini = async (
 export const refineJustification = async (product: string, rawText: string): Promise<string> => {
   if (!rawText || rawText.length < 5) return rawText;
   try {
-    console.log("Gemini: Refinando justificativo para", product);
+    if (!genAI) throw new Error("IA no inicializada.");
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `Actúa como un experto en logística minera de SQM.
+    const prompt = `Actúa como un experto en logística minera de SQM. 
       Reescribe de forma profesional, técnica y concisa la siguiente nota de justificación para el producto ${product}.
-
-      REGLAS CRÍTICAS:
-      1. RESPONDE ÚNICAMENTE con el texto refinado.
-      2. No des opciones, no expliques nada y no incluyas introducciones ni conclusiones.
-      3. El tono debe ser de gestión de activos y productividad (ej: "Saturación de infraestructura", "Restricción de flujo").
-
-      Texto a refinar: "${rawText}"`;
+      
+      REGLAS:
+      1. SOLO entrega el texto refinado.
+      2. No des opciones ni explicaciones.
+      3. Tono técnico SQM (ej: "restricción de flujo", "saturación").
+      
+      Texto: "${rawText}"`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const improvedText = response.text();
 
-    console.log("Gemini: Justificativo refinado con éxito");
     return improvedText?.trim() || rawText;
   } catch (error: any) {
     console.error("Gemini Error (Refine):", error);
-    // Alert para que el usuario sepa que falló la conexión
-    alert("Error de conexión con la IA: " + (error.message || "Verifica tu conexión a internet o la API Key"));
     return rawText;
   }
 };
