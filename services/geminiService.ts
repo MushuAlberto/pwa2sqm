@@ -2,7 +2,8 @@ import { GoogleGenAI } from "@google/genai";
 import type { DashboardConfig } from "../types";
 
 // Inicialización directa usando la variable inyectada por Vite
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? (process.env.VITE_GEMINI_API_KEY || (process as any).env.API_KEY) : "") || "";
+console.log("Gemini Config: API Key detection check:", !!apiKey);
 
 let genAI: any = null;
 try {
