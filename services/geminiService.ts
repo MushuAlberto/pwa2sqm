@@ -1,18 +1,25 @@
 import { GoogleGenAI } from "@google/genai";
 import type { DashboardConfig } from "../types";
 
-// Helper to get the API Key from various possible sources in Vite/Vercel
+// Helper to get the API Key with extensive debugging
 const getApiKey = () => {
-  const vKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (vKey) return vKey;
+  const sources: any = {
+    vite_standard: import.meta.env.VITE_GEMINI_API_KEY,
+    vite_process: (import.meta as any).env?.VITE_GEMINI_API_KEY,
+    env_direct: typeof process !== 'undefined' ? process.env.VITE_GEMINI_API_KEY : undefined,
+    env_api_key: typeof process !== 'undefined' ? (process as any).env?.API_KEY : undefined,
+    window_key: (window as any).VITE_GEMINI_API_KEY
+  };
 
-  // Literal process.env.API_KEY para que Vite lo inyecte
-  try {
-    const pKey = process.env.API_KEY;
-    if (pKey && pKey !== "undefined") return pKey;
-  } catch (e) { }
+  // Log summary for the user (masked for security)
+  const available = Object.entries(sources)
+    .filter(([_, val]) => !!val && val !== "undefined")
+    .map(([name]) => name);
 
-  return "";
+  console.log("Gemini Debug: Fuentes detectadas:", available.length > 0 ? available.join(", ") : "NINGUNA");
+
+  // Return the first valid key found
+  return sources.vite_standard || sources.env_direct || sources.env_api_key || sources.vite_process || sources.window_key || "";
 };
 
 let genAIInstance: any = null;
@@ -20,36 +27,30 @@ let genAIInstance: any = null;
 const getGenAI = () => {
   if (genAIInstance) return genAIInstance;
   const key = getApiKey();
+
   if (!key) {
-    console.warn("Gemini: No se encontró API Key en ninguna fuente conocida.");
+    console.warn("Gemini: API Key no encontrada en ninguna fuente.");
     return null;
   }
+
   try {
     genAIInstance = new GoogleGenAI(key);
-    console.log("Gemini: SDK inicializado con éxito.");
+    console.log("Gemini: SDK configurado correctamente.");
     return genAIInstance;
   } catch (err) {
-    console.error("Gemini: Error al instanciar SDK:", err);
+    console.error("Gemini: Error inicializando SDK:", err);
     return null;
   }
 };
 
 const cleanDataForGemini = (data: any[]) => {
-  return data.map(item => ({
-    Fecha: item.Fecha,
+  return (data || []).map(item => ({
     Producto: item.Producto,
-    Destino: item.Destino,
     Ton_Prog: item.Ton_Prog,
     Ton_Real: item.Ton_Real,
-    Eq_Prog: item.Eq_Prog,
-    Eq_Real: item.Eq_Real,
-    Regulacion_Real: item.Regulacion_Real,
-    Tiempos: {
-      SdA: item.sdaHours,
-      PANG: item.pangHours,
-      FaenaReal: item.faenaRealHours,
-      FaenaMeta: item.faenaMetaHours
-    }
+    SD_Prog: item.SD_Prog,
+    SD_Real: item.SD_Real,
+    Diferencia: (item.Ton_Real || 0) - (item.Ton_Prog || 0)
   }));
 };
 
@@ -59,31 +60,13 @@ export const analyzeLogisticsWithGemini = async (
   frontendKPIs?: { avgSda: string, avgPang: string }
 ): Promise<DashboardConfig> => {
   const cleanedData = cleanDataForGemini(data);
-  const prompt = `Actúa como un Gerente de Logística y Operaciones de SQM. 
-  Analiza el desempeño operativo del día ${date} basado en estos datos: ${JSON.stringify(cleanedData.slice(0, 40))}.
-
-  TU TAREA:
-  Genera un "Resumen de Gestión de IA" que sea altamente TÉCNICO, EJECUTIVO y PROFESIONAL para la alta gerencia.
-  
-  REGLAS DE SALIDA:
-  1. El resumen debe identificar causas raíz de desviaciones (si las hay) y destacar logros de eficiencia.
-  2. Usa términos como "Throughput", "Ciclo Operativo", "Restricciones de flujo", "Cumplimiento de Plan".
-  3. No menciones que eres una IA.
-  4. Responde ÚNICAMENTE en JSON con el formato:
-  {
-    "summary": "Texto del resumen ejecutivo (máx 3-4 líneas)",
-    "suggestedKPIs": [
-      {"label": "KPI 1", "value": "valor"}, 
-      {"label": "KPI 2", "value": "valor"},
-      {"label": "KPI 3", "value": "valor"},
-      {"label": "KPI 4", "value": "valor"},
-      {"label": "KPI 5", "value": "valor"}
-    ]
-  }`;
+  const prompt = `Actúa como Gerente SQM. Analiza: ${JSON.stringify(cleanedData.slice(0, 30))}.
+  Responde con un resumen de 3 líneas técnico y ejecutivo.
+  Responde únicamente en JSON: {"summary": "...", "suggestedKPIs": [{"label": "...", "value": "..."}]}`;
 
   try {
     const ai = getGenAI();
-    if (!ai) throw new Error("IA no inicializada (Falta API Key)");
+    if (!ai) throw new Error("Falta configuración (API Key)");
 
     const model = ai.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -91,18 +74,17 @@ export const analyzeLogisticsWithGemini = async (
     });
 
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const response = await result.response;
+    const text = response.text();
 
-    if (!text) throw new Error("La IA no devolvió texto.");
     return JSON.parse(text);
   } catch (error: any) {
-    console.error("Gemini Error (Análisis):", error);
+    console.error("Gemini Error:", error);
     return {
-      summary: "Análisis operativo disponible localmente. " + (error.message ? `(${error.message})` : "Error de conexión."),
+      summary: `Análisis local: ${error.message || "Error de red"}`,
       suggestedKPIs: [
         { label: "Tiempo SdA", value: frontendKPIs?.avgSda || "0:00" },
-        { label: "Tiempo PANG", value: frontendKPIs?.avgPang || "0:00" },
-        { label: "Estado", value: "Modo Local" }
+        { label: "Tiempo PANG", value: frontendKPIs?.avgPang || "0:00" }
       ]
     };
   }
@@ -113,16 +95,12 @@ export const refineJustification = async (product: string, rawText: string): Pro
   try {
     const ai = getGenAI();
     if (!ai) return rawText;
-
     const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `Reescribe esta justificación para el producto ${product} de forma profesional y técnica para gerencia SQM.
-    Texto original: "${rawText}"
-    Regla: Solo entrega el texto refinado, corto y profesional.`;
-
+    const prompt = `Reescribe técnico para SQM: ${rawText}`;
     const result = await model.generateContent(prompt);
-    return result.response.text()?.trim() || rawText;
-  } catch (error: any) {
-    console.error("Gemini Error (Refine):", error);
+    const response = await result.response;
+    return response.text() || rawText;
+  } catch (error) {
     return rawText;
   }
 };
