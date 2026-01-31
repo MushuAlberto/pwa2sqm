@@ -1,13 +1,18 @@
 import { GoogleGenAI } from "@google/genai";
 import type { DashboardConfig } from "../types";
 
-// Helper to get the API Key with extensive debugging
+// Modo ultra-robusto para capturar la API Key en Vite + Vercel
 const getApiKey = () => {
-  const key = import.meta.env.VITE_GEMINI_API_KEY ||
-    (typeof process !== 'undefined' ? (process.env.VITE_GEMINI_API_KEY || (process as any).env?.API_KEY) : undefined) ||
-    (window as any).VITE_GEMINI_API_KEY;
-
+  // Vite reemplaza estas cadenas literalmente durante el build
+  const key = import.meta.env.VITE_GEMINI_API_KEY || "";
   if (key && key !== "undefined") return key;
+
+  // Fallback para inyecciones manuales de process.env
+  try {
+    const pKey = (process as any).env.VITE_GEMINI_API_KEY || (process as any).env.API_KEY;
+    if (pKey && pKey !== "undefined") return pKey;
+  } catch (e) { }
+
   return "";
 };
 
@@ -16,18 +21,11 @@ let genAIInstance: any = null;
 const getGenAI = () => {
   if (genAIInstance) return genAIInstance;
   const key = getApiKey();
-
-  if (!key) {
-    console.warn("Gemini: API Key no encontrada en ninguna fuente.");
-    return null;
-  }
-
+  if (!key) return null;
   try {
     genAIInstance = new GoogleGenAI(key);
-    console.log("Gemini: SDK configurado correctamente.");
     return genAIInstance;
   } catch (err) {
-    console.error("Gemini: Error inicializando SDK:", err);
     return null;
   }
 };
@@ -37,9 +35,10 @@ const cleanDataForGemini = (data: any[]) => {
     Producto: item.Producto,
     Ton_Prog: item.Ton_Prog,
     Ton_Real: item.Ton_Real,
-    SD_Prog: item.SD_Prog,
-    SD_Real: item.SD_Real,
-    Diferencia: (item.Ton_Real || 0) - (item.Ton_Prog || 0)
+    Meta_Hrs: item.faenaMetaHours,
+    Real_Hrs: item.faenaRealHours,
+    Dif_Ton: (item.Ton_Real || 0) - (item.Ton_Prog || 0),
+    Dif_Hrs: (item.faenaRealHours || 0) - (item.faenaMetaHours || 0)
   }));
 };
 
@@ -49,9 +48,16 @@ export const analyzeLogisticsWithGemini = async (
   frontendKPIs?: { avgSda: string, avgPang: string }
 ): Promise<DashboardConfig> => {
   const cleanedData = cleanDataForGemini(data);
-  const prompt = `Actúa como Gerente SQM. Analiza: ${JSON.stringify(cleanedData.slice(0, 30))}.
-  Responde con un resumen de 3 líneas técnico y ejecutivo.
-  Responde únicamente en JSON: {"summary": "...", "suggestedKPIs": [{"label": "...", "value": "..."}]}`;
+  const prompt = `Actúa como Gerente SQM. Analiza los datos de la jornada ${date}:
+  ${JSON.stringify(cleanedData.slice(0, 40))}
+  
+  TU TAREA:
+  Entrega un resumen TÉCNICO y EJECUTIVO de 3-4 líneas. 
+  Enfócate en desviaciones de tiempo vs meta y cumplimiento de tonelaje.
+  Usa tono de gestión minera.
+  
+  RESPONDE ÚNICAMENTE EN JSON:
+  {"summary": "...", "suggestedKPIs": [{"label": "...", "value": "..."}]}`;
 
   try {
     const ai = getGenAI();
@@ -85,10 +91,13 @@ export const refineJustification = async (product: string, rawText: string): Pro
     const ai = getGenAI();
     if (!ai) return rawText;
     const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `Reescribe técnico para SQM: ${rawText}`;
+    const prompt = `Reescribe esta justificación logística para el producto ${product} de forma profesional y técnica para gerencia SQM.
+    Texto original: "${rawText}"
+    REGLA: SOLO entrega el texto refinado, corto y profesional.`;
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    return response.text() || rawText;
+    return response.text().trim() || rawText;
   } catch (error) {
     return rawText;
   }

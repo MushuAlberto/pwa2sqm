@@ -87,8 +87,8 @@ const App: React.FC = () => {
           regReal: getIdx("REGULACION", 46),
           sda: getIdx("TPO SDA", 4),
           pang: getIdx("TPO PANG", 5),
-          faenaMeta: 49,
-          faenaReal: 50
+          faenaMeta: getIdx("FAENA META", 49),
+          faenaReal: getIdx("FAENA REAL", 50)
         };
 
         const processed = jsonData.slice(1).map((row) => {

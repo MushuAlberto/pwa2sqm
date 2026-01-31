@@ -14,9 +14,9 @@ export default defineConfig(({ mode }) => {
     base: './',
     plugins: [react()],
     define: {
-      // Inyectamos la llave exacta que configuraste en Vercel
       'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
       'process.env.API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
+      'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY),
     },
     resolve: {
       alias: {
