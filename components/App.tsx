@@ -76,7 +76,7 @@ const App: React.FC = () => {
       const pangList = dayData.map(d => d.pangHours).filter(v => v > 0);
       const avgSdaHours = sdaList.length > 0 ? (sdaList.reduce((a, b) => a + b, 0) / sdaList.length) : 0;
       const avgPangHours = pangList.length > 0 ? (pangList.reduce((a, b) => a + b, 0) / pangList.length) : 0;
-      
+
       const aiConfig = await analyzeLogisticsWithGemini(dayData, date, {
         avgSda: formatHoursToTime(avgSdaHours),
         avgPang: formatHoursToTime(avgPangHours)
@@ -95,7 +95,7 @@ const App: React.FC = () => {
     if (exportingPDF) return;
     setExportingPDF(true);
     document.body.classList.add('is-exporting');
-    
+
     const element = document.getElementById('dashboard-report');
     const opt = {
       margin: [10, 10],
@@ -203,7 +203,7 @@ const App: React.FC = () => {
   }, []);
 
   const filteredData = useMemo(() => rawData.filter(r => r.Fecha === selectedDate), [rawData, selectedDate]);
-  
+
   const operationalKPIs = useMemo(() => {
     if (filteredData.length === 0) return null;
     const totalTonReal = filteredData.reduce((a, b) => a + b.Ton_Real, 0);
@@ -211,9 +211,9 @@ const App: React.FC = () => {
     const totalEqReal = filteredData.reduce((a, b) => a + b.Eq_Real, 0);
     const totalReg = filteredData.reduce((acc, d) => acc + (Number(d.Regulacion_Real) || 0), 0);
     const validSdaTimes = filteredData.map(d => d.sdaHours).filter(v => v > 0);
-    const avgSda = validSdaTimes.length > 0 ? validSdaTimes.reduce((a,b) => a+b, 0) / validSdaTimes.length : 0;
+    const avgSda = validSdaTimes.length > 0 ? validSdaTimes.reduce((a, b) => a + b, 0) / validSdaTimes.length : 0;
     const validPangTimes = filteredData.map(d => d.pangHours).filter(v => v > 0);
-    const avgPang = validPangTimes.length > 0 ? validPangTimes.reduce((a,b) => a+b, 0) / validPangTimes.length : 0;
+    const avgPang = validPangTimes.length > 0 ? validPangTimes.reduce((a, b) => a + b, 0) / validPangTimes.length : 0;
     const totalHoursInFaena = filteredData.reduce((a, b) => a + b.faenaRealHours, 0);
     const productivity = totalHoursInFaena > 0 ? totalTonReal / totalHoursInFaena : 0;
     const compliance = totalTonProg > 0 ? (totalTonReal / totalTonProg) * 100 : 0;
@@ -241,23 +241,23 @@ const App: React.FC = () => {
   );
   if (view === 'llegada') return <LlegadaEquipos onBack={() => setView('menu')} />;
   if (view === 'memoria') return (
-    <MemoryModule 
-      data={rawData} 
-      onBack={() => setView('menu')} 
-      onSelectDate={(d) => { setSelectedDate(d); setView('informe'); }} 
+    <MemoryModule
+      data={rawData}
+      onBack={() => setView('menu')}
+      onSelectDate={(d) => { setSelectedDate(d); setView('informe'); }}
     />
   );
 
   return (
     <div className="flex h-screen bg-white font-sans text-slate-800 overflow-hidden">
       <InstructionModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />
-      
+
       <aside className="w-[300px] bg-[#f8fafc] border-r border-slate-200 flex flex-col no-print shrink-0">
         <div className="p-6 overflow-y-auto flex-1 space-y-8">
           <button onClick={() => setView('menu')} className="flex items-center gap-2 text-slate-400 hover:text-slate-600 font-black text-[10px] uppercase tracking-widest transition-colors mb-4 group">
             <Home size={14} className="group-hover:-translate-x-1 transition-transform" /> Menú Principal
           </button>
-          
+
           <div className="bg-white p-5 rounded-3xl border border-slate-100 flex flex-col items-center gap-2 shadow-sm">
             <h1 className="font-black text-[14px] tracking-[0.1em] uppercase text-slate-900 leading-none">SQM LITIO</h1>
             <h2 className="font-black text-[10px] tracking-[0.2em] uppercase text-slate-400">Management</h2>
@@ -333,9 +333,12 @@ const App: React.FC = () => {
               <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
                 <div className="bg-white p-8 space-y-10 flex-1">
                   <div className="flex justify-between items-start pb-8 border-b-2 border-slate-50">
-                    <div>
-                      <h1 className="text-5xl font-[900] text-[#1e293b] tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
-                      <p className="text-slate-400 font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                    <div className="flex items-start gap-4">
+                      <img src="/logo-sqm.png" alt="SQM Logo" className="h-16 w-auto object-contain mt-1" />
+                      <div>
+                        <h1 className="text-5xl font-[900] text-[#1e293b] tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
+                        <p className="text-slate-400 font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                      </div>
                     </div>
                     <div className="text-right">
                       <p className="text-slate-400 font-bold text-[10px] tracking-[0.3em] uppercase mb-1">FECHA JORNADA</p>
@@ -361,12 +364,12 @@ const App: React.FC = () => {
                   )}
 
                   <div className="pt-6">
-                    <ChartCard 
-                      type="composed" 
-                      xAxis="Producto" 
-                      yAxis={['Ton_Prog', 'Ton_Real', 'faenaMetaHours', 'faenaRealHours']} 
-                      title="Análisis Comparativo: Tonelaje vs Horas de Operación" 
-                      data={filteredData} 
+                    <ChartCard
+                      type="composed"
+                      xAxis="Producto"
+                      yAxis={['Ton_Prog', 'Ton_Real', 'faenaMetaHours', 'faenaRealHours']}
+                      title="Análisis Comparativo: Tonelaje vs Horas de Operación"
+                      data={filteredData}
                     />
                   </div>
                 </div>
@@ -376,11 +379,11 @@ const App: React.FC = () => {
               {productList.map((prod, idx) => (
                 <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white flex flex-col min-h-screen pt-4">
                   <div className="flex-1 px-4">
-                    <ProductDetailSection 
-                      product={prod} 
-                      data={filteredData.filter(d => d.Producto === prod)} 
+                    <ProductDetailSection
+                      product={prod}
+                      data={filteredData.filter(d => d.Producto === prod)}
                       date={selectedDate}
-                      index={idx + 1} 
+                      index={idx + 1}
                       total={productList.length}
                     />
                   </div>
