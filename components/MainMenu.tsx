@@ -9,7 +9,8 @@ interface MainMenuProps {
 const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-6 gap-12">
-      <div className="text-center space-y-6">
+      <div className="text-center space-y-8 flex flex-col items-center">
+        <img src="/logo-sqm.png" alt="SQM Logo" className="h-24 w-auto object-contain" />
         <div className="space-y-2">
           <h1 className="text-4xl font-black text-slate-800 tracking-tighter">SISTEMA DE GESTIÓN LOGÍSTICA</h1>
           <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-xs">Módulos Inteligentes de Operación</p>
@@ -17,7 +18,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
-        <button 
+        <button
           onClick={() => onSelectView('llegada')}
           className="group relative bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
@@ -34,7 +35,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
           </div>
         </button>
 
-        <button 
+        <button
           onClick={() => onSelectView('informe')}
           className="group relative bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
@@ -51,7 +52,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
           </div>
         </button>
 
-        <button 
+        <button
           onClick={() => onSelectView('memoria')}
           className="group relative bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
