@@ -1,11 +1,11 @@
 
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, 
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
   Legend, LabelList
 } from 'recharts';
-import { 
-  Package, Truck, Target, MapPin, TrendingDown, TrendingUp, 
+import {
+  Package, Truck, Target, MapPin, TrendingDown, TrendingUp,
   ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save
 } from 'lucide-react';
 import { refineJustification } from '../services/geminiService';
@@ -18,7 +18,7 @@ interface ProductDetailSectionProps {
   total?: number;
 }
 
-const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({ 
+const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   product, data, date, index = 1, total = 1
 }) => {
   const [justification, setJustification] = useState('');
@@ -52,33 +52,50 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   const handleImproveAI = async () => {
     const currentText = justification.trim();
 
-    // Si el texto no ha cambiado respecto al último guardado, no procesamos
-    if (currentText === lastSavedText.current) return;
-    
+    // Si el texto está vacío, no procesamos
+    if (!currentText) return;
+
     // Si el texto es muy corto, guardamos pero no llamamos a la IA
     if (currentText.length < 5) {
       saveToStorage(currentText);
       return;
     }
 
+    // Si ya se está refinando, no re-entrar
     if (isRefining) return;
-    
+
+    // Solo guardar y salir si el texto NO ha cambiado desde la última vez
+    if (currentText === lastSavedText.current) {
+      return;
+    }
+
     setIsRefining(true);
     setApiError(null);
-    try {
-      // Primero guardamos el borrador por si falla la API
-      saveToStorage(currentText);
+    console.log(`[ProductDetail] Iniciando refinamiento IA para "${product}": "${currentText.substring(0, 50)}..."`);
 
+    try {
       const improved = await refineJustification(product, currentText);
       // Limpieza proactiva de cualquier prefijo que la IA pueda haber incluido
-      const cleaned = improved.replace(/^(Justificación operativa|Justificación operativa - .*|Justificación para .*):?\s*/i, '').trim();
-      
+      const cleaned = improved
+        .replace(/^(Justificación operativa|Justificación operativa - .*|Justificación para .*|Informe.*?:):?\s*/i, '')
+        .replace(/^["']|["']$/g, '')
+        .trim();
+
+      console.log(`[ProductDetail] Texto refinado: "${cleaned.substring(0, 80)}..."`);
+
       setJustification(cleaned);
       saveToStorage(cleaned); // Actualiza el ref con el texto final de la IA
-      
+
     } catch (err: any) {
-      console.error("Error refinando con IA:", err);
-      setApiError(err.message === "API_KEY_INVALID" ? "Clave API inválida." : "Error de conexión con IA.");
+      console.error("[ProductDetail] Error refinando con IA:", err?.message || err);
+      // Guardar el texto original del usuario aunque falle la IA
+      saveToStorage(currentText);
+
+      if (err.message === "API_KEY_INVALID" || err.message === "MISSING_API_KEY") {
+        setApiError("Clave API inválida o no configurada.");
+      } else {
+        setApiError("Error de conexión con IA. El texto se guardó sin refinar.");
+      }
     } finally {
       setIsRefining(false);
     }
@@ -98,17 +115,17 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     const eqProg = data.reduce((a, b) => a + (Number(b.Eq_Prog) || 0), 0);
     const eqReal = data.reduce((a, b) => a + (Number(b.Eq_Real) || 0), 0);
     const regSum = data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0);
-    
+
     const faenaRealHoursList = data.map(d => Number(d.faenaRealHours) || 0).filter(v => v > 0);
     const faenaMetaHoursList = data.map(d => Number(d.faenaMetaHours) || 0).filter(v => v > 0);
-    
+
     const avgFaenaReal = faenaRealHoursList.length > 0 ? (faenaRealHoursList.reduce((a, b) => a + b, 0) / faenaRealHoursList.length) : 0;
     const avgFaenaMeta = faenaMetaHoursList.length > 0 ? (faenaMetaHoursList.reduce((a, b) => a + b, 0) / faenaMetaHoursList.length) : 0;
 
     const destinations: Record<string, number> = {};
-    data.forEach(d => { 
+    data.forEach(d => {
       const dest = String(d.Destino || 'S/D');
-      destinations[dest] = (destinations[dest] || 0) + 1; 
+      destinations[dest] = (destinations[dest] || 0) + 1;
     });
     const mainDestEntry = Object.entries(destinations).sort((a, b) => b[1] - a[1])[0];
 
@@ -167,9 +184,9 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} barGap={15} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 800, fill: '#94a3b8'}} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#94a3b8' }} />
                 <YAxis hide />
-                <Legend verticalAlign="top" align="right" wrapperStyle={{paddingBottom: '10px', fontSize: '13px', fontWeight: '900'}} iconType="square" iconSize={8} />
+                <Legend verticalAlign="top" align="right" wrapperStyle={{ paddingBottom: '10px', fontSize: '13px', fontWeight: '900' }} iconType="square" iconSize={8} />
                 <Bar isAnimationActive={false} dataKey="Programado" fill="#003595" radius={[6, 6, 6, 6]} barSize={40}>
                   <LabelList dataKey="Programado" position="top" formatter={(v: any) => v.toLocaleString()} style={{ fill: '#003595', fontSize: '10px', fontWeight: '900' }} offset={8} />
                 </Bar>
@@ -205,7 +222,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
           <div className="relative">
             {apiError && <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-[10px] font-black uppercase tracking-widest no-print">{apiError}</div>}
-            
+
             <textarea
               value={justification}
               onChange={(e) => setJustification(e.target.value)}
@@ -214,7 +231,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
               className={`w-full h-24 bg-white border-2 rounded-2xl p-5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:ring-0 transition-all shadow-inner resize-none no-pdf ${isRefining ? 'border-indigo-100 bg-indigo-50/20' : 'border-slate-100 focus:border-slate-300'}`}
               disabled={isRefining}
             />
-            
+
             <div className="hidden pdf-only-block bg-white border-2 border-slate-50 rounded-2xl p-6 text-sm font-medium text-slate-700 h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
               {justification || "No se registraron observaciones para este ítem."}
             </div>

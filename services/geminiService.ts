@@ -3,17 +3,42 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { DashboardConfig } from "../components/types";
 
 /**
- * Analiza los datos logísticos usando Gemini 3 Pro.
- * Implementa manejo robusto para claves filtradas (403) y entidades no encontradas.
+ * Obtiene la API Key desde cualquier fuente disponible.
+ */
+const getApiKey = (): string | null => {
+  // Intentar import.meta.env (Vite build)
+  try {
+    const viteKey = (import.meta as any).env?.VITE_GEMINI_API_KEY;
+    if (viteKey && viteKey !== "") return viteKey;
+  } catch (_) { /* ignorar */ }
+
+  // Intentar process.env (Vite define)
+  try {
+    const processKey = (globalThis as any).process?.env?.VITE_GEMINI_API_KEY;
+    if (processKey && processKey !== "") return processKey;
+  } catch (_) { /* ignorar */ }
+
+  // Intentar process.env.API_KEY
+  try {
+    const apiKey = (globalThis as any).process?.env?.API_KEY;
+    if (apiKey && apiKey !== "") return apiKey;
+  } catch (_) { /* ignorar */ }
+
+  return null;
+};
+
+/**
+ * Analiza los datos logísticos usando Gemini.
  */
 export const analyzeLogisticsWithGemini = async (
   data: any[],
   date: string,
   frontendKPIs?: { avgSda: string, avgPang: string }
 ): Promise<DashboardConfig> => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = getApiKey();
 
-  if (!apiKey || apiKey === "") {
+  if (!apiKey) {
+    console.error("[GeminiService] No se encontró API Key en ninguna fuente.");
     throw new Error("MISSING_API_KEY");
   }
 
@@ -27,17 +52,16 @@ export const analyzeLogisticsWithGemini = async (
   })).slice(0, 60);
 
   try {
-    // Instancia nueva justo antes de la llamada para capturar cambios en process.env.API_KEY
     const ai = new GoogleGenAI({ apiKey });
+    console.log("[GeminiService] Iniciando análisis con modelo gemini-2.0-flash...");
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-pro",
+      model: "gemini-2.0-flash",
       contents: `Analiza los siguientes datos de la jornada ${date}: ${JSON.stringify(cleanedData)}`,
       config: {
         systemInstruction: `Actúa como un Gerente de Operaciones experto de SQM Litio. 
         Analiza el cumplimiento de la jornada y entrega un resumen ejecutivo técnico.
         REGLAS: Resumen conciso, enfocado en desviaciones. Usa formato "X horas con Y minutos" para tiempos.`,
         responseMimeType: "application/json",
-        thinkingConfig: { thinkingBudget: 16000 },
         responseSchema: {
           type: Type.OBJECT,
           properties: {
@@ -60,17 +84,17 @@ export const analyzeLogisticsWithGemini = async (
     });
 
     const jsonStr = response.text?.trim() || "{}";
+    console.log("[GeminiService] Análisis completado exitosamente.");
     return JSON.parse(jsonStr);
   } catch (error: any) {
-    console.error("Gemini Service Error:", error);
+    console.error("[GeminiService] Error en análisis:", error?.message || error);
 
-    // Si la clave está filtrada (Leaked), lanzamos un error específico. 
-    // Se incluye 'Requested entity was not found' para resetear el estado de la clave según guías.
     if (
       error?.message?.includes("leaked") ||
       error?.message?.includes("403") ||
       error?.message?.includes("PERMISSION_DENIED") ||
-      error?.message?.includes("Requested entity was not found")
+      error?.message?.includes("Requested entity was not found") ||
+      error?.message?.includes("not found")
     ) {
       throw new Error("API_KEY_INVALID");
     }
@@ -86,35 +110,66 @@ export const analyzeLogisticsWithGemini = async (
 };
 
 /**
- * Refina justificaciones operacionales.
+ * Refina justificaciones operacionales usando Gemini.
  */
 export const refineJustification = async (product: string, rawText: string): Promise<string> => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!rawText || rawText.length < 5 || !apiKey) return rawText;
+  const apiKey = getApiKey();
+
+  if (!rawText || rawText.length < 5) {
+    console.log("[GeminiService] Texto muy corto, no se refina.");
+    return rawText;
+  }
+
+  if (!apiKey) {
+    console.error("[GeminiService] No se puede refinar: falta API Key.");
+    throw new Error("MISSING_API_KEY");
+  }
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    console.log(`[GeminiService] Refinando justificación para: ${product}`);
+    console.log(`[GeminiService] Refinando justificación para: "${product}" | Texto: "${rawText.substring(0, 50)}..."`);
+
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
-      contents: `Texto a refinar: "${rawText}"`,
+      model: "gemini-2.0-flash",
+      contents: `Refina el siguiente texto de justificación operativa para un informe profesional de minería de litio. El producto es "${product}". Texto original: "${rawText}"`,
       config: {
-        systemInstruction: `Eres un redactor profesional para SQM Litio.
-        Tu tarea es refinar el texto de justificación operativa que se te proporciona.
-        REGLA CRÍTICA: Responde ÚNICAMENTE con el texto refinado. 
-        PROHIBIDO incluir encabezados, títulos o frases como "Justificación operativa:", "Justificación para...", o el nombre del producto "${product}".`
+        systemInstruction: `Eres un redactor técnico profesional para informes operativos de SQM Litio.
+        Tu ÚNICA tarea es refinar y formalizar el texto de justificación operativa que recibes.
+        
+        REGLAS ESTRICTAS:
+        1. Responde ÚNICAMENTE con el texto refinado, sin ningún prefijo ni encabezado.
+        2. PROHIBIDO incluir frases como "Justificación operativa:", "Justificación para...", "Informe:", etc.
+        3. PROHIBIDO incluir el nombre del producto al inicio.
+        4. Mantén el significado original pero mejora la redacción profesional.
+        5. Usa terminología técnica minera cuando sea apropiado.
+        6. El texto debe ser conciso y directo (máximo 3 oraciones).
+        7. Responde SOLO con el texto mejorado, nada más.`
       }
     });
-    return response.text?.trim() || rawText;
+
+    const result = response.text?.trim();
+    console.log(`[GeminiService] Refinamiento exitoso: "${result?.substring(0, 80)}..."`);
+
+    if (!result || result.length === 0) {
+      console.warn("[GeminiService] Respuesta vacía de Gemini, retornando texto original.");
+      return rawText;
+    }
+
+    return result;
   } catch (error: any) {
-    // Manejo de errores de clave API en refinamiento
+    console.error("[GeminiService] Error refinando justificación:", error?.message || error);
+
     if (
       error?.message?.includes("leaked") ||
       error?.message?.includes("403") ||
-      error?.message?.includes("Requested entity was not found")
+      error?.message?.includes("PERMISSION_DENIED") ||
+      error?.message?.includes("Requested entity was not found") ||
+      error?.message?.includes("not found")
     ) {
       throw new Error("API_KEY_INVALID");
     }
-    return rawText;
+
+    // IMPORTANTE: Lanzar el error en lugar de retornar rawText silenciosamente
+    throw new Error(`REFINEMENT_FAILED: ${error?.message || 'Error desconocido'}`);
   }
 };
