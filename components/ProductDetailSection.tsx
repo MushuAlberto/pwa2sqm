@@ -94,7 +94,9 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       if (err.message === "API_KEY_INVALID" || err.message === "MISSING_API_KEY") {
         setApiError("Clave API inválida o no configurada.");
       } else {
-        setApiError("Error de conexión con IA. El texto se guardó sin refinar.");
+        // Mostrar el mensaje de error real para facilitar el diagnóstico
+        const errorDetail = err.message ? `: ${err.message}` : '';
+        setApiError(`Error de conexión con IA${errorDetail}. El texto se guardó sin refinar.`);
       }
     } finally {
       setIsRefining(false);
