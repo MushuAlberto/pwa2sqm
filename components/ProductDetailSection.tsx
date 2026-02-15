@@ -6,9 +6,9 @@ import {
 } from 'recharts';
 import {
   Package, Truck, Target, MapPin, TrendingDown, TrendingUp,
-  ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save
+  ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save, Sparkles
 } from 'lucide-react';
-import { refineJustification } from '../services/geminiService';
+import { formalizeLocally } from '../services/localFormalizer';
 
 interface ProductDetailSectionProps {
   product: string;
@@ -52,52 +52,25 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   const handleImproveAI = async () => {
     const currentText = justification.trim();
 
-    // Si el texto está vacío, no procesamos
-    if (!currentText) return;
-
-    // Si el texto es muy corto, guardamos pero no llamamos a la IA
-    if (currentText.length < 5) {
-      saveToStorage(currentText);
-      return;
-    }
-
-    // Si ya se está refinando, no re-entrar
+    if (!currentText || currentText.length < 5) return;
     if (isRefining) return;
-
-    // Solo guardar y salir si el texto NO ha cambiado desde la última vez
-    if (currentText === lastSavedText.current) {
-      return;
-    }
+    if (currentText === lastSavedText.current) return;
 
     setIsRefining(true);
     setApiError(null);
-    console.log(`[ProductDetail] Iniciando refinamiento IA para "${product}": "${currentText.substring(0, 50)}..."`);
 
     try {
-      const improved = await refineJustification(product, currentText);
-      // Limpieza proactiva de cualquier prefijo que la IA pueda haber incluido
-      const cleaned = improved
-        .replace(/^(Justificación operativa|Justificación operativa - .*|Justificación para .*|Informe.*?:):?\s*/i, '')
-        .replace(/^["']|["']$/g, '')
-        .trim();
+      // Simulamos un pequeño delay para que parezca que la "IA" está pensando (mejor UX)
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      console.log(`[ProductDetail] Texto refinado: "${cleaned.substring(0, 80)}..."`);
+      const improved = formalizeLocally(currentText);
 
-      setJustification(cleaned);
-      saveToStorage(cleaned); // Actualiza el ref con el texto final de la IA
+      setJustification(improved);
+      saveToStorage(improved);
 
     } catch (err: any) {
-      console.error("[ProductDetail] Error refinando con IA:", err?.message || err);
-      // Guardar el texto original del usuario aunque falle la IA
+      console.error("[ProductDetail] Error en formalización local:", err);
       saveToStorage(currentText);
-
-      if (err.message === "API_KEY_INVALID" || err.message === "MISSING_API_KEY") {
-        setApiError("Clave API inválida o no configurada.");
-      } else {
-        // Mostrar el mensaje de error real para facilitar el diagnóstico
-        const errorDetail = err.message ? `: ${err.message}` : '';
-        setApiError(`Error de conexión con IA${errorDetail}. El texto se guardó sin refinar.`);
-      }
     } finally {
       setIsRefining(false);
     }
@@ -240,8 +213,12 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
             {isRefining && (
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 no-print">
-                <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">IA Formalizando...</span>
+                <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-2xl border border-slate-100 shadow-xl flex flex-col items-center gap-2">
+                  <Loader2 className="w-5 h-5 animate-spin text-[#89B821]" />
+                  <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                    <Sparkles size={8} className="text-[#89B821]" /> Formalizando Reporte...
+                  </span>
+                </div>
               </div>
             )}
           </div>
