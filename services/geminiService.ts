@@ -12,7 +12,7 @@ export const analyzeLogisticsWithGemini = async (
   frontendKPIs?: { avgSda: string, avgPang: string }
 ): Promise<DashboardConfig> => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  
+
   if (!apiKey || apiKey === "") {
     throw new Error("MISSING_API_KEY");
   }
@@ -30,7 +30,7 @@ export const analyzeLogisticsWithGemini = async (
     // Instancia nueva justo antes de la llamada para capturar cambios en process.env.API_KEY
     const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
-      model: "gemini-3-pro-preview",
+      model: "gemini-1.5-pro",
       contents: `Analiza los siguientes datos de la jornada ${date}: ${JSON.stringify(cleanedData)}`,
       config: {
         systemInstruction: `Actúa como un Gerente de Operaciones experto de SQM Litio. 
@@ -63,13 +63,13 @@ export const analyzeLogisticsWithGemini = async (
     return JSON.parse(jsonStr);
   } catch (error: any) {
     console.error("Gemini Service Error:", error);
-    
+
     // Si la clave está filtrada (Leaked), lanzamos un error específico. 
     // Se incluye 'Requested entity was not found' para resetear el estado de la clave según guías.
     if (
-      error?.message?.includes("leaked") || 
-      error?.message?.includes("403") || 
-      error?.message?.includes("PERMISSION_DENIED") || 
+      error?.message?.includes("leaked") ||
+      error?.message?.includes("403") ||
+      error?.message?.includes("PERMISSION_DENIED") ||
       error?.message?.includes("Requested entity was not found")
     ) {
       throw new Error("API_KEY_INVALID");
@@ -91,11 +91,12 @@ export const analyzeLogisticsWithGemini = async (
 export const refineJustification = async (product: string, rawText: string): Promise<string> => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   if (!rawText || rawText.length < 5 || !apiKey) return rawText;
-  
+
   try {
     const ai = new GoogleGenAI({ apiKey });
+    console.log(`[GeminiService] Refinando justificación para: ${product}`);
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       contents: `Texto a refinar: "${rawText}"`,
       config: {
         systemInstruction: `Eres un redactor profesional para SQM Litio.
@@ -108,8 +109,8 @@ export const refineJustification = async (product: string, rawText: string): Pro
   } catch (error: any) {
     // Manejo de errores de clave API en refinamiento
     if (
-      error?.message?.includes("leaked") || 
-      error?.message?.includes("403") || 
+      error?.message?.includes("leaked") ||
+      error?.message?.includes("403") ||
       error?.message?.includes("Requested entity was not found")
     ) {
       throw new Error("API_KEY_INVALID");
