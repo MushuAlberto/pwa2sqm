@@ -3,10 +3,10 @@ import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import {
   Upload, Loader2,
-  Home, ArrowLeft, Truck, Image as ImageIcon,
-  Clock, BarChart3, TrendingUp, Target, Users, Scale, ClipboardCheck, Key, AlertTriangle, FileText, History, Download
+  Home, Truck, Image as ImageIcon,
+  Clock, BarChart3, TrendingUp, Target, Users, Scale, ClipboardCheck, FileText, Download
 } from 'lucide-react';
-import { analyzeLogisticsWithGemini } from '../services/geminiService.ts';
+// import { analyzeLogisticsWithGemini } from '../services/geminiService.ts'; // Eliminado
 import ChartCard from './ChartCard.tsx';
 import ProductDetailSection from './ProductDetailSection.tsx';
 import MainMenu from './MainMenu.tsx';
@@ -24,9 +24,6 @@ const App: React.FC = () => {
   const [rawData, setRawData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [config, setConfig] = useState<any>(null);
-  const [keyError, setKeyError] = useState(false);
   const [exportingPDF, setExportingPDF] = useState(false);
   const [exportingImage, setExportingImage] = useState(false);
   const [showInstructions, setShowInstructions] = useState(true);
@@ -46,50 +43,9 @@ const App: React.FC = () => {
     }
   }, []);
 
-  const isRunning = loading || analyzing || exportingPDF || exportingImage;
+  const isRunning = loading || exportingPDF || exportingImage;
 
-  useEffect(() => {
-    if (selectedDate && rawData.length > 0 && (view === 'informe' || view === 'memoria')) {
-      const dayData = rawData.filter(r => r.Fecha === selectedDate);
-      if (dayData.length > 0) {
-        triggerAnalysis(dayData, selectedDate);
-      }
-    }
-  }, [selectedDate, view, rawData]);
-
-  const handleOpenKeySelector = async () => {
-    try {
-      if (window.aistudio && typeof window.aistudio.openSelectKey === 'function') {
-        await window.aistudio.openSelectKey();
-        setKeyError(false);
-      }
-    } catch (e) {
-      console.error("No se pudo abrir el selector de llaves", e);
-    }
-  };
-
-  const triggerAnalysis = async (dayData: any[], date: string) => {
-    setAnalyzing(true);
-    setKeyError(false);
-    try {
-      const sdaList = dayData.map(d => d.sdaHours).filter(v => v > 0);
-      const pangList = dayData.map(d => d.pangHours).filter(v => v > 0);
-      const avgSdaHours = sdaList.length > 0 ? (sdaList.reduce((a, b) => a + b, 0) / sdaList.length) : 0;
-      const avgPangHours = pangList.length > 0 ? (pangList.reduce((a, b) => a + b, 0) / pangList.length) : 0;
-
-      const aiConfig = await analyzeLogisticsWithGemini(dayData, date, {
-        avgSda: formatHoursToTime(avgSdaHours),
-        avgPang: formatHoursToTime(avgPangHours)
-      });
-      setConfig(aiConfig);
-    } catch (err: any) {
-      if (err.message === "API_KEY_INVALID" || err.message === "MISSING_API_KEY") {
-        setKeyError(true);
-      }
-    } finally {
-      setAnalyzing(false);
-    }
-  };
+  // Análisis de IA eliminado; ya no es necesario triggerAnalysis ni manejar llaves API.
 
   const handleExportPDF = async () => {
     if (exportingPDF) return;
@@ -274,18 +230,7 @@ const App: React.FC = () => {
             </label>
           </div>
 
-          {keyError && (
-            <div className="bg-rose-50 border border-rose-100 p-5 rounded-[1.5rem] space-y-3">
-              <div className="flex items-center gap-2 text-rose-600">
-                <AlertTriangle size={16} />
-                <span className="text-[10px] font-black uppercase tracking-widest">Error de Conexión</span>
-              </div>
-              <p className="text-[10px] text-rose-500 font-medium leading-relaxed">Tu clave API no es válida o tiene errores de facturación.</p>
-              <button onClick={handleOpenKeySelector} className="w-full bg-rose-600 text-white py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-rose-900/10">
-                <Key size={12} /> Configurar Clave
-              </button>
-            </div>
-          )}
+          {/* Notificación de Error de IA eliminada */}
 
           {rawData.length > 0 && (
             <>
@@ -317,7 +262,7 @@ const App: React.FC = () => {
         {isRunning && (
           <div className="absolute top-4 right-8 z-50 flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-2xl border border-slate-100 animate-in fade-in slide-in-from-top-2 no-print">
             <Loader2 className="w-3.5 h-3.5 animate-spin text-[#89B821]" />
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">IA Procesando...</span>
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Cargando Informe...</span>
           </div>
         )}
 
