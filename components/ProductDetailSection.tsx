@@ -188,9 +188,19 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
               <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm border border-slate-200">
                 <ClipboardEdit className="w-5 h-5" />
               </div>
-              <div>
+              <div className="flex-1">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
-                <h4 className="text-xl font-black text-[#1e293b] tracking-tighter uppercase leading-none">Justificación por Desviación</h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-xl font-black text-[#1e293b] tracking-tighter uppercase leading-none">Justificación por Desviación</h4>
+                  <div className="flex gap-1.5 ml-2">
+                    {isTimeDeviation && (
+                      <span className="bg-rose-50 text-rose-600 border border-rose-100 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Tpo.</span>
+                    )}
+                    {isTonDeviation && (
+                      <span className="bg-amber-50 text-amber-600 border border-amber-100 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Ton.</span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
