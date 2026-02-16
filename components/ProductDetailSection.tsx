@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import {
   Package, Truck, Target, MapPin, TrendingDown, TrendingUp,
-  ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save, Sparkles
+  ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save, Sparkles, Check
 } from 'lucide-react';
 import { formalizeLocally } from '../services/localFormalizer';
 
@@ -23,6 +23,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 }) => {
   const [justification, setJustification] = useState('');
   const [isRefining, setIsRefining] = useState(false);
+  const [showCheck, setShowCheck] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const storageKey = `sqm_justification_${date}_${product}`;
   const lastSavedText = useRef('');
@@ -52,7 +53,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   const handleImproveAI = async () => {
     const currentText = justification.trim();
 
-    if (!currentText || currentText.length < 5) return;
+    if (!currentText || currentText.length < 3) return;
     if (isRefining) return;
     if (currentText === lastSavedText.current) return;
 
@@ -60,13 +61,17 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     setApiError(null);
 
     try {
-      // Simulamos un pequeño delay para que parezca que la "IA" está pensando (mejor UX)
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Feedback de procesamiento (Protocolo Redacción Técnica)
+      await new Promise(resolve => setTimeout(resolve, 500));
 
-      const improved = formalizeLocally(currentText);
+      const improved = formalizeLocally(currentText, product);
 
       setJustification(improved);
       saveToStorage(improved);
+      
+      // Feedback visual de éxito
+      setShowCheck(true);
+      setTimeout(() => setShowCheck(false), 2000);
 
     } catch (err: any) {
       console.error("[ProductDetail] Error en formalización local:", err);
@@ -212,7 +217,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
               value={justification}
               onChange={(e) => setJustification(e.target.value)}
               onBlur={handleImproveAI}
-              placeholder="Escriba aquí los motivos técnicos de la desviación..."
+              placeholder="Escriba aquí los motivos técnicos de la desviación (ej. tiempo alto, falta gente, lluvia)..."
               className={`w-full h-24 bg-white border-2 rounded-2xl p-5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:ring-0 transition-all shadow-inner resize-none no-pdf ${isRefining ? 'border-indigo-100 bg-indigo-50/20' : 'border-slate-100 focus:border-slate-300'}`}
               disabled={isRefining}
             />
@@ -226,13 +231,22 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
                 <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-2xl border border-slate-100 shadow-xl flex flex-col items-center gap-2">
                   <Loader2 className="w-5 h-5 animate-spin text-[#89B821]" />
                   <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                    <Sparkles size={8} className="text-[#89B821]" /> Formalizando Reporte...
+                    <Sparkles size={8} className="text-[#89B821]" /> Aplicando Protocolo de Redacción...
                   </span>
                 </div>
               </div>
             )}
+            
+            {showCheck && !isRefining && (
+              <div className="absolute top-2 right-2 no-print animate-in fade-in zoom-in duration-300">
+                <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-full">
+                  <Check size={14} />
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex justify-end no-print">
+          <div className="flex justify-between items-center no-print">
+            <p className="text-[8px] font-bold text-slate-300 uppercase italic">Se aplica corrección automática bajo Protocolo de Redacción Técnica al salir del cuadro.</p>
             <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
           </div>
         </div>
