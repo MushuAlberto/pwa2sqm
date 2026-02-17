@@ -187,7 +187,16 @@ const App: React.FC = () => {
     ];
   }, [filteredData]);
 
-  const productList = useMemo(() => [...new Set(filteredData.map(r => r.Producto))].sort(), [filteredData]);
+  const productList = useMemo(() => {
+    const products = [...new Set(filteredData.map(r => r.Producto))];
+    return products.sort((a, b) => {
+      const priority: Record<string, number> = { 'SLIT': 1, 'LSI (S)': 2 };
+      const aPrio = priority[a] || 99;
+      const bPrio = priority[b] || 99;
+      if (aPrio !== bPrio) return aPrio - bPrio;
+      return a.localeCompare(b);
+    });
+  }, [filteredData]);
 
   if (view === 'menu') return (
     <>
