@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { 
-  X, Truck, FileBarChart, History, AlertCircle, Info, CheckCircle2, 
-  ChevronRight, FileSpreadsheet, FileJson 
+import {
+  X, Truck, FileBarChart, History, AlertCircle, Info, CheckCircle2,
+  ChevronRight, FileSpreadsheet, FileJson
 } from 'lucide-react';
 
 interface InstructionModalProps {
@@ -16,7 +16,7 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-[3rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
-        
+
         {/* Header */}
         <div className="bg-slate-50 px-10 py-8 border-b border-slate-100 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-4">
@@ -28,7 +28,7 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">SQM Litio • Sistema de Gestión Logística v3.1</p>
             </div>
           </div>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 text-slate-300 hover:text-slate-500 transition-colors bg-white rounded-full shadow-sm"
           >
@@ -38,9 +38,9 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-10 space-y-8">
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             {/* Módulo 1 */}
             <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm flex flex-col space-y-4">
               <div className="flex items-center gap-3">
@@ -81,10 +81,12 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
                 </div>
               </div>
               <div className="space-y-3">
-                <p className="text-[11px] font-medium text-slate-500 leading-relaxed">Núcleo analítico diario. Compara tonelaje y tiempos meta contra real. Incluye redacción de IA para justificaciones.</p>
+                <p className="text-[11px] font-medium text-slate-500 leading-relaxed">Núcleo analítico diario. Compara tonelaje y tiempos meta contra real. Redacción técnica ejecutiva para justificaciones.</p>
                 <ul className="space-y-1.5">
-                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Redacción automática IA</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Protocolo Redacción Técnica</li>
                   <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Exportación Oficio PDF</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Captura Resumen PNG</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Respaldo Memoria JSON</li>
                 </ul>
               </div>
             </div>
@@ -131,7 +133,7 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
 
         {/* Footer */}
         <div className="px-10 py-8 bg-white border-t border-slate-50 flex justify-center shrink-0">
-          <button 
+          <button
             onClick={onClose}
             className="group flex items-center justify-center gap-3 bg-[#003595] hover:bg-black text-white px-12 py-4 rounded-2xl text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-blue-500/10 transition-all active:scale-95"
           >
