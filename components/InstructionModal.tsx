@@ -85,9 +85,9 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
                 <p className="text-[11px] font-medium text-slate-500 leading-relaxed">Núcleo analítico diario. Compara tonelaje y tiempos meta contra real. Redacción técnica ejecutiva para justificaciones.</p>
                 <ul className="space-y-1.5">
                   <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Protocolo Redacción Técnica</li>
-                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Exportación Oficio PDF</li>
-                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Captura Resumen PNG</li>
-                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Respaldo Memoria JSON</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Exportación Oficio PDF (Adjunto)</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Captura PNG (Cuerpo Correo: "Informe Operacional Despacho Litio")</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Memoria JSON (Guardar en carpeta: "Respaldo Operacional")</li>
                 </ul>
               </div>
             </div>
