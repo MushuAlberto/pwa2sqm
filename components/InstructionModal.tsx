@@ -61,6 +61,7 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
                 <ul className="space-y-1.5">
                   <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Gráficos de frecuencia</li>
                   <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Reportes con branding</li>
+                  <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> PDF para correo: "Llegada de equipos a Salar hasta las 24:00 hrs"</li>
                 </ul>
               </div>
             </div>
