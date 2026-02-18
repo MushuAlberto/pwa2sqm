@@ -113,6 +113,12 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
                   <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Persistencia de datos</li>
                   <li className="flex items-center gap-2 text-[10px] font-bold text-slate-600"><CheckCircle2 size={12} className="text-emerald-500" /> Auditoría rápida</li>
                 </ul>
+                <div className="mt-2 p-2 bg-amber-50 rounded-lg border border-amber-100 flex items-start gap-2">
+                  <AlertCircle size={10} className="text-amber-500 mt-0.5 shrink-0" />
+                  <p className="text-[9px] font-bold text-amber-700 leading-tight">
+                    Si borras el historial/caché: Carga los archivos .json creados en el "Informe Operativo" (Memoria Diaria).
+                  </p>
+                </div>
               </div>
             </div>
 
