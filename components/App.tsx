@@ -284,6 +284,42 @@ const App: React.FC = () => {
             </div>
           ) : (
             <>
+              {/* PORTADA EXCLUSIVA PARA PDF */}
+              <div className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
+                <div className="space-y-16 py-20 flex flex-col items-center w-full">
+                  <div className="flex flex-col items-center gap-6">
+                    <img src="/logo-sqm.png" alt="SQM Logo" className="h-28 w-auto object-contain mb-8" />
+                  </div>
+
+                  <div className="space-y-4">
+                    <h1 className="text-7xl font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase">
+                      INFORME OPERATIVO
+                    </h1>
+                    <div className="flex items-center justify-center gap-4">
+                      <div className="h-[2px] w-12 bg-slate-200"></div>
+                      <p className="text-slate-400 font-black text-sm tracking-[0.5em] uppercase">
+                        DESPACHO LITIO • OPERACIONES SALAR
+                      </p>
+                      <div className="h-[2px] w-12 bg-slate-200"></div>
+                    </div>
+                  </div>
+
+                  <div className="pt-32">
+                    <p className="text-slate-300 font-bold text-xs tracking-[0.3em] uppercase mb-4">FECHA DE EMISIÓN</p>
+                    <p className="text-5xl font-[900] text-[#89B821] tracking-tighter">
+                      {formatDateToCL(selectedDate)}
+                    </p>
+                  </div>
+
+                  <div className="mt-40 pt-16 border-t border-slate-50 w-64">
+                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-relaxed">
+                      GERENCIA DE LOGÍSTICA<br />
+                      SQM LITIO
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
                 <div className="bg-white p-8 space-y-10 flex-1">
                   <div className="flex justify-between items-start pb-8 border-b-2 border-slate-50">
