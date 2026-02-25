@@ -286,35 +286,32 @@ const App: React.FC = () => {
             <>
               {/* PORTADA EXCLUSIVA PARA PDF */}
               <div className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
-                <div className="space-y-16 py-20 flex flex-col items-center w-full">
-                  <div className="flex flex-col items-center gap-6">
-                    <img src="/logo-sqm.png" alt="SQM Logo" className="h-28 w-auto object-contain mb-8" />
-                  </div>
-
-                  <div className="space-y-4">
-                    <h1 className="text-7xl font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase">
-                      INFORME OPERATIVO
-                    </h1>
-                    <div className="flex items-center justify-center gap-4">
-                      <div className="h-[2px] w-12 bg-slate-200"></div>
-                      <p className="text-slate-400 font-black text-sm tracking-[0.5em] uppercase">
-                        DESPACHO LITIO • OPERACIONES SALAR
+                <div className="space-y-24 flex flex-col items-center w-full">
+                  {/* Bloque Principal (Imagen) */}
+                  <div className="flex items-center justify-center gap-12 w-full max-w-4xl px-10">
+                    <img src="/logo-sqm.png" alt="SQM Logo" className="h-32 w-auto object-contain" />
+                    <div className="flex flex-col items-start border-l-[3px] border-slate-100 pl-12 text-left">
+                      <h1 className="text-[80px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
+                        INFORME OPERATIVO
+                      </h1>
+                      <p className="text-slate-400 font-bold text-lg tracking-[0.45em] uppercase mt-4 whitespace-nowrap">
+                        DESPACHO LITIO <span className="text-slate-300 mx-2">•</span> OPERACIONES SALAR
                       </p>
-                      <div className="h-[2px] w-12 bg-slate-200"></div>
                     </div>
                   </div>
 
-                  <div className="pt-32">
-                    <p className="text-slate-300 font-bold text-xs tracking-[0.3em] uppercase mb-4">FECHA DE EMISIÓN</p>
-                    <p className="text-5xl font-[900] text-[#89B821] tracking-tighter">
+                  {/* Fecha de la Jornada */}
+                  <div className="pt-20">
+                    <p className="text-slate-300 font-black text-xs tracking-[0.4em] uppercase mb-6">JORNADA CORRESPONDIENTE</p>
+                    <p className="text-6xl font-[950] text-[#89B821] tracking-tighter">
                       {formatDateToCL(selectedDate)}
                     </p>
                   </div>
 
-                  <div className="mt-40 pt-16 border-t border-slate-50 w-64">
-                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-relaxed">
+                  <div className="mt-32 pt-16 border-t border-slate-50 w-72">
+                    <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] leading-loose">
                       GERENCIA DE LOGÍSTICA<br />
-                      SQM LITIO
+                      SALARES • SQM LITIO
                     </p>
                   </div>
                 </div>
