@@ -14,6 +14,8 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || ""),
       'process.env.API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || ""),
+      'process.env.VITE_OPENROUTER_API_KEY': JSON.stringify(env.VITE_OPENROUTER_API_KEY || ""),
+      'process.env.VITE_OPENROUTER_MODEL': JSON.stringify(env.VITE_OPENROUTER_MODEL || "nousresearch/hermes-3-llama-3.1-405b:free"),
     },
     resolve: {
       alias: {

@@ -9,6 +9,7 @@ import {
   ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save, Sparkles, Check
 } from 'lucide-react';
 import { formalizeLocally } from '../services/localFormalizer';
+import { refineJustificationWithAI } from '../services/openRouterService';
 
 interface ProductDetailSectionProps {
   product: string;
@@ -55,26 +56,34 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
     if (!currentText || currentText.length < 3) return;
     if (isRefining) return;
-    if (currentText === lastSavedText.current) return;
+    // Permitir refinar incluso si no ha cambiado si el usuario lo solicita explícitamente (o al salir del campo)
+    // if (currentText === lastSavedText.current) return; 
 
     setIsRefining(true);
     setApiError(null);
 
     try {
-      // Feedback de procesamiento (Protocolo Redacción Técnica)
-      await new Promise(resolve => setTimeout(resolve, 500));
+      let refinedText = '';
 
-      const improved = formalizeLocally(currentText, product);
+      try {
+        // Intento con IA de OpenRouter
+        refinedText = await refineJustificationWithAI(currentText, product);
+      } catch (aiError) {
+        console.warn("[ProductDetail] Error con IA, usando respaldo local:", aiError);
+        // Respaldo local si la IA falla
+        refinedText = formalizeLocally(currentText, product);
+      }
 
-      setJustification(improved);
-      saveToStorage(improved);
-      
+      setJustification(refinedText);
+      saveToStorage(refinedText);
+
       // Feedback visual de éxito
       setShowCheck(true);
       setTimeout(() => setShowCheck(false), 2000);
 
     } catch (err: any) {
-      console.error("[ProductDetail] Error en formalización local:", err);
+      console.error("[ProductDetail] Error crítico en formalización:", err);
+      // En caso de error total, mantenemos el texto actual
       saveToStorage(currentText);
     } finally {
       setIsRefining(false);
@@ -236,7 +245,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
                 </div>
               </div>
             )}
-            
+
             {showCheck && !isRefining && (
               <div className="absolute top-2 right-2 no-print animate-in fade-in zoom-in duration-300">
                 <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-full">
