@@ -288,13 +288,13 @@ const App: React.FC = () => {
               <div className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
                 <div className="space-y-24 flex flex-col items-center w-full">
                   {/* Bloque Principal (Imagen) */}
-                  <div className="flex items-center justify-center gap-12 w-full max-w-4xl px-10">
-                    <img src="/logo-sqm.png" alt="SQM Logo" className="h-32 w-auto object-contain" />
-                    <div className="flex flex-col items-start border-l-[3px] border-slate-100 pl-12 text-left">
-                      <h1 className="text-[80px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
+                  <div className="flex items-center justify-center gap-10 w-full max-w-4xl px-10">
+                    <img src="/logo-sqm.png" alt="SQM Logo" className="h-24 w-auto object-contain" />
+                    <div className="flex flex-col items-start border-l-[2px] border-slate-100 pl-10 text-left">
+                      <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
                         INFORME OPERATIVO
                       </h1>
-                      <p className="text-slate-400 font-bold text-lg tracking-[0.45em] uppercase mt-4 whitespace-nowrap">
+                      <p className="text-slate-400 font-bold text-sm tracking-[0.4em] uppercase mt-3 whitespace-nowrap">
                         DESPACHO LITIO <span className="text-slate-300 mx-2">•</span> OPERACIONES SALAR
                       </p>
                     </div>
