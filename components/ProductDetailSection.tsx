@@ -1,15 +1,13 @@
 
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
   Legend, LabelList
 } from 'recharts';
 import {
   Package, Truck, Target, MapPin, TrendingDown, TrendingUp,
-  ClipboardEdit, Loader2, Clock as ClockIcon, AlertCircle, Save, Sparkles, Check
+  ClipboardEdit, AlertCircle, Save
 } from 'lucide-react';
-import { formalizeLocally } from '../services/localFormalizer';
-import { refineJustificationWithAI } from '../services/openRouterService';
 
 interface ProductDetailSectionProps {
   product: string;
@@ -19,125 +17,29 @@ interface ProductDetailSectionProps {
   total?: number;
 }
 
-const TECHNICAL_REASONS = [
-  { id: 'flux', label: 'Saturación de flujo operativo' },
-  { id: 'assets', label: 'Concurrencia simultánea de activos' },
-  { id: 'ops', label: 'Déficit de dotación de operadores' },
-  { id: 'docs', label: 'Retraso en validación documental' },
-  { id: 'shift', label: 'Transición de dotación (relevo)' },
-  { id: 'sys', label: 'Interrupción de sistema informático' },
-  { id: 'weather', label: 'Restricción meteorológica' },
-  { id: 'other', label: 'Otros (Manual)' },
-];
 
 const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   product, data, date, index = 1, total = 1
 }) => {
   const [justification, setJustification] = useState('');
-  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
-  const [isRefining, setIsRefining] = useState(false);
-  const [showCheck, setShowCheck] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
   const storageKey = `sqm_justification_${date}_${product}`;
-  const reasonsKey = `sqm_reasons_${date}_${product}`;
-  const lastSavedText = useRef('');
-
   // Cargar justificación al cambiar producto o fecha
   useEffect(() => {
     const saved = localStorage.getItem(storageKey);
-    const savedReasons = localStorage.getItem(reasonsKey);
-
     if (saved) {
       setJustification(saved);
-      lastSavedText.current = saved;
     } else {
       setJustification('');
-      lastSavedText.current = '';
     }
+  }, [date, product, storageKey]);
 
-    if (savedReasons) {
-      try {
-        setSelectedReasons(JSON.parse(savedReasons));
-      } catch (e) {
-        setSelectedReasons([]);
-      }
-    } else {
-      setSelectedReasons([]);
-    }
-  }, [date, product, storageKey, reasonsKey]);
-
-  const saveToStorage = (text: string, reasons: string[]) => {
-    const trimmedText = text.trim();
-    if (trimmedText) {
-      localStorage.setItem(storageKey, trimmedText);
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = e.target.value;
+    setJustification(newText);
+    if (newText.trim()) {
+      localStorage.setItem(storageKey, newText.trim());
     } else {
       localStorage.removeItem(storageKey);
-    }
-
-    if (reasons.length > 0) {
-      localStorage.setItem(reasonsKey, JSON.stringify(reasons));
-    } else {
-      localStorage.removeItem(reasonsKey);
-    }
-
-    lastSavedText.current = trimmedText;
-  };
-
-  const toggleReason = (reasonId: string) => {
-    const newReasons = selectedReasons.includes(reasonId)
-      ? selectedReasons.filter(id => id !== reasonId)
-      : [...selectedReasons, reasonId];
-    setSelectedReasons(newReasons);
-    // No guardamos automáticamente aquí para esperar a la consolidación de la IA
-  };
-
-  const handleImproveAI = async () => {
-    const currentText = justification.trim();
-    const hasReasons = selectedReasons.length > 0;
-
-    if (!currentText && !hasReasons) return;
-    if (isRefining) return;
-
-    setIsRefining(true);
-    setApiError(null);
-
-    try {
-      let refinedText = '';
-
-      // Preparar el input consolidado
-      const selectedLabels = TECHNICAL_REASONS
-        .filter(r => selectedReasons.includes(r.id) && r.id !== 'other')
-        .map(r => r.label);
-
-      const consolidatedInput = `
-        Motivos técnicos seleccionados: ${selectedLabels.length > 0 ? selectedLabels.join(', ') : 'Ninguno seleccionado'}.
-        Observación manual del operador: ${currentText || 'Sin observación específica'}.
-      `.trim();
-
-      try {
-        setApiError(""); // Limpiar errores previos
-        // Intento con IA (OpenRouter con Fallback a Gemini)
-        refinedText = await refineJustificationWithAI(consolidatedInput, product, stats?.mainDest);
-      } catch (aiError: any) {
-        console.warn("[ProductDetail] Fallo total de IA, usando respaldo local:", aiError);
-        setApiError("Aviso: No se pudo conectar con la IA. Se aplicó corrección básica local.");
-
-        // Respaldo local si la IA falla
-        refinedText = formalizeLocally(currentText || selectedLabels.join('. '), product);
-      }
-
-      setJustification(refinedText);
-      saveToStorage(refinedText, selectedReasons);
-
-      // Feedback visual de éxito
-      setShowCheck(true);
-      setTimeout(() => setShowCheck(false), 2000);
-
-    } catch (err: any) {
-      console.error("[ProductDetail] Error crítico en formalización:", err);
-      saveToStorage(currentText, selectedReasons);
-    } finally {
-      setIsRefining(false);
     }
   };
 
@@ -270,69 +172,19 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4 no-print no-pdf">
-            {TECHNICAL_REASONS.map((reason) => (
-              <button
-                key={reason.id}
-                onClick={() => toggleReason(reason.id)}
-                className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all border-2 ${selectedReasons.includes(reason.id)
-                  ? 'bg-[#89B821] text-white border-[#89B821] shadow-lg shadow-[#89B821]/20'
-                  : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
-                  }`}
-              >
-                {reason.label}
-              </button>
-            ))}
-          </div>
-
           <div className="relative">
-            {apiError && <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-[10px] font-black uppercase tracking-widest no-print">{apiError}</div>}
-
-            {(selectedReasons.includes('other') || justification || !selectedReasons.length || isRefining) && (
-              <textarea
-                value={justification}
-                onChange={(e) => setJustification(e.target.value)}
-                onBlur={handleImproveAI}
-                placeholder="Escriba aquí los detalles adicionales (ej. falla específica, hora exacta)..."
-                className={`w-full h-24 bg-white border-2 rounded-2xl p-5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:ring-0 transition-all shadow-inner resize-none no-pdf mb-4 ${isRefining ? 'border-indigo-100 bg-indigo-50/20' : 'border-slate-100 focus:border-slate-300'}`}
-                disabled={isRefining}
-              />
-            )}
-
-            {!selectedReasons.includes('other') && selectedReasons.length > 0 && !isRefining && (
-              <button
-                onClick={handleImproveAI}
-                className="w-full py-4 bg-[#003595] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#002a75] transition-all shadow-xl shadow-blue-500/10 no-print mb-4 flex items-center justify-center gap-2"
-              >
-                <Sparkles size={14} /> Consolidar Justificación Técnica
-              </button>
-            )}
+            <textarea
+              value={justification}
+              onChange={handleTextChange}
+              placeholder="Escriba aquí la justificación técnica manual de la desviación..."
+              className="w-full h-32 bg-white border-2 border-slate-100 rounded-2xl p-5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:ring-0 transition-all shadow-inner resize-none no-pdf mb-2"
+            />
 
             <div className="hidden pdf-only-block bg-white border-2 border-slate-50 rounded-2xl p-6 text-sm font-medium text-slate-700 h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
               {justification || "No se registraron observaciones para este ítem."}
             </div>
-
-            {isRefining && (
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 no-print">
-                <div className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-2xl border border-slate-100 shadow-xl flex flex-col items-center gap-2">
-                  <Loader2 className="w-5 h-5 animate-spin text-[#89B821]" />
-                  <span className="text-[8px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                    <Sparkles size={8} className="text-[#89B821]" /> Aplicando Protocolo de Redacción...
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {showCheck && !isRefining && (
-              <div className="absolute top-2 right-2 no-print animate-in fade-in zoom-in duration-300">
-                <div className="bg-emerald-50 text-emerald-600 p-1.5 rounded-full">
-                  <Check size={14} />
-                </div>
-              </div>
-            )}
           </div>
-          <div className="flex justify-between items-center no-print no-pdf">
-            <p className="text-[8px] font-bold text-slate-300 uppercase italic">Se aplica corrección automática bajo Protocolo de Redacción Técnica al salir del cuadro.</p>
+          <div className="flex justify-end items-center no-print no-pdf">
             <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
           </div>
         </div>
