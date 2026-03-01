@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { Truck, FileBarChart, History, ChevronRight } from 'lucide-react';
+import { Truck, FileBarChart, History, ChevronRight, BarChart3 } from 'lucide-react';
 
 interface MainMenuProps {
-  onSelectView: (view: 'llegada' | 'informe' | 'memoria') => void;
+  onSelectView: (view: 'llegada' | 'informe' | 'memoria' | 'ddd') => void;
 }
 
 const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
@@ -17,55 +17,72 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl w-full">
         <button
           onClick={() => onSelectView('llegada')}
-          className="group relative bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
+          className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors duration-500">
-            <Truck size={40} strokeWidth={1.5} />
+          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors duration-500">
+            <Truck size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Llegada de Equipos</h2>
-            <p className="text-slate-500 text-xs leading-relaxed max-w-[180px] mx-auto font-medium">Control de ingresos, pesaje y turnos en tiempo real.</p>
+            <h2 className="text-xl font-black text-slate-800 tracking-tight">Llegada Equipos</h2>
+            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Control de ingresos, pesaje y turnos en tiempo real.</p>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-black tracking-widest uppercase text-slate-300 group-hover:text-blue-500 transition-colors">
-            Acceder módulo <ChevronRight size={12} />
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-blue-500 transition-colors">
+            Acceder <ChevronRight size={10} />
           </div>
         </button>
 
         <button
           onClick={() => onSelectView('informe')}
-          className="group relative bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
+          className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-colors duration-500">
-            <FileBarChart size={40} strokeWidth={1.5} />
+          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-colors duration-500">
+            <FileBarChart size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Informe Operativo</h2>
-            <p className="text-slate-500 text-xs leading-relaxed max-w-[180px] mx-auto font-medium">Dashboard inteligente, análisis de tonelaje y reportes PDF.</p>
+            <h2 className="text-xl font-black text-slate-800 tracking-tight">Informe Operativo</h2>
+            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Dashboard inteligente y reportes PDF.</p>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-black tracking-widest uppercase text-slate-300 group-hover:text-emerald-500 transition-colors">
-            Acceder módulo <ChevronRight size={12} />
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-emerald-500 transition-colors">
+            Acceder <ChevronRight size={10} />
+          </div>
+        </button>
+
+        <button
+          onClick={() => onSelectView('ddd')}
+          className="group relative bg-[#1e293b] text-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95 border border-slate-700"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-800 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-30" />
+          <div className="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[#89B821] group-hover:text-white transition-colors duration-500">
+            <BarChart3 size={32} strokeWidth={1.5} />
+          </div>
+          <div className="space-y-2 relative z-10">
+            <h2 className="text-xl font-black tracking-tight">Análisis Técnico (DdD)</h2>
+            <p className="text-slate-400 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Tablero M1: Estadísticas y Diálogos de Desempeño.</p>
+          </div>
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-500 group-hover:text-[#89B821] transition-colors">
+            Acceder <ChevronRight size={10} />
           </div>
         </button>
 
         <button
           onClick={() => onSelectView('memoria')}
-          className="group relative bg-white border border-slate-100 p-10 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
+          className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors duration-500">
-            <History size={40} strokeWidth={1.5} />
+          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors duration-500">
+            <History size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Memoria Operativa</h2>
-            <p className="text-slate-500 text-xs leading-relaxed max-w-[180px] mx-auto font-medium">Archivo histórico de justificaciones y datos de jornadas pasadas.</p>
+            <h2 className="text-xl font-black text-slate-800 tracking-tight">Memoria</h2>
+            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Archivo histórico de jornadas pasadas.</p>
           </div>
-          <div className="flex items-center gap-2 text-[10px] font-black tracking-widest uppercase text-slate-300 group-hover:text-indigo-500 transition-colors">
-            Acceder módulo <ChevronRight size={12} />
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-indigo-500 transition-colors">
+            Acceder <ChevronRight size={10} />
           </div>
         </button>
       </div>

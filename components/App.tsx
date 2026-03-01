@@ -12,6 +12,7 @@ import ProductDetailSection from './ProductDetailSection.tsx';
 import MainMenu from './MainMenu.tsx';
 import { LlegadaEquipos } from './LlegadaEquipos.tsx';
 import { MemoryModule } from './MemoryModule.tsx';
+import { DdDTablero } from './DdDTablero.tsx';
 import ReportFooter from './ReportFooter.tsx';
 import InstructionModal from './InstructionModal.tsx';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON } from '../utils/dataProcessor.ts';
@@ -20,7 +21,7 @@ declare const html2pdf: any;
 declare const html2canvas: any;
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'menu' | 'informe' | 'llegada' | 'memoria'>('menu');
+  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd'>('menu');
   const [rawData, setRawData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -380,6 +381,13 @@ const App: React.FC = () => {
             </>
           )}
         </div>
+        {view === 'ddd' && (
+          <DdDTablero
+            data={rawData}
+            selectedDate={selectedDate}
+            onBack={() => setView('menu')}
+          />
+        )}
       </main>
     </div>
   );
