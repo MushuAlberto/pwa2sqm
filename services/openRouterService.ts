@@ -3,7 +3,7 @@
  * Servicio para integrar OpenRouter AI con el Protocolo de Redacción Técnica de SQM Litio.
  */
 
-export const refineJustificationWithAI = async (text: string, product: string): Promise<string> => {
+export const refineJustificationWithAI = async (text: string, product: string, destination?: string): Promise<string> => {
     const apiKey = (process.env as any).VITE_OPENROUTER_API_KEY;
     const model = (process.env as any).VITE_OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct:free";
 
@@ -16,14 +16,16 @@ Eres un Analista Senior de Transporte y Estrategia Logística para SQM Litio.
 Tu misión es transformar reportes de campo informales en Justificaciones Técnicas de Nivel Ejecutivo para informes de gestión de transporte.
 
 DIRECTRICES CRÍTICAS:
-1. **Síntesis Inteligente**: Combina los "Motivos técnicos seleccionados" y la "Observación anual del operador" en una única justificación técnica coherente y fluida.
-2. **Terminología Logística**: Utiliza términos precisos (ej. "ciclo de transporte", "saturación de flujo operativo", "concurrencia de activos", "tasa de carguío").
-3. **Tono Ejecutivo**: El resultado debe ser directo, profesional y apto para gerencia senior.
-4. **Concisión**: Máximo 2 oraciones. Evita redundancias.
+1. **Síntesis Inteligente**: Combina los "Motivos técnicos seleccionados", la "Observación manual" y el "Destino" en una única justificación técnica coherente.
+2. **Contexto Geográfico**: Utiliza el "Destino" para dar precisión técnica (ej. si es un puerto, usa términos portuarios; si es un paso fronterizo, usa términos de aduana/tránsito).
+3. **Terminología Logística**: Utiliza términos precisos (ej. "ciclo logístico", "saturación de flujo", "concurrencia de activos", "dwell time", "lead time").
+4. **Respeto al Contexto**: Si el operador menciona un problema específico en el destino, asegúrate de que la redacción refleje que ocurre en ese lugar.
+5. **Concisión**: Máximo 2 oraciones. Evita redundancias.
 
 CONTEXTO:
 - Producto: ${product}
-- Datos Recibidos: "${text}"
+- Destino Operativo: ${destination || 'No especificado'}
+- Datos del Reporte: "${text}"
 
 Responde EXCLUSIVAMENTE con el resultado formalizado.
 `.trim();

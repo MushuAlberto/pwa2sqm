@@ -116,7 +116,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
       try {
         // Intento con IA de OpenRouter
-        refinedText = await refineJustificationWithAI(consolidatedInput, product);
+        refinedText = await refineJustificationWithAI(consolidatedInput, product, stats?.mainDest);
       } catch (aiError) {
         console.warn("[ProductDetail] Error con IA, usando respaldo local:", aiError);
         // Respaldo local si la IA falla (usando solo el texto manual por ahora)
@@ -273,8 +273,8 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
                 key={reason.id}
                 onClick={() => toggleReason(reason.id)}
                 className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-wider transition-all border-2 ${selectedReasons.includes(reason.id)
-                    ? 'bg-[#89B821] text-white border-[#89B821] shadow-lg shadow-[#89B821]/20'
-                    : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
+                  ? 'bg-[#89B821] text-white border-[#89B821] shadow-lg shadow-[#89B821]/20'
+                  : 'bg-white text-slate-400 border-slate-100 hover:border-slate-200'
                   }`}
               >
                 {reason.label}
