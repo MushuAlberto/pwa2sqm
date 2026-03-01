@@ -115,11 +115,14 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       `.trim();
 
       try {
-        // Intento con IA de OpenRouter
+        setApiError(""); // Limpiar errores previos
+        // Intento con IA (OpenRouter con Fallback a Gemini)
         refinedText = await refineJustificationWithAI(consolidatedInput, product, stats?.mainDest);
-      } catch (aiError) {
-        console.warn("[ProductDetail] Error con IA, usando respaldo local:", aiError);
-        // Respaldo local si la IA falla (usando solo el texto manual por ahora)
+      } catch (aiError: any) {
+        console.warn("[ProductDetail] Fallo total de IA, usando respaldo local:", aiError);
+        setApiError("Aviso: No se pudo conectar con la IA. Se aplicó corrección básica local.");
+
+        // Respaldo local si la IA falla
         refinedText = formalizeLocally(currentText || selectedLabels.join('. '), product);
       }
 
