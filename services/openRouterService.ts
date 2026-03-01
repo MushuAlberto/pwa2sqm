@@ -4,10 +4,12 @@
  */
 
 export const refineJustificationWithAI = async (text: string, product: string, destination?: string): Promise<string> => {
-    const apiKey = (process.env as any).VITE_OPENROUTER_API_KEY;
-    const model = (process.env as any).VITE_OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct:free";
+    // Para Vite, usamos import.meta.env
+    const apiKey = (import.meta as any).env.VITE_OPENROUTER_API_KEY;
+    const model = (import.meta as any).env.VITE_OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct:free";
 
     if (!apiKey) {
+        console.error("DEBUG: API Key no detectada en import.meta.env");
         throw new Error("OpenRouter API Key no configurada");
     }
 
