@@ -5,7 +5,7 @@
 
 export const refineJustificationWithAI = async (text: string, product: string): Promise<string> => {
     const apiKey = (process.env as any).VITE_OPENROUTER_API_KEY;
-    const model = (process.env as any).VITE_OPENROUTER_MODEL || "nousresearch/hermes-3-llama-3.1-405b:free";
+    const model = (process.env as any).VITE_OPENROUTER_MODEL || "meta-llama/llama-3.3-70b-instruct:free";
 
     if (!apiKey) {
         throw new Error("OpenRouter API Key no configurada");
