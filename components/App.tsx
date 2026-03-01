@@ -189,8 +189,8 @@ const App: React.FC = () => {
   }, [filteredData]);
 
   const productList = useMemo(() => {
-    const products = [...new Set(filteredData.map(r => r.Producto))];
-    return products.sort((a, b) => {
+    const products = [...new Set(filteredData.map(r => r.Producto as string))] as string[];
+    return products.sort((a: string, b: string) => {
       const priority: Record<string, number> = { 'SLIT': 1, 'LSI (S)': 2 };
       const aPrio = priority[a] || 99;
       const bPrio = priority[b] || 99;

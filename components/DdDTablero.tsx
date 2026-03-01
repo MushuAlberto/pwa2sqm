@@ -42,8 +42,8 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
             return acc;
         }, {} as Record<string, DdDDataRow[]>);
 
-        Object.entries(groupedByDest).forEach(([dest, items]) => {
-            items.forEach((item, idx) => {
+        (Object.entries(groupedByDest) as [string, DdDDataRow[]][]).forEach(([dest, items]) => {
+            items.forEach((item: DdDDataRow, idx: number) => {
                 const tonProg = item.Ton_Prog || 0;
                 const tonReal = item.Ton_Real || 0;
                 const cumplif = tonProg > 0 ? (tonReal / tonProg) * 100 : 0;
