@@ -285,7 +285,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
           <div className="relative">
             {apiError && <div className="mb-4 p-3 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-[10px] font-black uppercase tracking-widest no-print">{apiError}</div>}
 
-            {(selectedReasons.includes('other') || (!selectedReasons.length && !justification)) && (
+            {(selectedReasons.includes('other') || justification || !selectedReasons.length || isRefining) && (
               <textarea
                 value={justification}
                 onChange={(e) => setJustification(e.target.value)}
