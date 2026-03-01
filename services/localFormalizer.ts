@@ -43,6 +43,14 @@ const TECHNICAL_MAPPINGS: Record<string, string> = {
     "camion": "unidad de carga",
     "parado": "inoperatividad técnica",
     "falta gente": "déficit de dotación operativa",
+
+    // Acrónimos SQM
+    "slit": "Salmuera de Litio",
+    "lsi (s)": "Sulfato de litio",
+    "tpo sda": "Tiempo SQM Li",
+    "tpo pang": "Tiempo SQM NY",
+    "cf": "Cargador Frontal",
+    "cs": "Coya Sur",
 };
 
 // Conectores causales para rotación (evitar repetición de "debido a")
