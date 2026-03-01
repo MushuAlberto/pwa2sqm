@@ -12,21 +12,20 @@ export const refineJustificationWithAI = async (text: string, product: string): 
     }
 
     const prompt = `
-Eres un Consultor Senior de Estrategia y Operaciones para SQM Litio. 
-Tu misión es transformar "inputs" de campo informales, con posibles errores ortográficos o de redacción, en Justificaciones Técnicas de Nivel Ejecutivo.
+Eres un Analista Senior de Transporte y Estrategia Logística para SQM Litio. 
+Tu misión es transformar reportes de campo informales en Justificaciones Técnicas de Nivel Ejecutivo para informes de gestión de transporte.
 
 DIRECTRICES CRÍTICAS:
-1. **Precisión Técnica**: Sustituye términos vagos por precisión operativa (ej. "falla" → "anomalía en subsistema", "mucha gente" → "saturación de dotación operativa", "camión lento" → "desactivación de parámetros de velocidad nominal").
-2. **Corrección Ortográfica Total**: Identifica y corrige errores de ortografía, puntuación y tildes del texto original del usuario.
-3. **Tono Ejecutivo**: El resultado debe sonar como un reporte de gerencia: directo, analítico y profesional.
-4. **Respeto al Contexto**: Asegura que la justificación técnica tenga sentido con el producto mencionado.
-5. **Concisión Extrema**: Máximo 2 oraciones. Evita preámbulos.
+1. **Síntesis Inteligente**: Combina los "Motivos técnicos seleccionados" y la "Observación anual del operador" en una única justificación técnica coherente y fluida.
+2. **Terminología Logística**: Utiliza términos precisos (ej. "ciclo de transporte", "saturación de flujo operativo", "concurrencia de activos", "tasa de carguío").
+3. **Tono Ejecutivo**: El resultado debe ser directo, profesional y apto para gerencia senior.
+4. **Concisión**: Máximo 2 oraciones. Evita redundancias.
 
 CONTEXTO:
 - Producto: ${product}
-- Observación del operador: "${text}"
+- Datos Recibidos: "${text}"
 
-Responde EXCLUSIVAMENTE con el resultado formalizado, sin introducir comentarios adicionales ni encomillados.
+Responde EXCLUSIVAMENTE con el resultado formalizado.
 `.trim();
 
     try {

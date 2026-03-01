@@ -12,7 +12,7 @@ const TECHNICAL_MAPPINGS: Record<string, string> = {
     "romanas": "unidades de pesaje",
     "romana": "zona de pesaje",
     "pesaje de pesaje": "pesaje",
-    
+
     // Tiempos y Desviaciones
     "se demoró mucho": "ejecución con desfase respecto al cronograma",
     "demoró mucho": "desviación en tiempos de ciclo",
@@ -21,21 +21,28 @@ const TECHNICAL_MAPPINGS: Record<string, string> = {
     "no se cumplió": "desviación respecto al objetivo",
     "sobre el limite": "excedente sobre el parámetro operativo",
     "tiempo de estadia": "tiempo de permanencia",
-    
+
     // Operación y Causa Raíz
     "detencion de carga": "interrupción del ciclo de carguío",
     "parada de carga": "cese temporal de alimentación",
     "mucha fila": "congestión en zona operativa",
     "taco": "saturación de flujo",
+    "atochamiento": "saturación de flujo operativo",
     "chofer": "operador de transporte",
     "no encontraba los papeles": "retraso administrativo en validación documental",
     "problema de papeles": "incidencia en gestión documental",
     "cambio de turno": "transición de dotación en etapa de relevo",
     "ingreso a turno": "transición de dotación en etapa de relevo",
     "equipo malo": "activo fuera de servicio por desviación técnica",
+    "equipos": "unidades de transporte",
+    "llegada masiva": "concurrencia simultánea de activos",
     "está malo": "condición de inoperatividad",
     "problemas de sistema": "incidencias técnicas en plataforma",
     "lluvia": "evento meteorológico",
+    "viaje": "ciclo de transporte",
+    "camion": "unidad de carga",
+    "parado": "inoperatividad técnica",
+    "falta gente": "déficit de dotación operativa",
 };
 
 // Conectores causales para rotación (evitar repetición de "debido a")
@@ -51,7 +58,7 @@ const CAUSAL_CONNECTORS = [
 const PREEXISTING_CAUSAL_VERBS = ["causado", "causada", "debido", "motivado", "generado", "producido"];
 
 const SUBJECTIVE_FILLERS = [
-    "creo que", "me parece que", "tuvimos mala suerte", "la verdad", 
+    "creo que", "me parece que", "tuvimos mala suerte", "la verdad",
     "bueno", "un poco", "mas o menos", "como que", "o sea", "pasa que",
     "sucede que", "el tema es que", "basicamente"
 ];
@@ -97,7 +104,7 @@ export const formalizeLocally = (text: string, productName?: string): string => 
         }
 
         if (offset === 0 || formalized.substring(0, offset).trim().length === 0) return "debido a";
-        
+
         const connector = CAUSAL_CONNECTORS[connectorIndex % CAUSAL_CONNECTORS.length];
         connectorIndex++;
         return connector;
@@ -124,7 +131,7 @@ export const formalizeLocally = (text: string, productName?: string): string => 
     let finalResult = formalized.charAt(0).toUpperCase() + formalized.slice(1);
 
     const technicalStarts = /^(Excedente|Desviación|Incidencia|Déficit|Saturación|Incremento|Debido|Durante|Derivado|Tiempos|Se)/i;
-    
+
     if (!finalResult.match(technicalStarts)) {
         const prefixes = ["Se registra ", "Se identifica ", "Se constata "];
         const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
