@@ -270,7 +270,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-4 no-print">
+          <div className="flex flex-wrap gap-2 mb-4 no-print no-pdf">
             {TECHNICAL_REASONS.map((reason) => (
               <button
                 key={reason.id}
@@ -331,7 +331,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
               </div>
             )}
           </div>
-          <div className="flex justify-between items-center no-print">
+          <div className="flex justify-between items-center no-print no-pdf">
             <p className="text-[8px] font-bold text-slate-300 uppercase italic">Se aplica corrección automática bajo Protocolo de Redacción Técnica al salir del cuadro.</p>
             <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
           </div>
