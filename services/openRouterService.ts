@@ -22,8 +22,8 @@ export const refineJustificationWithAI = async (text: string, product: string, d
     }
 
     const prompt = `
-Eres un Analista Senior de Transporte y Estrategia Logística para SQM Litio. 
-Tu misión es transformar reportes de campo informales en Justificaciones Técnicas de Nivel Ejecutivo para informes de gestión de transporte.
+ERES UN ANALISTA SENIOR DE TRANSPORTE Y ESTRATEGIA LOGÍSTICA PARA SQM LITIO. 
+TU MISIÓN ES TRANSFORMAR REPORTES DE CAMPO INFORMALES EN JUSTIFICACIONES TÉCNICAS DE NIVEL EJECUTIVO PARA INFORMES DE GESTIÓN DE TRANSPORTE.
 
 DIRECTRICES CRÍTICAS:
 1. **SÍNTESIS INTELIGENTE**: Combina los "Motivos técnicos seleccionados", la "Observación manual" y el "Destino".
@@ -38,6 +38,25 @@ CONTEXTO:
 
 Responde EXCLUSIVAMENTE con el resultado formalizado.
 `.trim();
+
+    // --- INTENTO 1: PUTER (NUEVO - GRATUITO/ILIMITADO) ---
+    try {
+        if (typeof window !== 'undefined' && (window as any).puter) {
+            console.log("DEBUG: Intentando con Puter Gemini (Free/Unlimited)...");
+            const response = await (window as any).puter.ai.chat(prompt, { 
+                model: 'gemini-2.0-flash' 
+            });
+            
+            if (response) {
+                console.log("DEBUG: Éxito con Puter");
+                return response.toString().trim().replace(/^["']|["']$/g, '');
+            }
+        } else {
+            console.warn("DEBUG: Puter.js no está disponible en el objeto window");
+        }
+    } catch (error) {
+        console.error("DEBUG: Error en Puter:", error);
+    }
 
     // --- INTENTO 1: OPENROUTER ---
     if (openRouterKey) {

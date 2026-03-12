@@ -6,8 +6,9 @@ import {
 } from 'recharts';
 import {
   Package, Truck, Target, MapPin, TrendingDown, TrendingUp,
-  ClipboardEdit, AlertCircle, Save
+  ClipboardEdit, AlertCircle, Save, Loader2
 } from 'lucide-react';
+import { refineJustificationWithAI } from '../services/openRouterService';
 
 interface ProductDetailSectionProps {
   product: string;
@@ -22,6 +23,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   product, data, date, index = 1, total = 1
 }) => {
   const [justification, setJustification] = useState('');
+  const [isRefining, setIsRefining] = useState(false);
   const storageKey = `sqm_justification_${date}_${product}`;
   // Cargar justificación al cambiar producto o fecha
   useEffect(() => {
@@ -40,6 +42,33 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       localStorage.setItem(storageKey, newText.trim());
     } else {
       localStorage.removeItem(storageKey);
+    }
+  };
+
+  const handleBlur = async () => {
+    if (!justification.trim() || isRefining) return;
+    
+    // Si ya parece profesional (ej. oraciones largas con términos técnicos), podríamos saltar,
+    // pero el usuario pidió que al hacer click fuera se reescriba.
+    
+    try {
+      setIsRefining(true);
+      console.log("DEBUG: Iniciando auto-formalización onBlur...");
+      const refined = await refineJustificationWithAI(
+        justification, 
+        product, 
+        stats?.mainDest
+      );
+      
+      if (refined && refined !== justification) {
+        setJustification(refined);
+        localStorage.setItem(storageKey, refined);
+        console.log("DEBUG: Auto-formalización exitosa");
+      }
+    } catch (error) {
+      console.error("DEBUG: Falló la auto-formalización:", error);
+    } finally {
+      setIsRefining(false);
     }
   };
 
@@ -176,9 +205,22 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             <textarea
               value={justification}
               onChange={handleTextChange}
-              placeholder="Escriba aquí la justificación técnica manual de la desviación..."
-              className="w-full h-32 bg-white border-2 border-slate-100 rounded-2xl p-5 text-sm font-medium text-slate-700 placeholder:text-slate-300 focus:ring-0 transition-all shadow-inner resize-none no-pdf mb-2"
+              onBlur={handleBlur}
+              disabled={isRefining}
+              placeholder={isRefining ? "Formalizando con IA..." : "Escriba aquí la justificación técnica manual de la desviación..."}
+              className={`w-full h-32 bg-white border-2 rounded-2xl p-5 text-sm font-medium transition-all shadow-inner resize-none no-pdf mb-2 ${
+                isRefining 
+                  ? 'border-emerald-200 text-slate-400' 
+                  : 'border-slate-100 text-slate-700 placeholder:text-slate-300 focus:ring-0'
+              }`}
             />
+
+            {isRefining && (
+              <div className="absolute top-4 right-4 flex items-center gap-2 text-emerald-500 animate-pulse">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span className="text-[10px] font-black uppercase tracking-widest">IA Formalizando</span>
+              </div>
+            )}
 
             <div className="hidden pdf-only-block bg-white border-2 border-slate-50 rounded-2xl p-6 text-sm font-medium text-slate-700 h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
               {justification || "No se registraron observaciones para este ítem."}

@@ -17,3 +17,11 @@ export interface DashboardConfig {
     change?: string;
   }[];
 }
+
+declare global {
+  interface Window {
+    puter: any;
+  }
+}
+
+export {};
