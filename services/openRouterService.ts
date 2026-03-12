@@ -1,5 +1,5 @@
 // @ts-ignore
-import { GoogleGenerativeAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 /**
  * Servicio para integrar OpenRouter AI y Gemini AI con el Protocolo de Redacción Técnica de SQM Litio.
@@ -39,7 +39,7 @@ CONTEXTO:
 Responde EXCLUSIVAMENTE con el resultado formalizado.
 `.trim();
 
-    // --- INTENTO 1: PUTER (NUEVO - GRATUITO/ILIMITADO) ---
+    // --- INTENTO 1: PUTER (GRATUITO/ILIMITADO) ---
     try {
         if (typeof window !== 'undefined' && (window as any).puter) {
             console.log("DEBUG: Intentando con Puter Gemini (Free/Unlimited)...");
@@ -58,7 +58,7 @@ Responde EXCLUSIVAMENTE con el resultado formalizado.
         console.error("DEBUG: Error en Puter:", error);
     }
 
-    // --- INTENTO 1: OPENROUTER ---
+    // --- INTENTO 2: OPENROUTER ---
     if (openRouterKey) {
         try {
             console.log("DEBUG: Intentando con OpenRouter...");
@@ -80,7 +80,7 @@ Responde EXCLUSIVAMENTE con el resultado formalizado.
 
             if (response.ok) {
                 const data = await response.json();
-                let result = data.choices?.[0]?.message?.content?.trim();
+                const result = data.choices?.[0]?.message?.content?.trim();
                 if (result) {
                     console.log("DEBUG: Éxito con OpenRouter");
                     return result.replace(/^["']|["']$/g, '');
@@ -92,15 +92,16 @@ Responde EXCLUSIVAMENTE con el resultado formalizado.
         }
     }
 
-    // --- INTENTO 2: GEMINI (FALLBACK) ---
+    // --- INTENTO 3: GEMINI DIRECTO (FALLBACK) ---
     if (geminiKey) {
         try {
             console.log("DEBUG: Intentando con Gemini Fallback...");
-            const genAI = new GoogleGenerativeAI(geminiKey);
-            const geminiModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-            const result = await geminiModel.generateContent(prompt);
-            const response = await result.response;
-            const textResult = response.text().trim();
+            const genAI = new GoogleGenAI({ apiKey: geminiKey });
+            const result = await genAI.models.generateContent({
+                model: "gemini-1.5-flash",
+                contents: prompt,
+            });
+            const textResult = (result.text || "").trim();
             if (textResult) {
                 console.log("DEBUG: Éxito con Gemini");
                 return textResult.replace(/^["']|["']$/g, '');
