@@ -13,9 +13,9 @@ import MainMenu from './MainMenu';
 import { LlegadaEquipos } from './LlegadaEquipos';
 import { MemoryModule } from './MemoryModule';
 import { DdDTablero } from './DdDTablero';
-import ReportFooter from './ReportFooter.tsx';
-import InstructionModal from './InstructionModal.tsx';
-import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON } from '../utils/dataProcessor.ts';
+import ReportFooter from './ReportFooter';
+import InstructionModal from './InstructionModal';
+import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON } from '../utils/dataProcessor';
 
 declare const html2pdf: any;
 declare const html2canvas: any;
