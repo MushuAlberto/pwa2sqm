@@ -106,9 +106,9 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
     // 3. Datos Históricos (Últimos 15 días) para gráficos
     const historicalData = useMemo(() => {
         const dates = [...new Set(data.map(r => r.Fecha))].sort();
-        const last15 = dates.slice(-15);
+        const last10 = dates.slice(-10);
 
-        return last15.map(date => {
+        return last10.map(date => {
             const dayItems = data.filter(r => r.Fecha === date);
             const totalProg = dayItems.reduce((sum, r) => sum + (r.Ton_Prog || 0), 0);
             const totalReal = dayItems.reduce((sum, r) => sum + (r.Ton_Real || 0), 0);
@@ -318,7 +318,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                             <div className="flex items-center justify-between">
                                 <div className="space-y-1">
                                     <h4 className="text-lg font-black text-slate-800 italic tracking-tight uppercase">Tendencia de Tiempos</h4>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none">Últimos 15 días operacionales</p>
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-none">Últimos 10 días operacionales</p>
                                 </div>
                                 <div className="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center shadow-inner">
                                     <TrendingUp size={24} />
