@@ -345,10 +345,12 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                             axisLine={false}
                                             tickLine={false}
                                             tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 'bold' }}
+                                            tickFormatter={(val) => formatHoursToTime(val)}
                                         />
                                         <Tooltip
                                             contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)' }}
                                             labelStyle={{ fontWeight: 'black', color: '#1e293b' }}
+                                            formatter={(value: number) => [formatHoursToTime(value), "Horas Reales"]}
                                         />
                                         <Area 
                                             type="monotone" 
