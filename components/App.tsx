@@ -214,6 +214,14 @@ const App: React.FC = () => {
     />
   );
 
+  if (view === 'ddd') return (
+    <DdDTablero
+      data={rawData}
+      selectedDate={selectedDate}
+      onBack={() => setView('menu')}
+    />
+  );
+
   return (
     <div className="flex h-screen bg-white font-sans text-slate-800 overflow-hidden">
       <InstructionModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />
@@ -381,16 +389,6 @@ const App: React.FC = () => {
                 ))}
               </>
             )}
-          </div>
-        )}
-
-        {view === 'ddd' && (
-          <div className="animate-in fade-in duration-500">
-            <DdDTablero
-              data={rawData}
-              selectedDate={selectedDate}
-              onBack={() => setView('menu')}
-            />
           </div>
         )}
       </main>
