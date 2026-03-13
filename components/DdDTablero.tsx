@@ -251,13 +251,11 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr className="bg-slate-50/50 text-slate-400 text-[9px] uppercase tracking-[0.2em] font-black">
-                                            <th className="p-6">Destino</th>
+                                            <th className="p-6">Eje Logístico (Destino)</th>
                                             <th className="p-6">Producto</th>
-                                            <th className="p-6 text-center">Programado</th>
-                                            <th className="p-6 text-center">Real</th>
                                             <th className="p-6 text-center">% Cumplimiento</th>
-                                            <th className="p-6 text-center">Tpo. Faena</th>
-                                            <th className="p-6 text-center">Prom. Ton/Eq</th>
+                                            <th className="p-6 text-center">Tiempo de Faena</th>
+                                            <th className="p-6 text-center">Desempeño Tms/Eq</th>
                                         </tr>
                                     </thead>
                                     <tbody className="text-[11px] font-bold tabular-nums">
@@ -270,36 +268,38 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                     >
                                                         <div className="flex flex-col items-center">
                                                             <span className="text-sm tracking-tighter text-center">{row.destino}</span>
-                                                            <div className="mt-2 h-1 w-8 bg-blue-500 rounded-full opacity-50" />
+                                                            <div className="mt-2 h-1 w-8 bg-[#89B821] rounded-full opacity-50" />
                                                         </div>
                                                     </td>
                                                 )}
-                                                <td className="p-6 text-slate-500 group-hover:text-slate-800 transition-colors uppercase tracking-tight">{row.producto}</td>
-                                                <td className="p-6 text-center text-slate-400 italic">{Math.round(row.tonProg).toLocaleString()}</td>
-                                                <td className="p-6 text-center text-slate-600 font-black tracking-tight">{Math.round(row.tonReal).toLocaleString()}</td>
+                                                <td className="p-6 text-slate-500 group-hover:text-slate-800 transition-colors uppercase tracking-tight font-medium">{row.producto}</td>
                                                 <td className="p-6 text-center">
                                                     <div className="flex flex-col items-center gap-2">
-                                                        <span className={`px-4 py-1.5 rounded-xl font-black text-xs ${row.cumplif < 85 ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                        <span className={`px-4 py-1.5 rounded-xl font-black text-xs ${row.cumplif < 85 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>
                                                             {row.cumplif.toFixed(1)}%
                                                         </span>
                                                         <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                                             <div 
-                                                                className={`h-full rounded-full transition-all duration-1000 ${row.cumplif < 85 ? 'bg-rose-500' : 'bg-blue-500'}`}
+                                                                className={`h-full rounded-full transition-all duration-1000 ${row.cumplif < 85 ? 'bg-rose-500' : 'bg-[#89B821]'}`}
                                                                 style={{ width: `${Math.min(row.cumplif, 100)}%` }}
                                                             />
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
-                                                    <div className={`flex items-center justify-center gap-2 text-xs font-black ${row.realFaena > row.kpiFaena ? 'text-rose-500' : 'text-[#89B821]'}`}>
+                                                    <div className={`flex items-center justify-center gap-2 text-xs font-black ${row.realFaena > row.kpiFaena ? 'text-rose-500' : 'text-slate-700'}`}>
                                                         {formatHoursToTime(row.realFaena)}
-                                                        {row.realFaena > row.kpiFaena && <AlertCircle size={14} />}
+                                                        {row.realFaena > row.kpiFaena && (
+                                                            <span className="flex items-center gap-1 text-[8px] bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100">
+                                                                <AlertCircle size={10} /> DESVIACIÓN
+                                                            </span>
+                                                        )}
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
-                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-amber-600' : 'text-slate-800'}`}>
-                                                        <span className="text-sm tracking-tighter">{row.promTonReal.toFixed(1)}</span>
-                                                        <span className="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">Meta: {row.kpiPromTon}</span>
+                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-amber-600' : 'text-[#89B821]'}`}>
+                                                        <span className="text-sm tracking-tighter italic">{row.promTonReal.toFixed(1)} Tms</span>
+                                                        <span className="text-[8px] text-slate-400 font-bold uppercase tracking-tighter">KPI Meta: {row.kpiPromTon}</span>
                                                     </div>
                                                 </td>
                                             </tr>
