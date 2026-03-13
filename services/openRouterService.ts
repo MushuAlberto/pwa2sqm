@@ -22,21 +22,18 @@ export const refineJustificationWithAI = async (text: string, product: string, d
     }
 
     const prompt = `
-ERES UN ANALISTA SENIOR DE TRANSPORTE Y ESTRATEGIA LOGÍSTICA PARA SQM LITIO. 
-TU MISIÓN ES TRANSFORMAR REPORTES DE CAMPO INFORMALES EN JUSTIFICACIONES TÉCNICAS DE NIVEL EJECUTIVO PARA INFORMES DE GESTIÓN DE TRANSPORTE.
+Eres un redactor técnico de logística de transporte. Reescribe la siguiente observación operacional en español formal y técnico, en exactamente UNA oración concisa. Sin saludos ni explicaciones.
 
-DIRECTRICES CRÍTICAS:
-1. **SÍNTESIS INTELIGENTE**: Combina los "Motivos técnicos seleccionados", la "Observación manual" y el "Destino".
-2. **GLOSARIO SQM**: Usa siempre: SLIT -> Salmuera de Litio, LSI (S) -> Sulfato de litio, TPO SDA -> Tiempo SQM Li, TPO PANG -> Tiempo SQM NY, CF -> Cargador Frontal, CS -> Coya Sur.
-3. **TONO PROFESIONAL**: Usa términos como "ciclo logístico", "saturación de flujo", "dwell time", "latencia operativa".
-4. **CONCISIÓN**: Máximo 2 oraciones. No saludes ni des explicaciones.
+REGLAS:
+- Escribe SOLO en español. Ninguna palabra en inglés.
+- Máximo una oración de 25 palabras.
+- Usa términos técnicos en español: "tiempo de ciclo", "punto de pesaje", "regulación", "cumplimiento programático", "eficiencia operacional".
+- No uses palabras en inglés bajo ninguna circunstancia.
 
-CONTEXTO:
+Datos:
 - Producto: ${product}
-- Destino Operativo: ${destination || 'No especificado'}
-- Datos del Reporte: "${text}"
-
-Responde EXCLUSIVAMENTE con el resultado formalizado.
+- Destino: ${destination || 'No especificado'}
+- Observación del operador: "${text}"
 `.trim();
 
     // --- INTENTO 1: PUTER (GRATUITO/ILIMITADO) ---
