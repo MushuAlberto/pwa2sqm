@@ -130,7 +130,6 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
         const totalR = dayData.reduce((s, r) => s + (r.Ton_Real || 0), 0);
         const active = dayData.filter(r => (r.faenaRealHours || 0) > 0);
         const avgF = active.length > 0 ? active.reduce((s, r) => s + r.faenaRealHours, 0) / active.length : 0;
-        
         return {
             cumplimiento: totalP > 0 ? (totalR / totalP) * 100 : 0,
             tonReal: totalR,
@@ -139,6 +138,64 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
         };
     }, [dayData, tableRows]);
 
+    // 5. Datos Segmentados por Producto y Destino (Últimos 10 días)
+    const segmentedStats = useMemo(() => {
+        const dates = [...new Set(data.map(r => r.Fecha))].sort().slice(-10);
+        
+        const getStatsForFilter = (filterFn: (r: DdDDataRow) => boolean) => {
+            return dates.map(date => {
+                const items = data.filter(r => r.Fecha === date && filterFn(r));
+                const tProg = items.reduce((s, r) => s + (r.Ton_Prog || 0), 0);
+                const tReal = items.reduce((s, r) => s + (r.Ton_Real || 0), 0);
+                const eReal = items.reduce((s, r) => s + (r.Eq_Real || 0), 0);
+                return {
+                    fecha: String(date).split('-').slice(1).reverse().join('/'),
+                    cumplimiento: tProg > 0 ? (tReal / tProg) * 100 : 0,
+                    promTon: eReal > 0 ? tReal / eReal : 0
+                };
+            });
+        };
+
+        return {
+            slit: getStatsForFilter(r => r.Producto.toUpperCase().includes('SLIT')),
+            lsi: getStatsForFilter(r => r.Producto.toUpperCase().includes('LSI')),
+            sal: getStatsForFilter(r => r.Producto.toUpperCase().includes('SAL') || r.Producto.includes('27/15')),
+            coya: getStatsForFilter(r => r.Destino.toUpperCase().includes('COYA')),
+            tocopilla: getStatsForFilter(r => r.Destino.toUpperCase().includes('TOCOPILLA'))
+        };
+    }, [data]);
+
+    const SegmentChart: React.FC<{ title: string; data: any[]; color: string }> = ({ title, data, color }) => (
+        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-50 pb-4">
+                <h5 className="text-[11px] font-black text-slate-800 uppercase tracking-widest italic">{title}</h5>
+                <div className={`w-2 h-2 rounded-full ${color}`} />
+            </div>
+            <div className="h-[150px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart data={data}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                        <XAxis dataKey="fecha" hide />
+                        <YAxis yAxisId="left" hide domain={[0, 110]} />
+                        <YAxis yAxisId="right" hide orientation="right" domain={[24, 32]} />
+                        <Tooltip
+                            contentStyle={{ borderRadius: '15px', border: 'none', fontSize: '10px', fontWeight: 'bold' }}
+                            formatter={(v: number) => [v.toFixed(1), ""]}
+                        />
+                        <Bar yAxisId="left" dataKey="cumplimiento" fill={color} opacity={0.6} radius={[4, 4, 0, 0]} name="% Cumpl." />
+                        <Line yAxisId="right" type="monotone" dataKey="promTon" stroke={color} strokeWidth={3} dot={false} name="Tms/Eq" />
+                    </ComposedChart>
+                </ResponsiveContainer>
+            </div>
+            <div className="flex justify-between items-center text-[9px] font-black text-slate-400 uppercase tracking-tighter">
+                <span>Últimos 10 días</span>
+                <span className="text-slate-200">|</span>
+                <span className="flex items-center gap-1"><div className={`w-1.5 h-1.5 rounded-full ${color} opacity-60`} /> Cumplimiento</span>
+                <span className="flex items-center gap-1"><div className={`w-3 h-0.5 ${color}`} /> Ton/Eq</span>
+            </div>
+        </div>
+    );
+
     const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
         const date = new Date(dateStr + 'T12:00:00');
@@ -146,7 +203,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-32">
+        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-32 animate-in fade-in duration-700">
             <div className="max-w-[1700px] mx-auto space-y-8">
 
                 {/* HEADER EJECUTIVO MODERNIZADO */}
@@ -217,6 +274,22 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         icon={<AlertCircle size={24} />}
                         color="bg-rose-500"
                     />
+                </div>
+
+                {/* SECCIÓN DE ANALÍTICA SEGMENTADA (NUEVO) */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="h-px flex-1 bg-slate-200" />
+                        <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] italic">Desempeño Específico por Segmento</h3>
+                        <div className="h-px flex-1 bg-slate-200" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="bg-blue-500" />
+                        <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="bg-emerald-500" />
+                        <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="bg-amber-500" />
+                        <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="bg-indigo-500" />
+                        <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="bg-rose-500" />
+                    </div>
                 </div>
 
                 {/* BENTO GRID: ANALÍTICA Y TABLA */}
