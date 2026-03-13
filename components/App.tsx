@@ -276,117 +276,122 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <div className="max-w-5xl mx-auto p-8 space-y-0" id="dashboard-report">
-          {rawData.length === 0 ? (
-            <div className="py-20 flex flex-col items-center text-center space-y-8">
-              <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200"><BarChart3 size={48} /></div>
-              <h2 className="text-3xl font-[900] text-[#1e293b] tracking-tighter uppercase">Gestión de Despacho Litio</h2>
-              <p className="text-slate-400 font-medium">Cargue un archivo base para iniciar el análisis operativo.</p>
-            </div>
-          ) : (
-            <>
-              {/* PORTADA EXCLUSIVA PARA PDF */}
-              <div className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
-                <div className="space-y-24 flex flex-col items-center w-full">
-                  {/* Bloque Principal (Imagen) */}
-                  <div className="flex items-center justify-center gap-10 w-full max-w-4xl px-10">
-                    <img src="/logo-sqm.png" alt="SQM Logo" className="h-24 w-auto object-contain" />
-                    <div className="flex flex-col items-start border-l-[2px] border-slate-100 pl-10 text-left">
-                      <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
-                        INFORME OPERATIVO
-                      </h1>
-                      <p className="text-slate-400 font-bold text-sm tracking-[0.4em] uppercase mt-3 whitespace-nowrap">
-                        DESPACHO LITIO <span className="text-slate-300 mx-2">•</span> OPERACIONES SALAR
+        {view === 'informe' && (
+          <div className="max-w-5xl mx-auto p-8 space-y-0" id="dashboard-report">
+            {rawData.length === 0 ? (
+              <div className="py-20 flex flex-col items-center text-center space-y-8">
+                <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200"><BarChart3 size={48} /></div>
+                <h2 className="text-3xl font-[900] text-[#1e293b] tracking-tighter uppercase">Gestión de Despacho Litio</h2>
+                <p className="text-slate-400 font-medium">Cargue un archivo base para iniciar el análisis operativo.</p>
+              </div>
+            ) : (
+              <>
+                {/* PORTADA EXCLUSIVA PARA PDF */}
+                <div className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
+                  <div className="space-y-24 flex flex-col items-center w-full">
+                    {/* Bloque Principal (Imagen) */}
+                    <div className="flex items-center justify-center gap-10 w-full max-w-4xl px-10">
+                      <img src="/logo-sqm.png" alt="SQM Logo" className="h-24 h-24 object-contain" />
+                      <div className="flex flex-col items-start border-l-[2px] border-slate-100 pl-10 text-left">
+                        <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
+                          INFORME OPERATIVO
+                        </h1>
+                        <p className="text-slate-400 font-bold text-sm tracking-[0.4em] uppercase mt-3 whitespace-nowrap">
+                          DESPACHO LITIO <span className="text-slate-300 mx-2">•</span> OPERACIONES SALAR
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Fecha de la Jornada */}
+                    <div className="pt-20">
+                      <p className="text-slate-300 font-black text-xs tracking-[0.4em] uppercase mb-6">JORNADA CORRESPONDIENTE</p>
+                      <p className="text-6xl font-[950] text-[#89B821] tracking-tighter">
+                        {formatDateToCL(selectedDate)}
+                      </p>
+                    </div>
+
+                    <div className="mt-32 pt-16 border-t border-slate-50 w-72">
+                      <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] leading-loose">
+                        GERENCIA DE LOGÍSTICA<br />
+                        SALARES • SQM LITIO
                       </p>
                     </div>
                   </div>
-
-                  {/* Fecha de la Jornada */}
-                  <div className="pt-20">
-                    <p className="text-slate-300 font-black text-xs tracking-[0.4em] uppercase mb-6">JORNADA CORRESPONDIENTE</p>
-                    <p className="text-6xl font-[950] text-[#89B821] tracking-tighter">
-                      {formatDateToCL(selectedDate)}
-                    </p>
-                  </div>
-
-                  <div className="mt-32 pt-16 border-t border-slate-50 w-72">
-                    <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] leading-loose">
-                      GERENCIA DE LOGÍSTICA<br />
-                      SALARES • SQM LITIO
-                    </p>
-                  </div>
                 </div>
-              </div>
 
-              <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
-                <div className="bg-white p-8 space-y-10 flex-1">
-                  <div className="flex justify-between items-start pb-8 border-b-2 border-slate-50">
-                    <div className="flex items-start gap-4">
-                      <img src="/logo-sqm.png" alt="SQM Logo" className="h-16 w-auto object-contain mt-1" />
-                      <div>
-                        <h1 className="text-5xl font-[900] text-[#1e293b] tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
-                        <p className="text-slate-400 font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
+                  <div className="bg-white p-8 space-y-10 flex-1">
+                    <div className="flex justify-between items-start pb-8 border-b-2 border-slate-50">
+                      <div className="flex items-start gap-4">
+                        <img src="/logo-sqm.png" alt="SQM Logo" className="h-16 w-auto object-contain mt-1" />
+                        <div>
+                          <h1 className="text-5xl font-[900] text-[#1e293b] tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
+                          <p className="text-slate-400 font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-slate-400 font-bold text-[10px] tracking-[0.3em] uppercase mb-1">FECHA JORNADA</p>
+                        <p className="text-4xl font-[900] text-[#89B821] tracking-tighter">{formatDateToCL(selectedDate)}</p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-slate-400 font-bold text-[10px] tracking-[0.3em] uppercase mb-1">FECHA JORNADA</p>
-                      <p className="text-4xl font-[900] text-[#89B821] tracking-tighter">{formatDateToCL(selectedDate)}</p>
+
+                    {filteredData.length > 0 && (
+                      <div className="bg-white rounded-[2.5rem] p-10 border-2 border-[#89B821]/10 border-l-[12px] border-l-[#89B821] space-y-8 relative overflow-hidden shadow-sm">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-[#89B821]"><span className="font-black uppercase tracking-[0.3em] text-[10px]">KPIs OPERATIVOS</span></div>
+                          <h2 className="text-4xl font-[900] text-[#1e293b] tracking-tighter uppercase">Cumplimiento Global</h2>
+                        </div>
+                        <div className="grid grid-cols-4 gap-4 pt-6">
+                          {operationalKPIs?.map((kpi, idx) => (
+                            <div key={idx} className="bg-white p-6 rounded-3xl border border-slate-50 flex flex-col gap-2 shadow-sm border-b-4 border-b-[#f8fafc] hover:border-[#89B821]/30 transition-all duration-300">
+                              <div className="flex items-center gap-2 text-slate-300">{kpi.icon}<span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{kpi.label}</span></div>
+                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-[#89B821]'} tracking-tighter my-1`}>{kpi.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-6">
+                      <ChartCard
+                        type="composed"
+                        xAxis="Producto"
+                        yAxis={['Ton_Prog', 'Ton_Real', 'faenaMetaHours', 'faenaRealHours']}
+                        title="Análisis Comparativo: Tonelaje vs Horas de Operación"
+                        data={filteredData}
+                      />
                     </div>
                   </div>
+                  <div className="px-8 pb-8 mt-auto"><ReportFooter /></div>
+                </div>
 
-                  {filteredData.length > 0 && (
-                    <div className="bg-white rounded-[2.5rem] p-10 border-2 border-[#89B821]/10 border-l-[12px] border-l-[#89B821] space-y-8 relative overflow-hidden shadow-sm">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-[#89B821]"><span className="font-black uppercase tracking-[0.3em] text-[10px]">KPIs OPERATIVOS</span></div>
-                        <h2 className="text-4xl font-[900] text-[#1e293b] tracking-tighter uppercase">Cumplimiento Global</h2>
-                      </div>
-                      <div className="grid grid-cols-4 gap-4 pt-6">
-                        {operationalKPIs?.map((kpi, idx) => (
-                          <div key={idx} className="bg-white p-6 rounded-3xl border border-slate-50 flex flex-col gap-2 shadow-sm border-b-4 border-b-[#f8fafc] hover:border-[#89B821]/30 transition-all duration-300">
-                            <div className="flex items-center gap-2 text-slate-300">{kpi.icon}<span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{kpi.label}</span></div>
-                            <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-[#89B821]'} tracking-tighter my-1`}>{kpi.value}</span>
-                          </div>
-                        ))}
-                      </div>
+                {productList.map((prod, idx) => (
+                  <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white flex flex-col min-h-screen pt-4">
+                    <div className="flex-1 px-4">
+                      <ProductDetailSection
+                        product={prod}
+                        data={filteredData.filter(d => d.Producto === prod)}
+                        date={selectedDate}
+                        index={idx + 1}
+                        total={productList.length}
+                      />
                     </div>
-                  )}
-
-                  <div className="pt-6">
-                    <ChartCard
-                      type="composed"
-                      xAxis="Producto"
-                      yAxis={['Ton_Prog', 'Ton_Real', 'faenaMetaHours', 'faenaRealHours']}
-                      title="Análisis Comparativo: Tonelaje vs Horas de Operación"
-                      data={filteredData}
-                    />
+                    <div className="mt-auto px-4 pb-6"><ReportFooter /></div>
                   </div>
-                </div>
-                <div className="px-8 pb-8 mt-auto"><ReportFooter /></div>
-              </div>
+                ))}
+              </>
+            )}
+          </div>
+        )}
 
-              {productList.map((prod, idx) => (
-                <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white flex flex-col min-h-screen pt-4">
-                  <div className="flex-1 px-4">
-                    <ProductDetailSection
-                      product={prod}
-                      data={filteredData.filter(d => d.Producto === prod)}
-                      date={selectedDate}
-                      index={idx + 1}
-                      total={productList.length}
-                    />
-                  </div>
-                  <div className="mt-auto px-4 pb-6"><ReportFooter /></div>
-                </div>
-              ))}
-            </>
-          )}
-        </div>
         {view === 'ddd' && (
-          <DdDTablero
-            data={rawData}
-            selectedDate={selectedDate}
-            onBack={() => setView('menu')}
-          />
+          <div className="animate-in fade-in duration-500">
+            <DdDTablero
+              data={rawData}
+              selectedDate={selectedDate}
+              onBack={() => setView('menu')}
+            />
+          </div>
         )}
       </main>
     </div>
