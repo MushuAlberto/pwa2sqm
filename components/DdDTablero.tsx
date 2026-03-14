@@ -333,10 +333,8 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                     <MetricCard 
                         title="Cumplimiento Global"
                         value={`${summary.cumplimiento.toFixed(1)}%`}
-                        subtitle="Meta: 85% de carga programada"
                         icon={<Target size={24} />}
                         color="bg-[#89B821]"
-                        trend={{ value: 2.4, isPositive: true }}
                     />
                     <MetricCard 
                         title="Tms. Reales Despachadas"
