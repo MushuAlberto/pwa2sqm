@@ -161,7 +161,8 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
             lsi: getStatsForFilter(r => r.Producto.toUpperCase().includes('LSI')),
             sal: getStatsForFilter(r => r.Producto.toUpperCase().includes('SAL') || r.Producto.includes('27/15')),
             coya: getStatsForFilter(r => r.Destino.toUpperCase().includes('COYA') || r.Producto.trim().toUpperCase().endsWith(' CS') || r.Destino.toUpperCase().includes(' CS')),
-            tocopilla: getStatsForFilter(r => r.Destino.toUpperCase().includes('TOCOPILLA'))
+            tocopilla: getStatsForFilter(r => r.Destino.toUpperCase().includes('TOCOPILLA')),
+            bischofita: getStatsForFilter(r => r.Producto.toUpperCase().includes('BISCHOFITA'))
         };
     }, [data]);
 
@@ -315,12 +316,15 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                             <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
                         </div>
 
-                        {/* Fila Inferior: 2 Gráficos Centrados */}
-                        <div className="md:col-start-2 md:col-span-2">
+                        {/* Fila Inferior: 3 Gráficos */}
+                        <div className="md:col-span-2">
                             <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
                         </div>
                         <div className="md:col-span-2">
                             <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Bischofita" data={segmentedStats.bischofita} color="#8b5cf6" />
                         </div>
                     </div>
                 </div>
