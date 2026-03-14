@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-    ResponsiveContainer, LineChart, Line, Legend, ReferenceLine, ComposedChart, Area, Cell, AreaChart
+    ResponsiveContainer, LineChart, Line, Legend, ReferenceLine, ComposedChart, Area, Cell, AreaChart, LabelList
 } from 'recharts';
 import { formatHoursToTime } from '../utils/dataProcessor';
 
@@ -171,19 +171,39 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                 <h5 className="text-[11px] font-black text-slate-800 uppercase tracking-widest italic">{title}</h5>
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
             </div>
-            <div className="h-[150px] w-full">
+            <div className="h-[200px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={data}>
+                    <ComposedChart data={data} margin={{ top: 20, right: 5, left: 5, bottom: 20 }}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                        <XAxis dataKey="fecha" hide />
-                        <YAxis yAxisId="left" hide domain={[0, 110]} />
+                        <XAxis 
+                            dataKey="fecha" 
+                            tick={{ fontSize: 9, fontWeight: 'bold', fill: '#94a3b8' }}
+                            axisLine={false}
+                            tickLine={false}
+                        />
+                        <YAxis yAxisId="left" hide domain={[0, 120]} />
                         <YAxis yAxisId="right" hide orientation="right" domain={[24, 32]} />
                         <Tooltip
                             contentStyle={{ borderRadius: '15px', border: 'none', fontSize: '10px', fontWeight: 'bold' }}
                             formatter={(v: number) => [v.toFixed(1), ""]}
                         />
-                        <Bar yAxisId="left" dataKey="cumplimiento" fill={color} opacity={0.6} radius={[4, 4, 0, 0]} name="% Cumpl." />
-                        <Line yAxisId="right" type="monotone" dataKey="promTon" stroke={color} strokeWidth={3} dot={false} name="Tms/Eq" />
+                        <ReferenceLine yAxisId="left" y={85} stroke="#ef4444" strokeDasharray="3 3" strokeWidth={2} />
+                        <Bar yAxisId="left" dataKey="cumplimiento" fill={color} opacity={0.6} radius={[4, 4, 0, 0]} name="% Cumpl.">
+                            <LabelList 
+                                dataKey="cumplimiento" 
+                                position="top" 
+                                formatter={(v: number) => `${v.toFixed(0)}%`}
+                                style={{ fontSize: '10px', fontWeight: 'bold', fill: '#475569' }}
+                            />
+                        </Bar>
+                        <Line yAxisId="right" type="monotone" dataKey="promTon" stroke={color} strokeWidth={3} dot={{ r: 3, fill: color }} name="Tms/Eq">
+                            <LabelList 
+                                dataKey="promTon" 
+                                position="top" 
+                                formatter={(v: number) => v.toFixed(1)}
+                                style={{ fontSize: '9px', fontWeight: 'bold', fill: color }}
+                            />
+                        </Line>
                     </ComposedChart>
                 </ResponsiveContainer>
             </div>
