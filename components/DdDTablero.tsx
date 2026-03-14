@@ -436,15 +436,10 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                 <td className="p-6 text-center">
                                                     <div className={`flex items-center justify-center gap-2 text-base font-black ${row.realFaena > row.kpiFaena ? 'text-rose-500' : 'text-slate-700'}`}>
                                                         {formatHoursToTime(row.realFaena)}
-                                                        {row.realFaena > row.kpiFaena && (
-                                                            <span className="flex items-center gap-1 text-[11px] bg-rose-50 px-2 py-1 rounded-md border border-rose-100">
-                                                                <AlertCircle size={12} /> DESVIACIÓN
-                                                            </span>
-                                                        )}
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
-                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-amber-600' : 'text-[#89B821]'}`}>
+                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-rose-500' : 'text-[#89B821]'}`}>
                                                         <span className="text-xl tracking-tighter italic">{row.promTonReal.toFixed(1)} Tms</span>
                                                         <span className="text-[12px] text-slate-400 font-bold uppercase tracking-tighter">KPI Meta: {row.kpiPromTon}</span>
                                                     </div>
