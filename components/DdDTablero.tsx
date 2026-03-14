@@ -506,23 +506,23 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                 </div>
 
                 {/* DASHBOARD COMPLETITUD Y CUMPLIMIENTO */}
-                <div className="bg-[#1e293b] p-10 rounded-[3rem] shadow-2xl space-y-10 border border-slate-700/50 relative overflow-hidden">
+                <div className="bg-white p-10 rounded-[3rem] shadow-sm space-y-10 border border-slate-100 relative overflow-hidden">
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#89B821] opacity-5 rounded-tr-full -ml-32 -mb-32" />
                     
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10">
                         <div className="space-y-2">
-                            <h4 className="text-2xl font-black text-white italic tracking-tighter uppercase leading-none">Análisis de Cumplimiento Programático</h4>
+                            <h4 className="text-2xl font-black text-slate-800 italic tracking-tighter uppercase leading-none">Análisis de Cumplimiento Programático</h4>
                             <p className="text-slate-400 text-xs font-bold tracking-[0.3em] uppercase opacity-70">Monitoreo de Eficiencia y Tonelaje Promedio</p>
                         </div>
                         <div className="flex gap-8">
                             <div className="text-right">
-                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Status Global</span>
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Status Global</span>
                                 <span className="text-xl font-black text-[#89B821] italic uppercase">Operativo</span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="h-[400px] w-full relative z-10 bg-slate-800/40 p-8 rounded-[2rem] backdrop-blur-md border border-slate-700/50">
+                    <div className="h-[400px] w-full relative z-10 bg-slate-50/50 p-8 rounded-[2rem] border border-slate-100">
                         <ResponsiveContainer width="100%" height="100%">
                             <ComposedChart data={historicalData}>
                                 <defs>
@@ -531,18 +531,18 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                         <stop offset="100%" stopColor="#2563eb" stopOpacity={0.5}/>
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                 <XAxis
                                     dataKey="fecha"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#64748b', fontSize: 11, fontWeight: 'bold' }}
+                                    tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 'bold' }}
                                 />
                                 <YAxis
                                     yAxisId="left"
                                     axisLine={false}
                                     tickLine={false}
-                                    tick={{ fill: '#64748b', fontSize: 11, fontWeight: 'bold' }}
+                                    tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 'bold' }}
                                     domain={[0, 110]}
                                 />
                                 <YAxis
@@ -554,22 +554,14 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                     tick={{ fill: '#89B821', fontSize: 11, fontWeight: 'black' }}
                                 />
                                 <Tooltip
-                                    contentStyle={{ backgroundColor: '#1e293b', borderRadius: '24px', border: '1px solid #334155', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.5)' }}
-                                    itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
+                                    contentStyle={{ backgroundColor: '#fff', borderRadius: '24px', border: '1px solid #f1f5f9', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)' }}
+                                    itemStyle={{ fontSize: '12px', fontWeight: 'bold' }}
+                                    labelStyle={{ fontWeight: 'black', color: '#1e293b' }}
                                 />
-                                <Legend verticalAlign="top" height={36} iconType="diamond" />
-                                <Bar yAxisId="left" dataKey="cumplimiento" fill="url(#barGradient)" radius={[10, 10, 0, 0]} name="% Cumplimiento" />
-                                <Line 
-                                    yAxisId="right" 
-                                    type="step" 
-                                    dataKey="promTon" 
-                                    stroke="#89B821" 
-                                    strokeWidth={4} 
-                                    dot={{ r: 6, fill: '#89B821', strokeWidth: 3, stroke: '#1e293b' }} 
-                                    activeDot={{ r: 8, strokeWidth: 0 }}
-                                    name="Eficiencia Tms/Eq" 
-                                />
-                                <ReferenceLine yAxisId="left" y={85} stroke="#3b82f6" strokeDasharray="10 10" strokeWidth={2} label={{ position: 'top', value: 'META CARGA 85%', fill: '#3b82f6', fontSize: 11, fontWeight: 'black' }} />
+                                <Legend verticalAlign="top" height={36} iconType="diamond" wrapperStyle={{ paddingTop: '0px', fontWeight: 'bold', fontSize: '11px', textTransform: 'uppercase' }} />
+                                <Bar yAxisId="left" dataKey="cumplimiento" fill="url(#barGradient)" radius={[8, 8, 0, 0]} barSize={40} name="% Cumplimiento" />
+                                <Line yAxisId="right" type="stepAfter" dataKey="promTonReal" stroke="#89B821" strokeWidth={4} dot={{ r: 6, fill: '#89B821', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} name="Eficiencia Tms/Eq" />
+                                <ReferenceLine yAxisId="left" y={85} stroke="#3b82f6" strokeDasharray="5 5" strokeWidth={2} label={{ position: 'insideTopLeft', value: 'META CARGA 85%', fill: '#3b82f6', fontSize: 10, fontWeight: 'black' }} />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>
