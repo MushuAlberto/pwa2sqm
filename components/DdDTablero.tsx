@@ -160,7 +160,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
             slit: getStatsForFilter(r => r.Producto.toUpperCase().includes('SLIT')),
             lsi: getStatsForFilter(r => r.Producto.toUpperCase().includes('LSI')),
             sal: getStatsForFilter(r => r.Producto.toUpperCase().includes('SAL') || r.Producto.includes('27/15')),
-            coya: getStatsForFilter(r => r.Destino.toUpperCase().includes('COYA')),
+            coya: getStatsForFilter(r => r.Destino.toUpperCase().includes('COYA') || r.Producto.trim().toUpperCase().endsWith(' CS') || r.Destino.toUpperCase().includes(' CS')),
             tocopilla: getStatsForFilter(r => r.Destino.toUpperCase().includes('TOCOPILLA'))
         };
     }, [data]);
