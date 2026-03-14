@@ -169,7 +169,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
         <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-50 pb-4">
                 <h5 className="text-[11px] font-black text-slate-800 uppercase tracking-widest italic">{title}</h5>
-                <div className={`w-2 h-2 rounded-full ${color}`} />
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
             </div>
             <div className="h-[150px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -190,8 +190,8 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
             <div className="flex justify-between items-center text-[9px] font-black text-slate-400 uppercase tracking-tighter">
                 <span>Últimos 10 días</span>
                 <span className="text-slate-200">|</span>
-                <span className="flex items-center gap-1"><div className={`w-1.5 h-1.5 rounded-full ${color} opacity-60`} /> Cumplimiento</span>
-                <span className="flex items-center gap-1"><div className={`w-3 h-0.5 ${color}`} /> Ton/Eq</span>
+                <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full opacity-60" style={{ backgroundColor: color }} /> Cumplimiento</span>
+                <span className="flex items-center gap-1"><div className="w-3 h-0.5" style={{ backgroundColor: color }} /> Ton/Eq</span>
             </div>
         </div>
     );
@@ -284,11 +284,11 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         <div className="h-px flex-1 bg-slate-200" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                        <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="bg-blue-500" />
-                        <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="bg-emerald-500" />
-                        <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="bg-amber-500" />
-                        <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="bg-indigo-500" />
-                        <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="bg-rose-500" />
+                        <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#3b82f6" />
+                        <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#10b981" />
+                        <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
+                        <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
+                        <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
                     </div>
                 </div>
 
