@@ -10,7 +10,6 @@ import {
 } from 'recharts';
 import { formatHoursToTime } from '../utils/dataProcessor';
 
-declare const html2pdf: any;
 declare const html2canvas: any;
 
 interface DdDDataRow {
@@ -60,7 +59,6 @@ const MetricCard: React.FC<{
 );
 
 export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBack }) => {
-    const [isExportingPDF, setIsExportingPDF] = useState(false);
     const [isExportingImage, setIsExportingImage] = useState(false);
 
     // 1. Filtrar datos del día seleccionado para la tabla
@@ -234,24 +232,6 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
         return `${d}/${m}/${y}`;
     };
 
-    const handleExportPDF = async () => {
-        if (isExportingPDF) return;
-        setIsExportingPDF(true);
-        const element = document.getElementById('ddd-dashboard-capture');
-        const opt = {
-            margin: [5, 5],
-            filename: `Analisis_Tecnico_DdD_${selectedDate}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: 'legal', orientation: 'landscape' },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-        };
-        try {
-            await html2pdf().set(opt).from(element).save();
-        } finally {
-            setIsExportingPDF(false);
-        }
-    };
 
     const handleExportImage = async () => {
         if (isExportingImage) return;
@@ -300,15 +280,6 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                 <span className="text-xl font-black capitalize tracking-tighter italic">{formatDate(selectedDate)}</span>
                             </div>
                             
-                            <div className="flex items-center gap-3">
-                                <button 
-                                    onClick={handleExportPDF} 
-                                    disabled={isExportingPDF}
-                                    className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border border-white/5 disabled:opacity-50"
-                                >
-                                    {isExportingPDF ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
-                                    <span className="hidden lg:inline">PDF</span>
-                                </button>
                                 <button 
                                     onClick={handleExportImage}
                                     disabled={isExportingImage}
@@ -317,7 +288,6 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                     {isExportingImage ? <Loader2 size={14} className="animate-spin" /> : <ImageIcon size={14} />}
                                     <span className="hidden lg:inline">Imagen</span>
                                 </button>
-                            </div>
                         </div>
                     </div>
                 </div>
