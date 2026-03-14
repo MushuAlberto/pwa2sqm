@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import {
     ArrowLeft, Clock, Calendar, BarChart3, TrendingUp,
-    Target, AlertCircle, ChevronRight, Gauge, Layers, Info
+    Target, AlertCircle, ChevronRight, Gauge, Layers, Info, Scale
 } from 'lucide-react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -18,6 +18,8 @@ interface DdDDataRow {
     Eq_Prog: number;
     Eq_Real: number;
     Regulacion_Real: number;
+    sdaHours: number;
+    pangHours: number;
     faenaMetaHours: number;
     faenaRealHours: number;
 }
@@ -128,12 +130,20 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
     const summary = useMemo(() => {
         const totalP = dayData.reduce((s, r) => s + (r.Ton_Prog || 0), 0);
         const totalR = dayData.reduce((s, r) => s + (r.Ton_Real || 0), 0);
-        const active = dayData.filter(r => (r.faenaRealHours || 0) > 0);
-        const avgF = active.length > 0 ? active.reduce((s, r) => s + r.faenaRealHours, 0) / active.length : 0;
+        
+        // Tiempos SdA
+        const validSda = dayData.filter(r => (r.sdaHours || 0) > 0);
+        const avgSda = validSda.length > 0 ? validSda.reduce((s, r) => s + r.sdaHours, 0) / validSda.length : 0;
+        
+        // Tiempos N. Y. (Pang)
+        const validPang = dayData.filter(r => (r.pangHours || 0) > 0);
+        const avgPang = validPang.length > 0 ? validPang.reduce((s, r) => s + r.pangHours, 0) / validPang.length : 0;
+
         return {
             cumplimiento: totalP > 0 ? (totalR / totalP) * 100 : 0,
             tonReal: totalR,
-            avgFaena: avgF,
+            avgSda: avgSda,
+            avgPang: avgPang,
             desviaciones: tableRows.filter(r => r.cumplif < 85 || r.realFaena > r.kpiFaena).length
         };
     }, [dayData, tableRows]);
@@ -265,7 +275,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                 </div>
 
                 {/* ROW DE KPIs (HERO SECTION) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                     <MetricCard 
                         title="Cumplimiento Global"
                         value={`${summary.cumplimiento.toFixed(1)}%`}
@@ -282,11 +292,18 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         color="bg-blue-500"
                     />
                     <MetricCard 
-                        title="Tiempo Promedio Faena"
-                        value={formatHoursToTime(summary.avgFaena)}
+                        title="Tiempo Promedio SdA"
+                        value={formatHoursToTime(summary.avgSda)}
                         subtitle={`Meta SQM: ${formatHoursToTime(2)}`}
                         icon={<Clock size={24} />}
                         color="bg-amber-500"
+                    />
+                    <MetricCard 
+                        title="Tiempo Promedio N. Y."
+                        value={formatHoursToTime(summary.avgPang)}
+                        subtitle={`Meta SQM: ${formatHoursToTime(2)}`}
+                        icon={<Scale size={24} />}
+                        color="bg-indigo-500"
                     />
                     <MetricCard 
                         title="Alertas Activas (DdD)"
