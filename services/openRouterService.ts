@@ -22,11 +22,12 @@ export const refineJustificationWithAI = async (text: string, product: string, d
     }
 
     const prompt = `
-Eres un redactor técnico de logística. Reescribe la siguiente observación en español formal, de forma muy resumida y directa, en exactamente UNA oración de máximo 15 palabras.
+Eres un redactor técnico de logística. Formaliza la siguiente observación en español técnico de forma clara y profesional.
 
 REGLAS:
-- SIN saludos, ni introducciones, ni frases redundantes como "contraviniendo la regulación".
-- Sé técnico pero extremadamente conciso.
+- Reescribe íntegramente la idea del operador evitando redundancias innecesarias.
+- NO incluyas frases de relleno como "contraviniendo la regulación" o similares.
+- Sé técnico y formal pero mantén la claridad del mensaje original.
 - Producto: ${product}
 - Destino: ${destination || 'No especificado'}
 - Observación: "${text}"
