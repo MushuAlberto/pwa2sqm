@@ -28,7 +28,7 @@ REGLAS:
 - Entrega SOLO el texto formalizado. NO incluyas etiquetas como "**Observación:**", "Resultado:" ni ninguna otra.
 - OMITA el destino del producto en tu redacción. Centrarse únicamente en la causa técnica.
 - NO incluyas frases de relleno como "contraviniendo la regulación" o similares.
-- Usa estos términos específicos: "SdA" es "Salar de Atacama", "CS" es "Coya Sur", "CF" es "Cargador Frontal".
+- Traduce estos acrónimos SOLO si aparecen en la observación original: "SdA" es "Salar de Atacama", "CS" es "Coya Sur", "CF" es "Cargador Frontal". No los añadas si no están presentes.
 - Producto: ${product}
 - Observación: "${text}"
 `.trim();
