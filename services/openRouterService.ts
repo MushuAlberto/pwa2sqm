@@ -25,12 +25,11 @@ export const refineJustificationWithAI = async (text: string, product: string, d
 Eres un redactor técnico de logística. Formaliza la siguiente observación en español técnico de forma clara y profesional.
 
 REGLAS:
-- Reescribe íntegramente la idea del operador evitando redundancias innecesarias.
+- Entrega SOLO el texto formalizado. NO incluyas etiquetas como "**Observación:**", "Resultado:" ni ninguna otra.
+- OMITA el destino del producto en tu redacción. Centrarse únicamente en la causa técnica.
 - NO incluyas frases de relleno como "contraviniendo la regulación" o similares.
-- Sé técnico y formal pero mantén la claridad del mensaje original.
 - Usa estos términos específicos: "SdA" es "Salar de Atacama", "CS" es "Coya Sur", "CF" es "Cargador Frontal".
 - Producto: ${product}
-- Destino: ${destination || 'No especificado'}
 - Observación: "${text}"
 `.trim();
 
