@@ -314,38 +314,6 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                     />
                 </div>
 
-                {/* SECCIÓN DE ANALÍTICA SEGMENTADA (NUEVO) */}
-                <div className="space-y-6">
-                    <div className="flex items-center gap-4">
-                        <div className="h-px flex-1 bg-slate-200" />
-                        <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] italic">Desempeño Específico por Segmento</h3>
-                        <div className="h-px flex-1 bg-slate-200" />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-                        {/* Fila Superior: 3 Gráficos */}
-                        <div className="md:col-span-2">
-                            <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#3b82f6" />
-                        </div>
-                        <div className="md:col-span-2">
-                            <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#10b981" />
-                        </div>
-                        <div className="md:col-span-2">
-                            <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
-                        </div>
-
-                        {/* Fila Inferior: 3 Gráficos */}
-                        <div className="md:col-span-2">
-                            <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
-                        </div>
-                        <div className="md:col-span-2">
-                            <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
-                        </div>
-                        <div className="md:col-span-2">
-                            <SegmentChart title="Bischofita" data={segmentedStats.bischofita} color="#8b5cf6" />
-                        </div>
-                    </div>
-                </div>
-
                 {/* BENTO GRID: ANALÍTICA Y TABLA */}
                 <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
                     
@@ -501,6 +469,38 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* SECCIÓN DE ANALÍTICA SEGMENTADA (NUEVO) */}
+                <div className="space-y-6">
+                    <div className="flex items-center gap-4">
+                        <div className="h-px flex-1 bg-slate-200" />
+                        <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] italic">Desempeño Específico por Segmento</h3>
+                        <div className="h-px flex-1 bg-slate-200" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+                        {/* Fila Superior: 3 Gráficos */}
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#3b82f6" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#10b981" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
+                        </div>
+
+                        {/* Fila Inferior: 3 Gráficos */}
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Bischofita" data={segmentedStats.bischofita} color="#8b5cf6" />
                         </div>
                     </div>
                 </div>
