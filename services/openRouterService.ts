@@ -22,18 +22,14 @@ export const refineJustificationWithAI = async (text: string, product: string, d
     }
 
     const prompt = `
-Eres un redactor técnico de logística de transporte. Reescribe la siguiente observación operacional en español formal y técnico, en exactamente UNA oración concisa. Sin saludos ni explicaciones.
+Eres un redactor técnico de logística. Reescribe la siguiente observación en español formal, de forma muy resumida y directa, en exactamente UNA oración de máximo 15 palabras.
 
 REGLAS:
-- Escribe SOLO en español. Ninguna palabra en inglés.
-- Máximo una oración de 25 palabras.
-- Usa términos técnicos en español: "tiempo de ciclo", "punto de pesaje", "regulación", "cumplimiento programático", "eficiencia operacional".
-- No uses palabras en inglés bajo ninguna circunstancia.
-
-Datos:
+- SIN saludos, ni introducciones, ni frases redundantes como "contraviniendo la regulación".
+- Sé técnico pero extremadamente conciso.
 - Producto: ${product}
 - Destino: ${destination || 'No especificado'}
-- Observación del operador: "${text}"
+- Observación: "${text}"
 `.trim();
 
     // --- INTENTO 1: PUTER (GRATUITO/ILIMITADO) ---
