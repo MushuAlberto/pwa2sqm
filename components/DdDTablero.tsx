@@ -1,13 +1,17 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     ArrowLeft, Clock, Calendar, BarChart3, TrendingUp,
-    Target, AlertCircle, ChevronRight, Gauge, Layers, Info, Scale
+    Target, AlertCircle, ChevronRight, Gauge, Layers, Info, Scale,
+    FileText, Image as ImageIcon, Loader2
 } from 'lucide-react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, LineChart, Line, Legend, ReferenceLine, ComposedChart, Area, Cell, AreaChart, LabelList
 } from 'recharts';
 import { formatHoursToTime } from '../utils/dataProcessor';
+
+declare const html2pdf: any;
+declare const html2canvas: any;
 
 interface DdDDataRow {
     Fecha: string;
@@ -62,6 +66,9 @@ const MetricCard: React.FC<{
 );
 
 export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBack }) => {
+    const [isExportingPDF, setIsExportingPDF] = useState(false);
+    const [isExportingImage, setIsExportingImage] = useState(false);
+
     // 1. Filtrar datos del día seleccionado para la tabla
     const dayData = useMemo(() => data.filter(r => r.Fecha === selectedDate), [data, selectedDate]);
 
@@ -229,13 +236,48 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
 
     const formatDate = (dateStr: string) => {
         if (!dateStr) return '';
-        const date = new Date(dateStr + 'T12:00:00');
-        return new Intl.DateTimeFormat('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+        const [y, m, d] = dateStr.split('-');
+        return `${d}/${m}/${y}`;
+    };
+
+    const handleExportPDF = async () => {
+        if (isExportingPDF) return;
+        setIsExportingPDF(true);
+        const element = document.getElementById('ddd-dashboard-capture');
+        const opt = {
+            margin: [5, 5],
+            filename: `Analisis_Tecnico_DdD_${selectedDate}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'legal', orientation: 'landscape' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+        try {
+            await html2pdf().set(opt).from(element).save();
+        } finally {
+            setIsExportingPDF(false);
+        }
+    };
+
+    const handleExportImage = async () => {
+        if (isExportingImage) return;
+        setIsExportingImage(true);
+        const element = document.getElementById('ddd-dashboard-capture');
+        if (!element) return;
+        try {
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+            const link = document.createElement('a');
+            link.download = `Captura_DdD_${selectedDate}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } finally {
+            setIsExportingImage(false);
+        }
     };
 
     return (
         <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-32 animate-in fade-in duration-700">
-            <div className="max-w-[1700px] mx-auto space-y-8">
+            <div className="max-w-[1700px] mx-auto space-y-8" id="ddd-dashboard-capture">
 
                 {/* HEADER EJECUTIVO MODERNIZADO */}
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-[#1e293b] p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
@@ -260,15 +302,29 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 relative z-10">
-                        <div className="bg-slate-800/60 backdrop-blur-xl p-6 px-10 rounded-[2.5rem] border border-slate-700/50 flex items-center gap-8 shadow-2xl">
-                            <div className="text-right">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Jornada Reportada</p>
-                                <div className="flex items-center gap-4 justify-end">
-                                    <span className="text-2xl font-black capitalize tracking-tighter italic">{formatDate(selectedDate)}</span>
-                                    <div className="w-12 h-12 rounded-2xl bg-slate-700/50 flex items-center justify-center text-[#89B821]">
-                                        <Calendar size={24} />
-                                    </div>
-                                </div>
+                        <div className="bg-slate-800/60 backdrop-blur-xl p-4 px-8 rounded-[2.5rem] border border-slate-700/50 flex flex-col sm:flex-row items-center gap-6 shadow-2xl">
+                            <div className="text-right border-r border-slate-700/50 pr-6 hidden sm:block">
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Jornada Reportada</p>
+                                <span className="text-xl font-black capitalize tracking-tighter italic">{formatDate(selectedDate)}</span>
+                            </div>
+                            
+                            <div className="flex items-center gap-3">
+                                <button 
+                                    onClick={handleExportPDF} 
+                                    disabled={isExportingPDF}
+                                    className="p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border border-white/5 disabled:opacity-50"
+                                >
+                                    {isExportingPDF ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
+                                    <span className="hidden lg:inline">PDF</span>
+                                </button>
+                                <button 
+                                    onClick={handleExportImage}
+                                    disabled={isExportingImage}
+                                    className="p-3 bg-[#89B821] hover:bg-[#a1d72a] rounded-2xl transition-all text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#89B821]/20 border border-[#89B821]/5 disabled:opacity-50"
+                                >
+                                    {isExportingImage ? <Loader2 size={14} className="animate-spin" /> : <ImageIcon size={14} />}
+                                    <span className="hidden lg:inline">Imagen</span>
+                                </button>
                             </div>
                         </div>
                     </div>
