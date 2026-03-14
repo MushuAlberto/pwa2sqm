@@ -401,7 +401,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-slate-50/50 text-slate-400 text-[11px] uppercase tracking-[0.2em] font-black">
+                                        <tr className="bg-slate-50/50 text-slate-400 text-[13px] uppercase tracking-[0.2em] font-black">
                                             <th className="p-6">Eje Logístico (Destino)</th>
                                             <th className="p-6">Producto</th>
                                             <th className="p-6 text-center">% Cumplimiento</th>
@@ -409,7 +409,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                             <th className="p-6 text-center">Desempeño Tms/Eq</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="text-[13px] font-bold tabular-nums">
+                                    <tbody className="text-[15px] font-bold tabular-nums">
                                         {tableRows.map((row, idx) => (
                                             <tr key={idx} className="group border-b border-slate-50 hover:bg-slate-50/50 transition-all duration-300">
                                                 {row.isFirstInDest && (
@@ -418,18 +418,18 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                         rowSpan={row.destCount}
                                                     >
                                                         <div className="flex flex-col items-center">
-                                                            <span className="text-base tracking-tighter text-center">{row.destino}</span>
-                                                            <div className="mt-2 h-1 w-8 bg-[#89B821] rounded-full opacity-50" />
+                                                            <span className="text-lg tracking-tighter text-center leading-tight">{row.destino}</span>
+                                                            <div className="mt-2 h-1.5 w-10 bg-[#89B821] rounded-full opacity-50" />
                                                         </div>
                                                     </td>
                                                 )}
-                                                <td className="p-6 text-slate-500 group-hover:text-slate-800 transition-colors uppercase tracking-tight font-medium text-sm">{row.producto}</td>
+                                                <td className="p-6 text-slate-500 group-hover:text-slate-800 transition-colors uppercase tracking-tight font-black text-sm">{row.producto}</td>
                                                 <td className="p-6 text-center">
                                                     <div className="flex flex-col items-center gap-2">
-                                                        <span className={`px-4 py-1.5 rounded-xl font-black text-sm ${row.cumplif < 85 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                                                        <span className={`px-5 py-2 rounded-xl font-black text-base ${row.cumplif < 85 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>
                                                             {row.cumplif.toFixed(1)}%
                                                         </span>
-                                                        <div className="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                                        <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
                                                             <div 
                                                                 className={`h-full rounded-full transition-all duration-1000 ${row.cumplif < 85 ? 'bg-rose-500' : 'bg-[#89B821]'}`}
                                                                 style={{ width: `${Math.min(row.cumplif, 100)}%` }}
@@ -438,19 +438,19 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
-                                                    <div className={`flex items-center justify-center gap-2 text-sm font-black ${row.realFaena > row.kpiFaena ? 'text-rose-500' : 'text-slate-700'}`}>
+                                                    <div className={`flex items-center justify-center gap-2 text-base font-black ${row.realFaena > row.kpiFaena ? 'text-rose-500' : 'text-slate-700'}`}>
                                                         {formatHoursToTime(row.realFaena)}
                                                         {row.realFaena > row.kpiFaena && (
-                                                            <span className="flex items-center gap-1 text-[10px] bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100">
-                                                                <AlertCircle size={10} /> DESVIACIÓN
+                                                            <span className="flex items-center gap-1 text-[11px] bg-rose-50 px-2 py-1 rounded-md border border-rose-100">
+                                                                <AlertCircle size={12} /> DESVIACIÓN
                                                             </span>
                                                         )}
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
                                                     <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-amber-600' : 'text-[#89B821]'}`}>
-                                                        <span className="text-base tracking-tighter italic">{row.promTonReal.toFixed(1)} Tms</span>
-                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">KPI Meta: {row.kpiPromTon}</span>
+                                                        <span className="text-xl tracking-tighter italic">{row.promTonReal.toFixed(1)} Tms</span>
+                                                        <span className="text-[12px] text-slate-400 font-bold uppercase tracking-tighter">KPI Meta: {row.kpiPromTon}</span>
                                                     </div>
                                                 </td>
                                             </tr>
