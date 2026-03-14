@@ -28,6 +28,7 @@ REGLAS:
 - Reescribe íntegramente la idea del operador evitando redundancias innecesarias.
 - NO incluyas frases de relleno como "contraviniendo la regulación" o similares.
 - Sé técnico y formal pero mantén la claridad del mensaje original.
+- Usa estos términos específicos: "CF" significa "Cargador Frontal", "SdA" significa "Sala de Acondicionamiento".
 - Producto: ${product}
 - Destino: ${destination || 'No especificado'}
 - Observación: "${text}"
