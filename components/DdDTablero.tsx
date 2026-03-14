@@ -303,12 +303,25 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em] italic">Desempeño Específico por Segmento</h3>
                         <div className="h-px flex-1 bg-slate-200" />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                        <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#3b82f6" />
-                        <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#10b981" />
-                        <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
-                        <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
-                        <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
+                    <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+                        {/* Fila Superior: 3 Gráficos */}
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#3b82f6" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#10b981" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
+                        </div>
+
+                        {/* Fila Inferior: 2 Gráficos Centrados */}
+                        <div className="md:col-start-2 md:col-span-2">
+                            <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
+                        </div>
+                        <div className="md:col-span-2">
+                            <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
+                        </div>
                     </div>
                 </div>
 
