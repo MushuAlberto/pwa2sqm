@@ -559,8 +559,12 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                     labelStyle={{ fontWeight: 'black', color: '#1e293b' }}
                                 />
                                 <Legend verticalAlign="top" height={36} iconType="diamond" wrapperStyle={{ paddingTop: '0px', fontWeight: 'bold', fontSize: '11px', textTransform: 'uppercase' }} />
-                                <Bar yAxisId="left" dataKey="cumplimiento" fill="url(#barGradient)" radius={[8, 8, 0, 0]} barSize={40} name="% Cumplimiento" />
-                                <Line yAxisId="right" type="stepAfter" dataKey="promTonReal" stroke="#89B821" strokeWidth={4} dot={{ r: 6, fill: '#89B821', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} name="Eficiencia Tms/Eq" />
+                                <Bar yAxisId="left" dataKey="cumplimiento" fill="url(#barGradient)" radius={[8, 8, 0, 0]} barSize={45} name="% Cumplimiento">
+                                    <LabelList dataKey="cumplimiento" position="top" formatter={(val: number) => `${Math.round(val)}%`} style={{ fill: '#3b82f6', fontSize: 10, fontWeight: 'black' }} />
+                                </Bar>
+                                <Line yAxisId="right" type="stepAfter" dataKey="promTonReal" stroke="#89B821" strokeWidth={4} dot={{ r: 6, fill: '#89B821', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} name="Eficiencia Tms/Eq">
+                                    <LabelList dataKey="promTonReal" position="top" formatter={(val: number) => val.toFixed(1)} style={{ fill: '#89B821', fontSize: 10, fontWeight: 'black' }} offset={10} />
+                                </Line>
                                 <ReferenceLine yAxisId="left" y={85} stroke="#3b82f6" strokeDasharray="5 5" strokeWidth={2} label={{ position: 'insideTopLeft', value: 'META CARGA 85%', fill: '#3b82f6', fontSize: 10, fontWeight: 'black' }} />
                             </ComposedChart>
                         </ResponsiveContainer>
