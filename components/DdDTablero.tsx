@@ -515,14 +515,6 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                 </ResponsiveContainer>
                             </div>
 
-                            <div className="bg-amber-50/50 p-6 rounded-[2rem] border border-amber-100/50">
-                                <div className="flex gap-4">
-                                    <Info className="text-amber-600 flex-shrink-0" size={20} />
-                                    <p className="text-[11px] font-bold text-amber-800 leading-relaxed italic">
-                                        El tiempo de faena considera el ciclo completo de ingreso, carga y pesaje. Desviaciones sobre 2:00h requieren justificación técnica.
-                                    </p>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
