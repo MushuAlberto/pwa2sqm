@@ -41,8 +41,7 @@ const MetricCard: React.FC<{
     subtitle?: string;
     icon: React.ReactNode;
     color: string;
-    trend?: { value: number; isPositive: boolean };
-}> = ({ title, value, subtitle, icon, color, trend }) => (
+}> = ({ title, value, subtitle, icon, color }) => (
     <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex flex-col justify-between relative overflow-hidden group hover:shadow-xl transition-all duration-500">
         <div className={`absolute top-0 right-0 w-24 h-24 ${color} opacity-5 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform`} />
         
@@ -50,11 +49,6 @@ const MetricCard: React.FC<{
             <div className={`p-3 rounded-2xl ${color} bg-opacity-10 text-slate-700`}>
                 {icon}
             </div>
-            {trend && (
-                <div className={`flex items-center gap-1 text-[10px] font-black px-2 py-1 rounded-full ${trend.isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                    {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
-                </div>
-            )}
         </div>
 
         <div className="mt-4 relative z-10">
