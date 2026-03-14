@@ -13,7 +13,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
         <img src="/logo-sqm.png" alt="SQM Logo" className="h-24 w-auto object-contain" />
         <div className="space-y-2">
           <h1 className="text-4xl font-black text-slate-800 tracking-tighter">SISTEMA DE GESTIÓN LOGÍSTICA</h1>
-          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-xs">Módulos Inteligentes de Operación</p>
+          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-xs">Tablero M1</p>
         </div>
       </div>
 
