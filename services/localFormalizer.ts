@@ -47,8 +47,7 @@ const TECHNICAL_MAPPINGS: Record<string, string> = {
     // Acrónimos SQM
     "slit": "Salmuera de Litio",
     "lsi (s)": "Sulfato de litio",
-    "tpo sda": "Tiempo SQM Li",
-    "tpo pang": "Tiempo SQM NY",
+    "tpo sda": "Tiempo Salar de Atacama",
     "cf": "Cargador Frontal",
     "cs": "Coya Sur",
 };
