@@ -175,11 +175,11 @@ const ChartCard: React.FC<ChartCardProps> = ({
                 return (
                   <tr key={idx} className="border-b border-calido last:border-0 hover:bg-calido/50 transition-colors">
                     <td className="py-4 px-6 text-[13px] font-black text-tecnico truncate max-w-[150px]">{row.name}</td>
-                    <td className="py-4 px-6 text-[12px] font-bold text-center text-violeta/40">{Math.round(row[yAxes[0]] || 0).toLocaleString()}</td>
+                    <td className="py-4 px-6 text-[12px] font-bold text-center text-violeta/70">{Math.round(row[yAxes[0]] || 0).toLocaleString()}</td>
                     <td className={`py-4 px-6 text-[14px] font-black text-center ${isUnderperformingTon ? 'text-nucleo' : 'text-ionizado'}`}>
                       {Math.round(row[yAxes[1]] || 0).toLocaleString()}
                     </td>
-                    <td className="py-4 px-6 text-[12px] font-bold text-center text-violeta/40">{formatDecimalToHHMM(row[yAxes[2]] || 0)}</td>
+                    <td className="py-4 px-6 text-[12px] font-bold text-center text-violeta/70">{formatDecimalToHHMM(row[yAxes[2]] || 0)}</td>
                     <td className={`py-4 px-6 text-[14px] font-black text-center ${isTimeDeviated ? 'text-nucleo' : 'text-mineral'}`}>
                       {formatDecimalToHHMM(row[yAxes[3]] || 0)}
                     </td>

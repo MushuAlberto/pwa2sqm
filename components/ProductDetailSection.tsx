@@ -144,7 +144,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         <MetricCard icon={<Truck className="w-4 h-4" />} label="Flota Real" value={`${stats.eqReal} EQ`} diff={stats.eqDiff} unit="vs Prog" />
         <MetricCard icon={<Target className="w-4 h-4" />} label="Compliance" value={`${stats.compliance.toFixed(1)}%`} diff={stats.compliance - 100} isPerc />
         <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-3">
-          <div className="flex items-center gap-2 text-violeta/30"><MapPin className="w-4 h-4" /><span className="text-[9px] font-black uppercase tracking-wider">Destino Crítico</span></div>
+          <div className="flex items-center gap-2 text-violeta/70"><MapPin className="w-4 h-4" /><span className="text-[9px] font-black uppercase tracking-wider">Destino Crítico</span></div>
           <p className="text-lg font-black text-nucleo leading-tight truncate uppercase">{stats.mainDest}</p>
         </div>
       </div>
@@ -181,11 +181,11 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
           <div className="flex justify-between items-start border-b border-calido pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/40 shadow-sm border border-calido">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm border border-calido">
                 <ClipboardEdit className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <p className="text-[9px] font-black text-violeta/40 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
+                <p className="text-[9px] font-black text-violeta/70 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
                 <div className="flex items-center gap-2">
                   <h4 className="text-xl font-black text-nucleo tracking-tighter uppercase leading-none">Justificación por Desviación</h4>
                   <div className="flex gap-1.5 ml-2">
@@ -227,7 +227,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             </div>
           </div>
           <div className="flex justify-end items-center no-print no-pdf">
-            <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
+            <div className="text-[8px] font-black text-violeta/60 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
           </div>
         </div>
       )}
@@ -239,7 +239,7 @@ const MetricCard = ({ icon, label, value, diff, unit, isPerc }: any) => {
   const isPos = diff >= 0;
   return (
     <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-4">
-      <div className="flex items-center gap-2 text-violeta/40">{icon}<span className="text-[9px] font-black uppercase tracking-wider">{label}</span></div>
+      <div className="flex items-center gap-2 text-violeta/70">{icon}<span className="text-[9px] font-black uppercase tracking-wider">{label}</span></div>
       <p className="text-2xl font-black text-nucleo tracking-tighter leading-none">{value}</p>
       <div className={`flex items-center gap-1.5 text-[10.5px] font-black px-3.5 py-1.5 rounded-lg w-fit ${isPos ? 'bg-ionizado/10 text-ionizado' : 'bg-nucleo/10 text-nucleo'}`}>
         {isPos ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
@@ -251,7 +251,7 @@ const MetricCard = ({ icon, label, value, diff, unit, isPerc }: any) => {
 
 const IndicatorRow = ({ label, value, color }: any) => (
   <div className="flex justify-between items-center">
-    <span className="text-[10px] font-bold text-violeta/40 uppercase tracking-widest">{label}</span>
+    <span className="text-[10px] font-bold text-violeta/70 uppercase tracking-widest">{label}</span>
     <span className={`text-xl font-black ${color || 'text-nucleo'} tracking-tighter`}>{value}</span>
   </div>
 );
