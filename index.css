@@ -12,3 +12,19 @@
   --color-mineral: #C59E4D;
   --color-levanda: #DCDDEE;
 }
+
+.page-break-before {
+  page-break-before: always;
+  break-before: page;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+}
