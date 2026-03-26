@@ -331,7 +331,7 @@ const App: React.FC = () => {
                   <div className="bg-white p-8 space-y-10 flex-1">
                     <div className="flex justify-between items-start pb-8 border-b-2 border-calido">
                       <div className="flex flex-col items-start gap-4">
-                        <img src="/novandino.png" alt="Novandino Logo" className="h-20 w-auto object-contain" />
+                        <img src="/novandino.png" alt="Novandino Logo" className="h-32 w-auto object-contain" />
                         <div>
                           <h1 className="text-5xl font-[900] text-nucleo tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
                           <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
