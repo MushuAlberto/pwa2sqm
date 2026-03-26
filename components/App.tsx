@@ -300,7 +300,7 @@ const App: React.FC = () => {
                     {/* Bloque Principal (Imagen) */}
                     <div className="flex flex-col items-center justify-center text-center w-full">
                       <div className="flex flex-col items-center text-center">
-                        <img src="/novandino.png" alt="Novandino Logo" className="h-24 w-auto object-contain mb-8" />
+                        <img src="/novandino.png" alt="Novandino Logo" className="h-40 w-auto object-contain mb-10" />
                         <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
                           INFORME OPERATIVO
                         </h1>
@@ -331,7 +331,7 @@ const App: React.FC = () => {
                   <div className="bg-white p-8 space-y-10 flex-1">
                     <div className="flex justify-between items-start pb-8 border-b-2 border-calido">
                       <div className="flex flex-col items-start gap-4">
-                        <img src="/novandino.png" alt="Novandino Logo" className="h-12 w-auto object-contain" />
+                        <img src="/novandino.png" alt="Novandino Logo" className="h-20 w-auto object-contain" />
                         <div>
                           <h1 className="text-5xl font-[900] text-nucleo tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
                           <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
