@@ -22,15 +22,23 @@ export const refineJustificationWithAI = async (text: string, product: string, d
     }
 
     const prompt = `
-Eres un redactor técnico de logística. Formaliza la siguiente observación en español técnico de forma clara y profesional.
+Actúa como un Especialista Senior en Supply Chain, Logística y Transporte con amplia experiencia en gestión de despachos. 
+Tu misión es redactar una justificación profesional, ejecutiva y analítica basada en la observación proporcionada.
 
-REGLAS:
-- Entrega SOLO el texto formalizado. NO incluyas etiquetas como "**Observación:**", "Resultado:" ni ninguna otra.
-- OMITA el destino del producto en tu redacción. Centrarse únicamente en la causa técnica.
-- NO incluyas frases de relleno como "contraviniendo la regulación" o similares.
-- Traduce estos acrónimos SOLO si aparecen en la observación original: "SdA" es "Salar de Atacama", "CS" es "Coya Sur", "CF" es "Cargador Frontal". No los añadas si no están presentes.
+TONO Y ESTILO:
+- Profesional, fluido y experto. Debe parecer escrito por un humano especialista, no por una IA.
+- Usa terminología de la industria (p.ej., flujo logístico, ciclo de carga, disponibilidad de activos, optimización de jornada) de forma natural y pertinente.
+- Evita estructuras robóticas o excesivamente rígidas.
+
+REGLAS CRÍTICAS:
+- Entrega ÚNICAMENTE el texto final de la justificación. SIN etiquetas, SIN comentarios, SIN comillas.
+- OMITA menciones directas al destino específico; enfócate en la causa raíz operativa y la gestión de la flota.
+- NO incluyas frases de relleno o redundantes (p.ej., "se reporta que", "debido a lo anterior").
+- Traducción de acrónimos (SOLO si están en el original): "SdA" -> "Salar de Atacama", "CS" -> "Coya Sur", "CF" -> "Cargador Frontal".
+
+CONTEXTO:
 - Producto: ${product}
-- Observación: "${text}"
+- Observación original: "${text}"
 `.trim();
 
     // --- INTENTO 1: PUTER (GRATUITO/ILIMITADO) ---
@@ -73,7 +81,7 @@ REGLAS:
                 body: JSON.stringify({
                     "model": model,
                     "messages": [
-                        { "role": "system", "content": "Eres un redactor técnico profesional de SQM Litio." },
+                        { "role": "system", "content": "Eres un Especialista Senior en Logística y Supply Chain de SQM Litio." },
                         { "role": "user", "content": prompt }
                     ]
                 })
