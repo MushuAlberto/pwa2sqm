@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [exportingPDF, setExportingPDF] = useState(false);
   const [exportingImage, setExportingImage] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   // Cargar datos persistidos al iniciar
   useEffect(() => {
@@ -201,7 +201,6 @@ const App: React.FC = () => {
 
   if (view === 'menu') return (
     <>
-      <InstructionModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />
       <MainMenu onSelectView={(v) => setView(v)} />
     </>
   );
@@ -224,7 +223,6 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">
-      <InstructionModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />
 
       <aside className="w-[300px] bg-levanda border-r border-violeta/20 flex flex-col no-print shrink-0">
         <div className="p-6 overflow-y-auto flex-1 space-y-8">
