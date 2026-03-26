@@ -15,12 +15,12 @@ interface ChartCardProps {
 }
 
 const COLORS = [
-  '#003595', // Azul SQM (Prog Ton)
-  '#89B821', // Verde SQM (Real Ton)
-  '#1e293b', // Negro/Slate (Meta Hrs)
-  '#f59e0b', // Naranja (Real Hrs)
-  '#64748b',
-  '#cbd5e1'
+  '#461D77', // Nucleo (Prog Ton)
+  '#3FAA88', // Ionizado (Real Ton)
+  '#171717', // Tecnico (Meta Hrs)
+  '#C59E4D', // Mineral (Real Hrs)
+  '#7177EC', // Violeta
+  '#4FD1C5'  // Litio
 ];
 
 const formatDecimalToHHMM = (decimalHours: number): string => {
@@ -150,8 +150,8 @@ const ChartCard: React.FC<ChartCardProps> = ({
   };
 
   return (
-    <div className={`bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col ${type === 'composed' ? 'min-h-[900px]' : 'h-[500px]'}`}>
-      <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-6 border-b border-slate-50 pb-3">{title}</h3>
+    <div className={`bg-white p-8 rounded-[2.5rem] border border-violeta/10 shadow-sm flex flex-col ${type === 'composed' ? 'min-h-[900px]' : 'h-[500px]'}`}>
+      <h3 className="text-[10px] font-black text-violeta uppercase tracking-[0.3em] mb-6 border-b border-calido pb-3">{title}</h3>
       <div className="w-full flex-1">
         {renderChart()}
       </div>
@@ -159,12 +159,12 @@ const ChartCard: React.FC<ChartCardProps> = ({
         <div className="mt-12 overflow-hidden border border-slate-100 rounded-3xl shadow-sm">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/80">
-                <th className="py-5 px-6 text-[11px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-100">Producto</th>
-                <th className="py-5 px-6 text-[11px] font-black text-[#003595] uppercase tracking-widest text-center border-b border-slate-100">Prog (Ton)</th>
-                <th className="py-5 px-6 text-[11px] font-black text-[#89B821] uppercase tracking-widest text-center border-b border-slate-100">Real (Ton)</th>
-                <th className="py-5 px-6 text-[11px] font-black text-slate-500 uppercase tracking-widest text-center border-b border-slate-100">Meta (Hrs)</th>
-                <th className="py-5 px-6 text-[11px] font-black text-[#f59e0b] uppercase tracking-widest text-center border-b border-slate-100">Real (Hrs)</th>
+              <tr className="bg-calido/80">
+                <th className="py-5 px-6 text-[11px] font-black text-violeta uppercase tracking-widest border-b border-calido">Producto</th>
+                <th className="py-5 px-6 text-[11px] font-black text-nucleo uppercase tracking-widest text-center border-b border-calido">Prog (Ton)</th>
+                <th className="py-5 px-6 text-[11px] font-black text-ionizado uppercase tracking-widest text-center border-b border-calido">Real (Ton)</th>
+                <th className="py-5 px-6 text-[11px] font-black text-tecnico uppercase tracking-widest text-center border-b border-calido">Meta (Hrs)</th>
+                <th className="py-5 px-6 text-[11px] font-black text-mineral uppercase tracking-widest text-center border-b border-calido">Real (Hrs)</th>
               </tr>
             </thead>
             <tbody>
@@ -173,14 +173,14 @@ const ChartCard: React.FC<ChartCardProps> = ({
                 // Cambio: De 10/60 a 15/60 para reflejar el nuevo umbral solicitado de 15 minutos
                 const isTimeDeviated = row[yAxes[3]] > 0 && row[yAxes[2]] > 0 && (row[yAxes[3]] - row[yAxes[2]]) >= (15 / 60);
                 return (
-                  <tr key={idx} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-colors">
-                    <td className="py-4 px-6 text-[13px] font-black text-slate-700 truncate max-w-[150px]">{row.name}</td>
-                    <td className="py-4 px-6 text-[12px] font-bold text-center text-slate-400">{Math.round(row[yAxes[0]] || 0).toLocaleString()}</td>
-                    <td className={`py-4 px-6 text-[14px] font-black text-center ${isUnderperformingTon ? 'text-rose-600' : 'text-[#89B821]'}`}>
+                  <tr key={idx} className="border-b border-calido last:border-0 hover:bg-calido/50 transition-colors">
+                    <td className="py-4 px-6 text-[13px] font-black text-tecnico truncate max-w-[150px]">{row.name}</td>
+                    <td className="py-4 px-6 text-[12px] font-bold text-center text-violeta/40">{Math.round(row[yAxes[0]] || 0).toLocaleString()}</td>
+                    <td className={`py-4 px-6 text-[14px] font-black text-center ${isUnderperformingTon ? 'text-nucleo' : 'text-ionizado'}`}>
                       {Math.round(row[yAxes[1]] || 0).toLocaleString()}
                     </td>
-                    <td className="py-4 px-6 text-[12px] font-bold text-center text-slate-400">{formatDecimalToHHMM(row[yAxes[2]] || 0)}</td>
-                    <td className={`py-4 px-6 text-[14px] font-black text-center ${isTimeDeviated ? 'text-rose-600' : 'text-[#f59e0b]'}`}>
+                    <td className="py-4 px-6 text-[12px] font-bold text-center text-violeta/40">{formatDecimalToHHMM(row[yAxes[2]] || 0)}</td>
+                    <td className={`py-4 px-6 text-[14px] font-black text-center ${isTimeDeviated ? 'text-nucleo' : 'text-mineral'}`}>
                       {formatDecimalToHHMM(row[yAxes[3]] || 0)}
                     </td>
                   </tr>

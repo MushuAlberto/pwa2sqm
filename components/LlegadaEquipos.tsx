@@ -34,7 +34,7 @@ const LOGOS: Record<string, string> = {
   "AG SERVICES SPA": "/ag.png"
 };
 
-const CHART_COLORS = ['#003595', '#89B821', '#ff4b4b', '#f59e0b', '#8b5cf6', '#06b6d4'];
+const CHART_COLORS = ['#461D77', '#3FAA88', '#C59E4D', '#7177EC', '#4FD1C5', '#171717'];
 
 export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
   const [data, setData] = useState<ArrivalData[]>([]);
@@ -281,16 +281,16 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
   }, [filteredData, selectedDestinations]);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans text-slate-800">
-      <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-40 shadow-sm no-print">
+    <div className="min-h-screen bg-calido flex flex-col font-sans text-tecnico">
+      <header className="bg-white border-b border-calido px-8 py-4 flex items-center justify-between sticky top-0 z-40 shadow-sm no-print">
         <div className="flex items-center gap-6">
           <button onClick={onBack} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-900">
             <ArrowLeft size={20} />
           </button>
           <div className="h-8 w-px bg-slate-200" />
           <div className="flex flex-col">
-            <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">Llegada de Equipos</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">SQM Litio - Control de Acceso</p>
+            <h1 className="text-xl font-black text-nucleo tracking-tight leading-none uppercase">Llegada de Equipos</h1>
+            <p className="text-[10px] font-bold text-violeta/40 uppercase tracking-widest mt-1">SQM Litio - Control de Acceso</p>
           </div>
         </div>
 
@@ -314,41 +314,41 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
       <main className="flex-1 p-8 max-w-[1400px] mx-auto w-full space-y-8">
         {data.length === 0 ? (
           <div className="h-[70vh] flex flex-col items-center justify-center text-center space-y-6">
-            <div className="w-24 h-24 bg-white rounded-3xl shadow-xl shadow-slate-200/50 flex items-center justify-center text-slate-200 border border-slate-50">
+            <div className="w-24 h-24 bg-white rounded-3xl shadow-xl shadow-calido/50 flex items-center justify-center text-violeta/10 border border-calido">
               <Truck size={48} className="animate-pulse" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-2xl font-black text-slate-900 tracking-tight uppercase">Dashboard Logístico</h2>
-              <p className="text-slate-400 max-w-sm font-medium">Cargue el reporte de jornada para visualizar el flujo de entrada de equipos por empresa y destino.</p>
+              <h2 className="text-2xl font-black text-nucleo tracking-tight uppercase">Dashboard Logístico</h2>
+              <p className="text-violeta/40 max-w-sm font-medium">Cargue el reporte de jornada para visualizar el flujo de entrada de equipos por empresa y destino.</p>
             </div>
           </div>
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 no-print">
-              <div className="lg:col-span-1 bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm space-y-4">
-                <div className="flex items-center gap-2 text-[#003595] mb-2">
+              <div className="lg:col-span-1 bg-white p-6 rounded-[2rem] border border-calido shadow-sm space-y-4">
+                <div className="flex items-center gap-2 text-nucleo mb-2">
                   <Filter size={16} />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Filtros</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-violeta/40">Filtros</span>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-[9px] font-black uppercase text-slate-400 px-1">Seleccionar Empresa</label>
+                  <label className="text-[9px] font-black uppercase text-violeta/40 px-1">Seleccionar Empresa</label>
                   <select
                     value={selectedCompany}
                     onChange={(e) => setSelectedCompany(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:bg-white focus:ring-2 focus:ring-[#003595]/5 transition-all"
+                    className="w-full bg-calido border border-calido rounded-xl px-4 py-3 text-sm font-bold outline-none focus:bg-white focus:ring-2 focus:ring-nucleo/5 transition-all"
                   >
                     {companies.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
               </div>
 
-              <div className="lg:col-span-3 bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm">
+              <div className="lg:col-span-3 bg-white p-6 rounded-[2rem] border border-calido shadow-sm">
                 <div className="flex flex-col h-full justify-between">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Destinos de {selectedCompany}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-violeta/40">Destinos de {selectedCompany}</span>
                     <button
                       onClick={() => setSelectedDestinations(allDestinations)}
-                      className="text-[9px] font-black uppercase text-[#003595] hover:underline"
+                      className="text-[9px] font-black uppercase text-nucleo hover:underline"
                     >
                       Seleccionar Todos
                     </button>
@@ -359,8 +359,8 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
                         key={dest}
                         onClick={() => setSelectedDestinations(prev => prev.includes(dest) ? prev.filter(d => d !== dest) : [...prev, dest])}
                         className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all border ${selectedDestinations.includes(dest)
-                          ? 'bg-[#003595] text-white border-[#003595] shadow-md shadow-blue-500/20'
-                          : 'bg-slate-50 text-slate-400 border-slate-100 hover:bg-slate-100'
+                          ? 'bg-nucleo text-white border-nucleo shadow-md shadow-nucleo/20'
+                          : 'bg-calido text-violeta/40 border-calido hover:bg-calido/80'
                           }`}
                       >
                         {dest}
@@ -372,7 +372,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
             </div>
 
             {/* SECCIÓN 1: GRÁFICO (HORIZONTAL) */}
-            <div id="arrival-chart-section" className="bg-white rounded-[3rem] border border-slate-200/60 shadow-xl overflow-hidden mb-8">
+            <div id="arrival-chart-section" className="bg-white rounded-[3rem] border border-calido shadow-xl overflow-hidden mb-8">
               <div className="relative h-64 overflow-hidden">
                 <img src="/image.png" alt="Banner" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -386,7 +386,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
                         onError={() => setLogoErrors(prev => ({...prev, [selectedCompany]: true}))}
                       />
                     ) : (
-                      <div className="flex flex-col items-center gap-1 text-slate-300">
+                      <div className="flex flex-col items-center gap-1 text-violeta/10">
                         <Truck size={32} />
                         <span className="text-[7px] font-black uppercase leading-none text-center">{selectedCompany}</span>
                       </div>
@@ -401,11 +401,11 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
 
               <div className="p-10 space-y-8">
                 <div>
-                  <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">ANÁLISIS DE FRECUENCIA</h3>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">LLEGADAS POR HORA Y PUNTO DE DESTINO</p>
+                  <h3 className="text-xl font-black text-tecnico uppercase tracking-tight">ANÁLISIS DE FRECUENCIA</h3>
+                  <p className="text-[10px] font-bold text-violeta/40 uppercase tracking-widest">LLEGADAS POR HORA Y PUNTO DE DESTINO</p>
                 </div>
 
-                <div className="h-[450px] w-full bg-slate-50/50 rounded-3xl p-6 border border-slate-100">
+                <div className="h-[450px] w-full bg-calido/50 rounded-3xl p-6 border border-calido">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -435,36 +435,36 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
             </div>
 
             {/* SECCIÓN 2: TABLA (VERTICAL) - OPTIMIZADA PARA QUE QUEPAN TODOS LOS DATOS */}
-            <div id="arrival-table-section" className="bg-white rounded-[2.5rem] border border-slate-200/60 shadow-xl p-8 space-y-6 overflow-hidden">
+            <div id="arrival-table-section" className="bg-white rounded-[2.5rem] border border-calido shadow-xl p-8 space-y-6 overflow-hidden">
               <div className="flex justify-between items-start border-b border-slate-100 pb-6">
                 <div className="space-y-1">
-                  <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tight">TABLA DE CONTROL OPERATIVO</h3>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">CONSOLIDADO NUMÉRICO DE EQUIPOS • {selectedCompany}</p>
+                  <h3 className="text-2xl font-black text-tecnico uppercase tracking-tight">TABLA DE CONTROL OPERATIVO</h3>
+                  <p className="text-[10px] font-black text-violeta/40 uppercase tracking-widest leading-none">CONSOLIDADO NUMÉRICO DE EQUIPOS • {selectedCompany}</p>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest leading-none">FECHA REPORTE: {formatDateToCL(selectedDate)}</span>
+                  <span className="text-[10px] font-black text-violeta/20 uppercase tracking-widest leading-none">FECHA REPORTE: {formatDateToCL(selectedDate)}</span>
                 </div>
               </div>
 
               <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-slate-50 border-b border-slate-100">
-                      <th className="px-6 py-4 text-[11px] font-black uppercase text-slate-400 tracking-widest">Hora</th>
+                    <tr className="bg-calido border-b border-calido">
+                      <th className="px-6 py-4 text-[11px] font-black uppercase text-violeta/40 tracking-widest">Hora</th>
                       {selectedDestinations.map(dest => (
-                        <th key={dest} className="px-6 py-4 text-[11px] font-black uppercase text-slate-900 tracking-tighter text-center">{dest}</th>
+                        <th key={dest} className="px-6 py-4 text-[11px] font-black uppercase text-nucleo tracking-tighter text-center">{dest}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {pivotTable.map((row, i) => (
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-3 text-lg font-black text-slate-900 bg-slate-50/30">
+                        <td className="px-6 py-3 text-lg font-black text-tecnico bg-calido/30">
                           {String(row.hora).padStart(2, '0')}:00
                         </td>
                         {selectedDestinations.map(dest => (
                           <td key={dest} className="px-6 py-3 text-center">
-                            <span className={`inline-block px-4 py-1.5 rounded-xl text-lg font-black ${row[dest] > 0 ? 'bg-blue-50 text-[#003595]' : 'text-slate-200'}`}>
+                            <span className={`inline-block px-4 py-1.5 rounded-xl text-lg font-black ${row[dest] > 0 ? 'bg-nucleo/10 text-nucleo' : 'text-violeta/10'}`}>
                               {row[dest] || 0}
                             </span>
                           </td>
@@ -491,7 +491,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
               <button
                 onClick={handleExportPDF}
                 disabled={exportingPDF}
-                className="w-full bg-[#1e293b] hover:bg-black text-white py-5 rounded-3xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl shadow-slate-900/10 active:scale-95"
+                className="w-full bg-tecnico hover:bg-black text-white py-5 rounded-3xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl shadow-tecnico/10 active:scale-95"
               >
                 {exportingPDF ? (
                   <>
@@ -512,12 +512,12 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
 
       <footer className="bg-white border-t border-slate-200 p-8 flex flex-col md:flex-row justify-between items-center gap-6 no-print">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-[#89B821] flex items-center justify-center text-white shadow-lg shadow-lime-500/20">
+          <div className="w-10 h-10 rounded-xl bg-ionizado flex items-center justify-center text-white shadow-lg shadow-ionizado/20">
             <Calendar size={20} />
           </div>
           <div>
-            <span className="block text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] leading-none mb-1">Sistema de Gestión Logística</span>
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">SQM Litio S.A. • v3.10.0</span>
+            <span className="block text-[10px] font-black text-nucleo uppercase tracking-[0.2em] leading-none mb-1">Sistema de Gestión Logística</span>
+            <span className="text-[9px] font-bold text-violeta/40 uppercase tracking-widest">SQM Litio S.A. • v3.10.0</span>
           </div>
         </div>
         <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] text-center md:text-right">Proyecto Dashboard Operativo • Confidencial</p>

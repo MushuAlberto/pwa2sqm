@@ -23,20 +23,20 @@ const StatsGrid: React.FC<StatsGridProps> = ({ data }) => {
         const min = Math.min(...values);
 
         return (
-          <div key={col} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-            <h4 className="text-xs font-bold text-slate-400 uppercase mb-3 truncate" title={col}>{col}</h4>
+          <div key={col} className="bg-white p-4 rounded-xl border border-calido shadow-sm">
+            <h4 className="text-xs font-bold text-violeta/40 uppercase mb-3 truncate" title={col}>{col}</h4>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div>
-                <p className="text-[10px] text-slate-500 uppercase">Promedio</p>
-                <p className="font-bold text-slate-800">{avg.toLocaleString(undefined, {maximumFractionDigits: 1})}</p>
+                <p className="text-[10px] text-violeta/30 uppercase">Promedio</p>
+                <p className="font-bold text-nucleo">{avg.toLocaleString(undefined, {maximumFractionDigits: 1})}</p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 uppercase">Máx</p>
-                <p className="font-bold text-blue-600">{max.toLocaleString()}</p>
+                <p className="text-[10px] text-violeta/30 uppercase">Máx</p>
+                <p className="font-bold text-ionizado">{max.toLocaleString()}</p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500 uppercase">Mín</p>
-                <p className="font-bold text-indigo-600">{min.toLocaleString()}</p>
+                <p className="text-[10px] text-violeta/30 uppercase">Mín</p>
+                <p className="font-bold text-mineral">{min.toLocaleString()}</p>
               </div>
             </div>
           </div>

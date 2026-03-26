@@ -8,12 +8,12 @@ interface MainMenuProps {
 
 const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-6 gap-12">
+    <div className="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-calido to-levanda p-6 gap-12">
       <div className="text-center space-y-8 flex flex-col items-center">
         <img src="/logo-sqm.png" alt="SQM Logo" className="h-24 w-auto object-contain" />
         <div className="space-y-2">
-          <h1 className="text-4xl font-black text-slate-800 tracking-tighter">SISTEMA DE GESTIÓN LOGÍSTICA</h1>
-          <p className="text-slate-400 font-bold tracking-[0.3em] uppercase text-xs">Tablero M1</p>
+          <h1 className="text-4xl font-black text-tecnico tracking-tighter">SISTEMA DE GESTIÓN LOGÍSTICA</h1>
+          <p className="text-violeta font-bold tracking-[0.3em] uppercase text-xs">Tablero M1</p>
         </div>
       </div>
 
@@ -22,15 +22,15 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
           onClick={() => onSelectView('llegada')}
           className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors duration-500">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-calido rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
+          <div className="w-16 h-16 bg-calido rounded-2xl flex items-center justify-center text-violeta/40 group-hover:bg-nucleo/10 group-hover:text-nucleo transition-colors duration-500">
             <Truck size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-xl font-black text-slate-800 tracking-tight">Llegada Equipos</h2>
-            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Control de ingresos, pesaje y turnos en tiempo real.</p>
+            <h2 className="text-xl font-black text-tecnico tracking-tight">{/* Dynamic content handled by allowMultiple */}</h2>
+            <p className="text-tecnico/60 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">{/* Dynamic content handled by allowMultiple */}</p>
           </div>
-          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-blue-500 transition-colors">
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-violeta/30 group-hover:text-nucleo transition-colors">
             Acceder <ChevronRight size={10} />
           </div>
         </button>
@@ -39,15 +39,15 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
           onClick={() => onSelectView('informe')}
           className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-colors duration-500">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-calido rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
+          <div className="w-16 h-16 bg-calido rounded-2xl flex items-center justify-center text-violeta/40 group-hover:bg-ionizado/10 group-hover:text-ionizado transition-colors duration-500">
             <FileBarChart size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-xl font-black text-slate-800 tracking-tight">Informe Operativo</h2>
-            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Dashboard inteligente y reportes PDF.</p>
+            <h2 className="text-xl font-black text-tecnico tracking-tight">Informe Operativo</h2>
+            <p className="text-tecnico/60 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Dashboard inteligente y reportes PDF.</p>
           </div>
-          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-emerald-500 transition-colors">
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-violeta/30 group-hover:text-ionizado transition-colors">
             Acceder <ChevronRight size={10} />
           </div>
         </button>
@@ -56,15 +56,15 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
           onClick={() => onSelectView('ddd')}
           className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-[#89B821]/10 group-hover:text-[#89B821] transition-colors duration-500">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-calido rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
+          <div className="w-16 h-16 bg-calido rounded-2xl flex items-center justify-center text-violeta/40 group-hover:bg-litio/10 group-hover:text-litio transition-colors duration-500">
             <BarChart3 size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-xl font-black text-slate-800 tracking-tight">Análisis Técnico (DdD)</h2>
-            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Tablero M1: Estadísticas y Diálogos de Desempeño.</p>
+            <h2 className="text-xl font-black text-tecnico tracking-tight">Análisis Técnico (DdD)</h2>
+            <p className="text-tecnico/60 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Tablero M1: Estadísticas y Diálogos de Desempeño.</p>
           </div>
-          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-[#89B821] transition-colors">
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-violeta/30 group-hover:text-litio transition-colors">
             Acceder <ChevronRight size={10} />
           </div>
         </button>
@@ -73,21 +73,21 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
           onClick={() => onSelectView('memoria')}
           className="group relative bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col items-center text-center space-y-6 overflow-hidden active:scale-95"
         >
-          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
-          <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors duration-500">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-calido rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform duration-500 opacity-50" />
+          <div className="w-16 h-16 bg-calido rounded-2xl flex items-center justify-center text-violeta/40 group-hover:bg-mineral/10 group-hover:text-mineral transition-colors duration-500">
             <History size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-xl font-black text-slate-800 tracking-tight">Memoria</h2>
-            <p className="text-slate-500 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Archivo histórico de jornadas pasadas.</p>
+            <h2 className="text-xl font-black text-tecnico tracking-tight">Memoria</h2>
+            <p className="text-tecnico/60 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Archivo histórico de jornadas pasadas.</p>
           </div>
-          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-slate-300 group-hover:text-indigo-500 transition-colors">
+          <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-violeta/30 group-hover:text-mineral transition-colors">
             Acceder <ChevronRight size={10} />
           </div>
         </button>
       </div>
 
-      <div className="mt-20 text-[10px] text-slate-300 font-bold uppercase tracking-[0.4em]">
+      <div className="mt-20 text-[10px] text-violeta/40 font-bold uppercase tracking-[0.4em]">
         SQM LITIO S.A. - GERENCIA DE OPERACIONES SALAR - 2026
       </div>
     </div>

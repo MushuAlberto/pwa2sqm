@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --color-nucleo: #461D77;
+  --color-litio: #4FD1C5;
+  --color-ionizado: #3FAA88;
+  --color-violeta: #7177EC;
+  --color-calido: #FAF5E6;
+  --color-tecnico: #171717;
+  --color-mineral: #C59E4D;
+  --color-levanda: #DCDDEE;
+}

@@ -21,9 +21,9 @@ export const SQMLogo: React.FC<SQMLogoProps> = ({
 }) => {
   const [hasError, setHasError] = useState(false);
 
-  const textColor = dark ? "#0f172a" : "#1e293b";
-  const greenPrimary = "#89B821";
-  const bluePrimary = "#003595";
+  const textColor = dark ? "#171717" : "#461D77";
+  const greenPrimary = "#3FAA88";
+  const bluePrimary = "#461D77";
 
   if (hasError) {
     return (

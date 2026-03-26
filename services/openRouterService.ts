@@ -36,14 +36,21 @@ REGLAS:
     // --- INTENTO 1: PUTER (GRATUITO/ILIMITADO) ---
     try {
         if (typeof window !== 'undefined' && (window as any).puter) {
-            console.log("DEBUG: Intentando con Puter Gemini (Free/Unlimited)...");
-            const response = await (window as any).puter.ai.chat(prompt, { 
-                model: 'gemini-2.0-flash' 
-            });
+            // Verificamos si el usuario ya tiene sesión iniciada para evitar el popup de login
+            const signedIn = await (window as any).puter.auth.isSignedIn();
             
-            if (response) {
-                console.log("DEBUG: Éxito con Puter");
-                return response.toString().trim().replace(/^["']|["']$/g, '');
+            if (signedIn) {
+                console.log("DEBUG: Intentando con Puter Gemini (Free/Unlimited)...");
+                const response = await (window as any).puter.ai.chat(prompt, {
+                    model: 'gemini-2.0-flash'
+                });
+
+                if (response) {
+                    console.log("DEBUG: Éxito con Puter");
+                    return response.toString().trim().replace(/^["']|["']$/g, '');
+                }
+            } else {
+                console.log("DEBUG: Puter disponible pero no hay sesión. Saltando al respaldo silencioso...");
             }
         } else {
             console.warn("DEBUG: Puter.js no está disponible en el objeto window");

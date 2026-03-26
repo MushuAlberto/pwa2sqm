@@ -250,40 +250,40 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-4 md:p-8 pb-32 animate-in fade-in duration-700">
+        <div className="min-h-screen bg-calido p-4 md:p-8 pb-32 animate-in fade-in duration-700">
             <div className="max-w-[1700px] mx-auto space-y-8" id="ddd-dashboard-capture">
 
                 {/* HEADER EJECUTIVO MODERNIZADO */}
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-[#1e293b] p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-slate-800 rounded-full -mr-48 -mt-48 opacity-10 animate-pulse" />
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 bg-nucleo p-10 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 opacity-10 animate-pulse" />
                     
                     <div className="flex items-center gap-8 relative z-10">
                         <button
                             onClick={onBack}
-                            className="p-5 bg-slate-800/80 hover:bg-[#89B821] rounded-[2rem] transition-all duration-500 text-slate-400 hover:text-white shadow-xl active:scale-90 border border-slate-700 hover:border-[#89B821]"
+                            className="p-5 bg-white/10 hover:bg-ionizado rounded-[2rem] transition-all duration-500 text-white/50 hover:text-white shadow-xl active:scale-90 border border-white/10 hover:border-ionizado"
                         >
                             <ArrowLeft size={32} />
                         </button>
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <span className="px-3 py-1 bg-[#89B821] text-[11px] font-black rounded-lg uppercase tracking-widest shadow-lg shadow-[#89B821]/20">Tablero M1</span>
+                                <span className="px-3 py-1 bg-ionizado text-[11px] font-black rounded-lg uppercase tracking-widest shadow-lg shadow-ionizado/20">Tablero M1</span>
                             </div>
                             <h1 className="text-5xl font-black tracking-tighter uppercase italic leading-none">DIÁLOGO DE DESEMPEÑO</h1>
-                            <p className="text-slate-500 font-bold uppercase tracking-[0.4em] text-[10px] mt-2">Visibilidad Operacional • Gestión de Transporte • SQM Litio</p>
+                            <p className="text-violeta/50 font-bold uppercase tracking-[0.4em] text-[10px] mt-2">Visibilidad Operacional • Gestión de Transporte • SQM Litio</p>
                         </div>
                     </div>
 
                     <div className="flex flex-col sm:flex-row gap-4 relative z-10">
                         <div className="bg-slate-800/60 backdrop-blur-xl p-4 px-8 rounded-[2.5rem] border border-slate-700/50 flex flex-col sm:flex-row items-center gap-6 shadow-2xl">
-                            <div className="text-right border-r border-slate-700/50 pr-6 hidden sm:block">
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Jornada Reportada</p>
+                            <div className="text-right border-r border-white/10 pr-6 hidden sm:block">
+                                <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Jornada Reportada</p>
                                 <span className="text-xl font-black capitalize tracking-tighter italic">{formatDate(selectedDate)}</span>
                             </div>
                             
                                 <button 
                                     onClick={handleExportImage}
                                     disabled={isExportingImage}
-                                    className="p-3 bg-[#89B821] hover:bg-[#a1d72a] rounded-2xl transition-all text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-[#89B821]/20 border border-[#89B821]/5 disabled:opacity-50"
+                                    className="p-3 bg-ionizado hover:bg-ionizado/80 rounded-2xl transition-all text-white flex items-center gap-2 text-[10px] font-black uppercase tracking-widest shadow-lg shadow-ionizado/20 border border-white/5 disabled:opacity-50"
                                 >
                                     {isExportingImage ? <Loader2 size={14} className="animate-spin" /> : <ImageIcon size={14} />}
                                     <span className="hidden lg:inline">Imagen</span>
@@ -298,35 +298,35 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         title="Cumplimiento Global"
                         value={`${summary.cumplimiento.toFixed(1)}%`}
                         icon={<Target size={24} />}
-                        color="bg-[#89B821]"
+                        color="bg-ionizado"
                     />
                     <MetricCard 
                         title="Tms. Reales Despachadas"
                         value={Math.round(summary.tonReal).toLocaleString()}
                         subtitle="Total consolidado por jornada"
                         icon={<BarChart3 size={24} />}
-                        color="bg-blue-500"
+                        color="bg-litio"
                     />
                     <MetricCard 
                         title="Tiempo Promedio SdA"
                         value={formatHoursToTime(summary.avgSda)}
                         subtitle={`Meta SQM: ${formatHoursToTime(2)}`}
                         icon={<Clock size={24} />}
-                        color="bg-amber-500"
+                        color="bg-mineral"
                     />
                     <MetricCard 
                         title="Tiempo Promedio N. Y."
                         value={formatHoursToTime(summary.avgPang)}
                         subtitle={`Meta SQM: ${formatHoursToTime(2)}`}
                         icon={<Scale size={24} />}
-                        color="bg-indigo-500"
+                        color="bg-violeta"
                     />
                     <MetricCard 
                         title="Alertas Activas (DdD)"
                         value={summary.desviaciones}
                         subtitle="Puntos con desviación crítica"
                         icon={<AlertCircle size={24} />}
-                        color="bg-rose-500"
+                        color="bg-nucleo"
                     />
                 </div>
 
@@ -338,22 +338,22 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         <div className="bg-white rounded-[3rem] shadow-sm border border-slate-100 overflow-hidden">
                             <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-white">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center shadow-inner">
+                                    <div className="w-12 h-12 bg-levanda text-nucleo rounded-2xl flex items-center justify-center shadow-inner">
                                         <Layers size={24} />
                                     </div>
                                     <div className="space-y-0.5">
-                                        <h3 className="font-black text-slate-800 tracking-tight uppercase text-lg italic">Matriz de Desempeño Operacional</h3>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Análisis por Destino y Producto</p>
+                                        <h3 className="font-black text-tecnico tracking-tight uppercase text-lg italic">Matriz de Desempeño Operacional</h3>
+                                        <p className="text-[10px] text-violeta font-bold uppercase tracking-widest">Análisis por Destino y Producto</p>
                                     </div>
                                 </div>
                                 <div className="hidden sm:flex items-center gap-8 text-[10px] font-black uppercase tracking-widest">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-4 h-4 rounded-md bg-rose-500/20 border-2 border-rose-500" />
-                                        <span className="text-slate-500 italic">Desviación Crit.</span>
+                                        <div className="w-4 h-4 rounded-md bg-nucleo/20 border-2 border-nucleo" />
+                                        <span className="text-violeta italic">Desviación Crit.</span>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <div className="w-4 h-4 rounded-md bg-[#89B821]/20 border-2 border-[#89B821]" />
-                                        <span className="text-slate-500 italic">En Meta</span>
+                                        <div className="w-4 h-4 rounded-md bg-ionizado/20 border-2 border-ionizado" />
+                                        <span className="text-violeta italic">En Meta</span>
                                     </div>
                                 </div>
                             </div>
@@ -378,8 +378,8 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                         rowSpan={row.destCount}
                                                     >
                                                         <div className="flex flex-col items-center">
-                                                            <span className="text-lg tracking-tighter text-center leading-tight">{row.destino}</span>
-                                                            <div className="mt-2 h-1.5 w-10 bg-[#89B821] rounded-full opacity-50" />
+                                                        <span className="text-lg tracking-tighter text-center leading-tight">{row.destino}</span>
+                                                            <div className="mt-2 h-1.5 w-10 bg-ionizado rounded-full opacity-50" />
                                                         </div>
                                                     </td>
                                                 )}
@@ -391,7 +391,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                         </span>
                                                         <div className="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
                                                             <div 
-                                                                className={`h-full rounded-full transition-all duration-1000 ${row.cumplif < 85 ? 'bg-rose-500' : 'bg-[#89B821]'}`}
+                                                                className={`h-full rounded-full transition-all duration-1000 ${row.cumplif < 85 ? 'bg-nucleo' : 'bg-ionizado'}`}
                                                                 style={{ width: `${Math.min(row.cumplif, 100)}%` }}
                                                             />
                                                         </div>
@@ -403,7 +403,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
-                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-rose-500' : 'text-[#89B821]'}`}>
+                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-nucleo' : 'text-ionizado'}`}>
                                                         <span className="text-xl tracking-tighter italic">{row.promTonReal.toFixed(1)} Tms</span>
                                                         <span className="text-[12px] text-slate-400 font-bold uppercase tracking-tighter">KPI Meta: {row.kpiPromTon}</span>
                                                     </div>
@@ -484,12 +484,12 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         <div className="h-px flex-1 bg-slate-200" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#3b82f6" />
-                        <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#10b981" />
-                        <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#f59e0b" />
-                        <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#6366f1" />
-                        <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#f43f5e" />
-                        <SegmentChart title="Bischofita" data={segmentedStats.bischofita} color="#8b5cf6" />
+                        <SegmentChart title="Segmento SLIT" data={segmentedStats.slit} color="#4FD1C5" />
+                        <SegmentChart title="Segmento LSI" data={segmentedStats.lsi} color="#3FAA88" />
+                        <SegmentChart title="Segmento Sal 27/15" data={segmentedStats.sal} color="#C59E4D" />
+                        <SegmentChart title="Destino Coya Sur" data={segmentedStats.coya} color="#7177EC" />
+                        <SegmentChart title="Destino Tocopilla" data={segmentedStats.tocopilla} color="#461D77" />
+                        <SegmentChart title="Bischofita" data={segmentedStats.bischofita} color="#171717" />
                     </div>
                 </div>
 
@@ -504,8 +504,8 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                         </div>
                         <div className="flex gap-8">
                             <div className="text-right">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Status Global</span>
-                                <span className="text-xl font-black text-[#89B821] italic uppercase">Operativo</span>
+                            <span className="text-[10px] font-black text-violeta uppercase tracking-widest block mb-1">Status Global</span>
+                                <span className="text-xl font-black text-ionizado italic uppercase">Operativo</span>
                             </div>
                         </div>
                     </div>
@@ -548,12 +548,12 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                 />
                                 <Legend verticalAlign="top" height={36} iconType="diamond" wrapperStyle={{ paddingTop: '0px', fontWeight: 'bold', fontSize: '11px', textTransform: 'uppercase' }} />
                                 <Bar yAxisId="left" dataKey="cumplimiento" fill="url(#barGradient)" radius={[8, 8, 0, 0]} barSize={45} name="% Cumplimiento">
-                                    <LabelList dataKey="cumplimiento" position="top" formatter={(val: number) => `${Math.round(val)}%`} style={{ fill: '#3b82f6', fontSize: 10, fontWeight: 'black' }} />
+                                    <LabelList dataKey="cumplimiento" position="top" formatter={(val: number) => `${Math.round(val)}%`} style={{ fill: '#4FD1C5', fontSize: 10, fontWeight: 'black' }} />
                                 </Bar>
-                                <Line yAxisId="right" type="stepAfter" dataKey="promTonReal" stroke="#89B821" strokeWidth={4} dot={{ r: 6, fill: '#89B821', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} name="Eficiencia Tms/Eq">
-                                    <LabelList dataKey="promTonReal" position="top" formatter={(val: number) => val.toFixed(1)} style={{ fill: '#89B821', fontSize: 10, fontWeight: 'black' }} offset={10} />
+                                <Line yAxisId="right" type="stepAfter" dataKey="promTonReal" stroke="#3FAA88" strokeWidth={4} dot={{ r: 6, fill: '#3FAA88', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 8 }} name="Eficiencia Tms/Eq">
+                                    <LabelList dataKey="promTonReal" position="top" formatter={(val: number) => val.toFixed(1)} style={{ fill: '#3FAA88', fontSize: 10, fontWeight: 'black' }} offset={10} />
                                 </Line>
-                                <ReferenceLine yAxisId="left" y={85} stroke="#3b82f6" strokeDasharray="5 5" strokeWidth={2} label={{ position: 'insideTopLeft', value: 'META CARGA 85%', fill: '#3b82f6', fontSize: 10, fontWeight: 'black' }} />
+                                <ReferenceLine yAxisId="left" y={85} stroke="#4FD1C5" strokeDasharray="5 5" strokeWidth={2} label={{ position: 'insideTopLeft', value: 'META CARGA 85%', fill: '#4FD1C5', fontSize: 10, fontWeight: 'black' }} />
                             </ComposedChart>
                         </ResponsiveContainer>
                     </div>

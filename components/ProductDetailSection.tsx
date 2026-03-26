@@ -127,14 +127,14 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     <div className="flex flex-col space-y-4 w-full bg-white overflow-hidden pb-8">
       <div className="flex justify-between items-end border-b border-slate-100 pb-3">
         <div className="space-y-0.5">
-          <p className="text-[8px] font-black text-emerald-500 uppercase tracking-[0.3em]">Auditoría de Desempeño</p>
-          <h2 className="text-4xl font-[900] text-[#1e293b] tracking-tighter leading-tight uppercase">{product}</h2>
+          <p className="text-[8px] font-black text-ionizado uppercase tracking-[0.3em]">Auditoría de Desempeño</p>
+          <h2 className="text-4xl font-[900] text-nucleo tracking-tighter leading-tight uppercase">{product}</h2>
         </div>
         <div className="bg-black text-white px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest uppercase mb-1 no-print">Ítem {index} / {total}</div>
       </div>
 
       <div className="flex flex-col items-center space-y-2 pt-1">
-        <div className={`px-8 py-1.5 rounded-full ${stats.compliance < 85 ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-emerald-50 text-emerald-600 border-emerald-100'} text-[9px] font-black tracking-[0.2em] shadow-sm border uppercase`}>
+        <div className={`px-8 py-1.5 rounded-full ${stats.compliance < 85 ? 'bg-nucleo text-white border-nucleo' : 'bg-ionizado/10 text-ionizado border-ionizado/20'} text-[9px] font-black tracking-[0.2em] shadow-sm border uppercase`}>
           {stats.compliance < 85 ? 'Requiere Justificación Técnica' : 'Cumplimiento Operativo Exitoso'}
         </div>
       </div>
@@ -143,9 +143,9 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         <MetricCard icon={<Package className="w-4 h-4" />} label="Carga Real" value={`${stats.tonReal.toLocaleString()} Ton`} diff={stats.tonDiff} unit="vs Prog" />
         <MetricCard icon={<Truck className="w-4 h-4" />} label="Flota Real" value={`${stats.eqReal} EQ`} diff={stats.eqDiff} unit="vs Prog" />
         <MetricCard icon={<Target className="w-4 h-4" />} label="Compliance" value={`${stats.compliance.toFixed(1)}%`} diff={stats.compliance - 100} isPerc />
-        <div className="bg-white p-5 rounded-[1.2rem] border border-slate-100 shadow-sm flex flex-col space-y-3">
-          <div className="flex items-center gap-2 text-slate-300"><MapPin className="w-4 h-4" /><span className="text-[9px] font-black uppercase tracking-wider">Destino Crítico</span></div>
-          <p className="text-lg font-black text-[#1e293b] leading-tight truncate uppercase">{stats.mainDest}</p>
+        <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-3">
+          <div className="flex items-center gap-2 text-violeta/30"><MapPin className="w-4 h-4" /><span className="text-[9px] font-black uppercase tracking-wider">Destino Crítico</span></div>
+          <p className="text-lg font-black text-nucleo leading-tight truncate uppercase">{stats.mainDest}</p>
         </div>
       </div>
 
@@ -158,42 +158,42 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 800, fill: '#94a3b8' }} />
                 <YAxis hide />
                 <Legend verticalAlign="top" align="right" wrapperStyle={{ paddingBottom: '10px', fontSize: '13px', fontWeight: '900' }} iconType="square" iconSize={8} />
-                <Bar isAnimationActive={false} dataKey="Programado" fill="#003595" radius={[6, 6, 6, 6]} barSize={40}>
-                  <LabelList dataKey="Programado" position="top" formatter={(v: any) => v.toLocaleString()} style={{ fill: '#003595', fontSize: '10px', fontWeight: '900' }} offset={8} />
+                <Bar isAnimationActive={false} dataKey="Programado" fill="#461D77" radius={[6, 6, 6, 6]} barSize={40}>
+                  <LabelList dataKey="Programado" position="top" formatter={(v: any) => v.toLocaleString()} style={{ fill: '#461D77', fontSize: '10px', fontWeight: '900' }} offset={8} />
                 </Bar>
-                <Bar isAnimationActive={false} dataKey="Real" fill="#89B821" radius={[6, 6, 6, 6]} barSize={40}>
-                  <LabelList dataKey="Real" position="top" formatter={(v: any) => v.toLocaleString()} style={{ fill: '#89B821', fontSize: '10px', fontWeight: '900' }} offset={8} />
+                <Bar isAnimationActive={false} dataKey="Real" fill="#3FAA88" radius={[6, 6, 6, 6]} barSize={40}>
+                  <LabelList dataKey="Real" position="top" formatter={(v: any) => v.toLocaleString()} style={{ fill: '#3FAA88', fontSize: '10px', fontWeight: '900' }} offset={8} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col justify-center space-y-4">
+        <div className="bg-white p-6 rounded-[1.5rem] border border-calido shadow-sm flex flex-col justify-center space-y-4">
           <IndicatorRow label="Regulaciones" value={`${Math.round(stats.totalReg)}`} />
           <IndicatorRow label="Factor Carga" value={`${stats.avgLoad.toFixed(1)} T/EQ`} />
-          <div className="h-px bg-slate-50 w-full" />
-          <IndicatorRow label="Tpo. Real" value={formatHoursToTime(stats.avgFaenaReal)} color={isTimeDeviation ? 'text-rose-600' : 'text-[#1e293b]'} />
+          <div className="h-px bg-calido w-full" />
+          <IndicatorRow label="Tpo. Real" value={formatHoursToTime(stats.avgFaenaReal)} color={isTimeDeviation ? 'text-nucleo' : 'text-tecnico'} />
           <IndicatorRow label="Tpo. Meta" value={formatHoursToTime(stats.avgFaenaMeta)} />
         </div>
       </div>
 
       {hasAnyDeviation && (
         <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
-          <div className="flex justify-between items-start border-b border-slate-100 pb-4">
+          <div className="flex justify-between items-start border-b border-calido pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-400 shadow-sm border border-slate-200">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/40 shadow-sm border border-calido">
                 <ClipboardEdit className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
+                <p className="text-[9px] font-black text-violeta/40 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
                 <div className="flex items-center gap-2">
-                  <h4 className="text-xl font-black text-[#1e293b] tracking-tighter uppercase leading-none">Justificación por Desviación</h4>
+                  <h4 className="text-xl font-black text-nucleo tracking-tighter uppercase leading-none">Justificación por Desviación</h4>
                   <div className="flex gap-1.5 ml-2">
                     {isTimeDeviation && (
-                      <span className="bg-rose-50 text-rose-600 border border-rose-100 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Tpo.</span>
+                      <span className="bg-nucleo/10 text-nucleo border border-nucleo/20 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Tpo.</span>
                     )}
                     {isTonDeviation && (
-                      <span className="bg-amber-50 text-amber-600 border border-amber-100 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Ton.</span>
+                      <span className="bg-mineral/10 text-mineral border border-mineral/20 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Ton.</span>
                     )}
                   </div>
                 </div>
@@ -222,7 +222,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
               </div>
             )}
 
-            <div className="hidden pdf-only-block bg-white border-2 border-slate-50 rounded-2xl p-6 text-sm font-medium text-slate-700 h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
+            <div className="hidden pdf-only-block bg-white border-2 border-calido rounded-2xl p-6 text-sm font-medium text-tecnico h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
               {justification || "No se registraron observaciones para este ítem."}
             </div>
           </div>
@@ -238,10 +238,10 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 const MetricCard = ({ icon, label, value, diff, unit, isPerc }: any) => {
   const isPos = diff >= 0;
   return (
-    <div className="bg-white p-5 rounded-[1.2rem] border border-slate-100 shadow-sm flex flex-col space-y-4">
-      <div className="flex items-center gap-2 text-slate-300">{icon}<span className="text-[9px] font-black uppercase tracking-wider">{label}</span></div>
-      <p className="text-2xl font-black text-[#1e293b] tracking-tighter leading-none">{value}</p>
-      <div className={`flex items-center gap-1.5 text-[10.5px] font-black px-3.5 py-1.5 rounded-lg w-fit ${isPos ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+    <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-4">
+      <div className="flex items-center gap-2 text-violeta/40">{icon}<span className="text-[9px] font-black uppercase tracking-wider">{label}</span></div>
+      <p className="text-2xl font-black text-nucleo tracking-tighter leading-none">{value}</p>
+      <div className={`flex items-center gap-1.5 text-[10.5px] font-black px-3.5 py-1.5 rounded-lg w-fit ${isPos ? 'bg-ionizado/10 text-ionizado' : 'bg-nucleo/10 text-nucleo'}`}>
         {isPos ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
         {isPos ? '+' : ''}{isPerc ? diff.toFixed(1) : diff.toLocaleString()} {unit || ''}
       </div>
@@ -251,8 +251,8 @@ const MetricCard = ({ icon, label, value, diff, unit, isPerc }: any) => {
 
 const IndicatorRow = ({ label, value, color }: any) => (
   <div className="flex justify-between items-center">
-    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
-    <span className={`text-xl font-black ${color || 'text-[#1e293b]'} tracking-tighter`}>{value}</span>
+    <span className="text-[10px] font-bold text-violeta/40 uppercase tracking-widest">{label}</span>
+    <span className={`text-xl font-black ${color || 'text-nucleo'} tracking-tighter`}>{value}</span>
   </div>
 );
 

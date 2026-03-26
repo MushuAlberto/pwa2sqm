@@ -223,26 +223,26 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="flex h-screen bg-white font-sans text-slate-800 overflow-hidden">
+    <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">
       <InstructionModal isOpen={showInstructions} onClose={() => setShowInstructions(false)} />
 
-      <aside className="w-[300px] bg-[#f8fafc] border-r border-slate-200 flex flex-col no-print shrink-0">
+      <aside className="w-[300px] bg-levanda border-r border-violeta/20 flex flex-col no-print shrink-0">
         <div className="p-6 overflow-y-auto flex-1 space-y-8">
-          <button onClick={() => setView('menu')} className="flex items-center gap-2 text-slate-400 hover:text-slate-600 font-black text-[10px] uppercase tracking-widest transition-colors mb-4 group">
+          <button onClick={() => setView('menu')} className="flex items-center gap-2 text-violeta hover:text-nucleo font-black text-[10px] uppercase tracking-widest transition-colors mb-4 group">
             <Home size={14} className="group-hover:-translate-x-1 transition-transform" /> Menú Principal
           </button>
 
-          <div className="bg-white p-5 rounded-3xl border border-slate-100 flex flex-col items-center gap-2 shadow-sm">
-            <h1 className="font-black text-[14px] tracking-[0.1em] uppercase text-slate-900 leading-none">SQM LITIO</h1>
-            <h2 className="font-black text-[10px] tracking-[0.2em] uppercase text-slate-400">Management</h2>
+          <div className="bg-white p-5 rounded-3xl border border-violeta/10 flex flex-col items-center gap-2 shadow-sm">
+            <h1 className="font-black text-[14px] tracking-[0.1em] uppercase text-nucleo leading-none">SQM LITIO</h1>
+            <h2 className="font-black text-[10px] tracking-[0.2em] uppercase text-violeta">Management</h2>
           </div>
 
           <div className="space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cargar Datos</p>
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-200 rounded-3xl cursor-pointer bg-white hover:border-[#89B821] hover:bg-slate-50 transition-all">
+            <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Cargar Datos</p>
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-violeta/20 rounded-3xl cursor-pointer bg-white hover:border-ionizado hover:bg-calido transition-all">
               <div className="flex flex-col items-center justify-center p-4 text-center">
-                <Upload className="w-8 h-8 text-slate-300 mb-2" />
-                <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Base Excel</p>
+                <Upload className="w-8 h-8 text-violeta/30 mb-2" />
+                <p className="text-[10px] text-violeta/60 uppercase font-black tracking-widest">Base Excel</p>
               </div>
               <input type="file" className="hidden" accept=".xlsx,.xlsm" onChange={e => e.target.files?.[0] && processFile(e.target.files[0])} />
             </label>
@@ -253,21 +253,21 @@ const App: React.FC = () => {
           {rawData.length > 0 && (
             <>
               <div className="space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Jornada</p>
-                <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-black text-slate-700 outline-none focus:ring-4 focus:ring-[#89B821]/10">
+                <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Jornada</p>
+                <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full bg-white border border-violeta/20 rounded-2xl px-4 py-3 text-sm font-black text-tecnico outline-none focus:ring-4 focus:ring-ionizado/10">
                   {[...new Set(rawData.map(r => r.Fecha))].sort().reverse().map(d => <option key={d as string} value={d as string}>{formatDateToCL(d as string)}</option>)}
                 </select>
               </div>
 
               <div className="space-y-3 pt-4 border-t border-slate-100">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Herramientas</p>
-                <button onClick={handleExportPDF} disabled={exportingPDF} className="w-full bg-white border border-slate-200 text-slate-600 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
+                <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Herramientas</p>
+                <button onClick={handleExportPDF} disabled={exportingPDF} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
                   {exportingPDF ? <Loader2 size={12} className="animate-spin" /> : <FileText size={12} />} Exportar PDF
                 </button>
-                <button onClick={handleExportImage} disabled={exportingImage} className="w-full bg-white border border-slate-200 text-slate-600 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 transition-all">
+                <button onClick={handleExportImage} disabled={exportingImage} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
                   {exportingImage ? <Loader2 size={12} className="animate-spin" /> : <ImageIcon size={12} />} Descargar PNG
                 </button>
-                <button onClick={downloadBackupJSON} className="w-full bg-[#003595] text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#002a75] transition-all shadow-lg shadow-blue-500/10">
+                <button onClick={downloadBackupJSON} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
                   <Download size={12} /> Descargar Historial
                 </button>
               </div>
@@ -278,9 +278,9 @@ const App: React.FC = () => {
 
       <main className="flex-1 overflow-y-auto relative bg-white">
         {isRunning && (
-          <div className="absolute top-4 right-8 z-50 flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-2xl border border-slate-100 animate-in fade-in slide-in-from-top-2 no-print">
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-[#89B821]" />
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Cargando Informe...</span>
+          <div className="absolute top-4 right-8 z-50 flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-2xl border border-violeta/10 animate-in fade-in slide-in-from-top-2 no-print">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-ionizado" />
+            <span className="text-[10px] font-black text-violeta uppercase tracking-[0.2em]">Cargando Informe...</span>
           </div>
         )}
 
@@ -288,9 +288,9 @@ const App: React.FC = () => {
           <div className="max-w-5xl mx-auto p-8 space-y-0" id="dashboard-report">
             {rawData.length === 0 ? (
               <div className="py-20 flex flex-col items-center text-center space-y-8">
-                <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] flex items-center justify-center text-slate-200"><BarChart3 size={48} /></div>
-                <h2 className="text-3xl font-[900] text-[#1e293b] tracking-tighter uppercase">Gestión de Despacho Litio</h2>
-                <p className="text-slate-400 font-medium">Cargue un archivo base para iniciar el análisis operativo.</p>
+                <div className="w-24 h-24 bg-calido rounded-[2.5rem] flex items-center justify-center text-violeta/20"><BarChart3 size={48} /></div>
+                <h2 className="text-3xl font-[900] text-nucleo tracking-tighter uppercase">Gestión de Despacho Litio</h2>
+                <p className="text-violeta/60 font-medium">Cargue un archivo base para iniciar el análisis operativo.</p>
               </div>
             ) : (
               <>
@@ -312,14 +312,14 @@ const App: React.FC = () => {
 
                     {/* Fecha de la Jornada */}
                     <div className="pt-20">
-                      <p className="text-slate-300 font-black text-xs tracking-[0.4em] uppercase mb-6">JORNADA CORRESPONDIENTE</p>
-                      <p className="text-6xl font-[950] text-[#89B821] tracking-tighter">
+                      <p className="text-violeta/30 font-black text-xs tracking-[0.4em] uppercase mb-6">JORNADA CORRESPONDIENTE</p>
+                      <p className="text-6xl font-[950] text-ionizado tracking-tighter">
                         {formatDateToCL(selectedDate)}
                       </p>
                     </div>
 
-                    <div className="mt-32 pt-16 border-t border-slate-50 w-72">
-                      <p className="text-[11px] font-black text-slate-300 uppercase tracking-[0.2em] leading-loose">
+                    <div className="mt-32 pt-16 border-t border-calido w-72">
+                      <p className="text-[11px] font-black text-violeta/30 uppercase tracking-[0.2em] leading-loose">
                         GERENCIA DE LOGÍSTICA<br />
                         SALARES • SQM LITIO
                       </p>
@@ -329,31 +329,31 @@ const App: React.FC = () => {
 
                 <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
                   <div className="bg-white p-8 space-y-10 flex-1">
-                    <div className="flex justify-between items-start pb-8 border-b-2 border-slate-50">
+                    <div className="flex justify-between items-start pb-8 border-b-2 border-calido">
                       <div className="flex items-start gap-4">
                         <img src="/logo-sqm.png" alt="SQM Logo" className="h-16 w-auto object-contain mt-1" />
                         <div>
-                          <h1 className="text-5xl font-[900] text-[#1e293b] tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
-                          <p className="text-slate-400 font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                          <h1 className="text-5xl font-[900] text-nucleo tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
+                          <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-slate-400 font-bold text-[10px] tracking-[0.3em] uppercase mb-1">FECHA JORNADA</p>
-                        <p className="text-4xl font-[900] text-[#89B821] tracking-tighter">{formatDateToCL(selectedDate)}</p>
+                        <p className="text-violeta font-bold text-[10px] tracking-[0.3em] uppercase mb-1">FECHA JORNADA</p>
+                        <p className="text-4xl font-[900] text-ionizado tracking-tighter">{formatDateToCL(selectedDate)}</p>
                       </div>
                     </div>
 
                     {filteredData.length > 0 && (
-                      <div className="bg-white rounded-[2.5rem] p-10 border-2 border-[#89B821]/10 border-l-[12px] border-l-[#89B821] space-y-8 relative overflow-hidden shadow-sm">
+                      <div className="bg-white rounded-[2.5rem] p-10 border-2 border-ionizado/10 border-l-[12px] border-l-ionizado space-y-8 relative overflow-hidden shadow-sm">
                         <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-[#89B821]"><span className="font-black uppercase tracking-[0.3em] text-[10px]">KPIs OPERATIVOS</span></div>
-                          <h2 className="text-4xl font-[900] text-[#1e293b] tracking-tighter uppercase">Cumplimiento Global</h2>
+                          <div className="flex items-center gap-2 text-ionizado"><span className="font-black uppercase tracking-[0.3em] text-[10px]">KPIs OPERATIVOS</span></div>
+                          <h2 className="text-4xl font-[900] text-nucleo tracking-tighter uppercase">Cumplimiento Global</h2>
                         </div>
                         <div className="grid grid-cols-4 gap-4 pt-6">
                           {operationalKPIs?.map((kpi, idx) => (
-                            <div key={idx} className="bg-white p-6 rounded-3xl border border-slate-50 flex flex-col gap-2 shadow-sm border-b-4 border-b-[#f8fafc] hover:border-[#89B821]/30 transition-all duration-300">
-                              <div className="flex items-center gap-2 text-slate-300">{kpi.icon}<span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{kpi.label}</span></div>
-                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-[#89B821]'} tracking-tighter my-1`}>{kpi.value}</span>
+                            <div key={idx} className="bg-white p-6 rounded-3xl border border-calido flex flex-col gap-2 shadow-sm border-b-4 border-b-levanda hover:border-ionizado/30 transition-all duration-300">
+                              <div className="flex items-center gap-2 text-violeta/30">{kpi.icon}<span className="text-[10px] font-black text-violeta/60 uppercase tracking-widest leading-none">{kpi.label}</span></div>
+                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-ionizado'} tracking-tighter my-1`}>{kpi.value}</span>
                             </div>
                           ))}
                         </div>

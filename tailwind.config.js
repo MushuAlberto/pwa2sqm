@@ -8,7 +8,18 @@ export default {
     "./utils/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        nucleo: '#461D77',
+        litio: '#4FD1C5',
+        ionizado: '#3FAA88',
+        violeta: '#7177EC',
+        calido: '#FAF5E6',
+        tecnico: '#171717',
+        mineral: '#C59E4D',
+        levanda: '#DCDDEE',
+      },
+    },
   },
   plugins: [],
 };
