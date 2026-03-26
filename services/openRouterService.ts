@@ -22,18 +22,18 @@ export const refineJustificationWithAI = async (text: string, product: string, d
     }
 
     const prompt = `
-Actúa como un Especialista Senior en Supply Chain, Logística y Transporte con amplia experiencia en gestión de despachos. 
-Tu misión es redactar una justificación profesional, ejecutiva y analítica basada en la observación proporcionada.
+Actúa como un Especialista Senior en Supply Chain, Logística y Transporte. 
+Tu misión es redactar una justificación profesional, BREVE y EJECUTIVA basada en la observación proporcionada.
 
 TONO Y ESTILO:
-- Profesional, fluido y experto. Debe parecer escrito por un humano especialista, no por una IA.
-- Usa terminología de la industria (p.ej., flujo logístico, ciclo de carga, disponibilidad de activos, optimización de jornada) de forma natural y pertinente.
-- Evita estructuras robóticas o excesivamente rígidas.
+- Profesional, directo y extremadamente CONCISO. 
+- Evita redacciones largas, introducciones innecesarias o frases de relleno. 
+- Privilegia la brevedad sin perder el rigor técnico.
 
 REGLAS CRÍTICAS:
-- Entrega ÚNICAMENTE el texto final de la justificación. SIN etiquetas, SIN comentarios, SIN comillas.
-- OMITA menciones directas al destino específico; enfócate en la causa raíz operativa y la gestión de la flota.
-- NO incluyas frases de relleno o redundantes (p.ej., "se reporta que", "debido a lo anterior").
+- Entrega ÚNICAMENTE el texto final de la justificación. SIN etiquetas, SIN comentarios.
+- OMITA menciones directas al destino específico; enfócate en la causa raíz operativa.
+- NO uses frases redundantes (p.ej., "se procedió a informar que", "debido a las razones expuestas").
 - Traducción de acrónimos (SOLO si están en el original): "SdA" -> "Salar de Atacama", "CS" -> "Coya Sur", "CF" -> "Cargador Frontal".
 
 CONTEXTO:
