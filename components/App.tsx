@@ -305,7 +305,7 @@ const App: React.FC = () => {
                           INFORME OPERATIVO
                         </h1>
                         <p className="text-slate-400 font-bold text-sm tracking-[0.4em] uppercase mt-3 whitespace-nowrap">
-                          DESPACHO LITIO <span className="text-slate-300 mx-2">•</span> OPERACIONES SALAR
+                          SUBGERENCIA LOGÍSTICA LITIO <span className="text-slate-300 mx-2">-</span> DESPACHO LITIO
                         </p>
                       </div>
                     </div>
@@ -334,7 +334,7 @@ const App: React.FC = () => {
                         <img src="/novandino.png" alt="Novandino Logo" className="h-32 w-auto object-contain" />
                         <div>
                           <h1 className="text-5xl font-[900] text-nucleo tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
-                          <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                          <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Subgerencia Logística Litio - Despacho Litio</p>
                         </div>
                       </div>
                       <div className="text-right">

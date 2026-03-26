@@ -563,7 +563,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                 <div className="flex flex-col items-center gap-4 py-12">
                     <div className="h-px w-64 bg-slate-200" />
                     <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400 font-black uppercase tracking-[0.5em] italic">
-                        DESPACHO LITIO - GERENCIA DE OPERACIONES SALAR
+                        SUBGERENCIA LOGÍSTICA LITIO - DESPACHO LITIO
                     </div>
                 </div>
             </div>

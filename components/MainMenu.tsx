@@ -88,7 +88,7 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
       </div>
 
       <div className="mt-20 text-[10px] text-violeta/40 font-bold uppercase tracking-[0.4em]">
-        SQM LITIO S.A. - GERENCIA DE OPERACIONES SALAR - 2026
+        SUBGERENCIA LOGÍSTICA LITIO - DESPACHO LITIO - 2026
       </div>
     </div>
   );
