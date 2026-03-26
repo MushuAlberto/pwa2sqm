@@ -27,8 +27,8 @@ const MainMenu: React.FC<MainMenuProps> = ({ onSelectView }) => {
             <Truck size={32} strokeWidth={1.5} />
           </div>
           <div className="space-y-2 relative z-10">
-            <h2 className="text-xl font-black text-tecnico tracking-tight">{/* Dynamic content handled by allowMultiple */}</h2>
-            <p className="text-tecnico/60 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">{/* Dynamic content handled by allowMultiple */}</p>
+            <h2 className="text-xl font-black text-tecnico tracking-tight">Llegada de Equipos</h2>
+            <p className="text-tecnico/60 text-[10px] leading-relaxed max-w-[150px] mx-auto font-medium">Control de flujo y frecuencias de transporte.</p>
           </div>
           <div className="flex items-center gap-2 text-[9px] font-black tracking-widest uppercase text-violeta/30 group-hover:text-nucleo transition-colors">
             Acceder <ChevronRight size={10} />
