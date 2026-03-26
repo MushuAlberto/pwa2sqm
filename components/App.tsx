@@ -300,6 +300,7 @@ const App: React.FC = () => {
                     {/* Bloque Principal (Imagen) */}
                     <div className="flex flex-col items-center justify-center text-center w-full">
                       <div className="flex flex-col items-center text-center">
+                        <img src="/novandino.png" alt="Novandino Logo" className="h-24 w-auto object-contain mb-8" />
                         <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
                           INFORME OPERATIVO
                         </h1>
@@ -329,9 +330,12 @@ const App: React.FC = () => {
                 <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
                   <div className="bg-white p-8 space-y-10 flex-1">
                     <div className="flex justify-between items-start pb-8 border-b-2 border-calido">
-                      <div>
-                        <h1 className="text-5xl font-[900] text-nucleo tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
-                        <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                      <div className="flex flex-col items-start gap-4">
+                        <img src="/novandino.png" alt="Novandino Logo" className="h-12 w-auto object-contain" />
+                        <div>
+                          <h1 className="text-5xl font-[900] text-nucleo tracking-tighter leading-none mb-1 uppercase">INFORME OPERATIVO</h1>
+                          <p className="text-violeta font-bold text-[10px] tracking-[0.4em] uppercase">Despacho Litio • Operaciones Salar</p>
+                        </div>
                       </div>
                       <div className="text-right">
                         <p className="text-violeta font-bold text-[10px] tracking-[0.3em] uppercase mb-1">FECHA JORNADA</p>
