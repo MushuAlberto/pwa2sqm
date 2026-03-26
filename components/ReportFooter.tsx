@@ -7,7 +7,7 @@ const ReportFooter: React.FC = () => {
       <div className="flex items-center gap-4">
         <div>
           <p className="text-[11px] font-black text-nucleo tracking-wider uppercase leading-none mb-1">SQM LITIO</p>
-          <p className="text-[9px] text-violeta/40 font-bold uppercase tracking-[0.2em] leading-none">Gerencia de Operaciones Salar</p>
+          <p className="text-[9px] text-violeta/40 font-bold uppercase tracking-[0.2em] leading-none">Subgerencia Logística Litio</p>
         </div>
       </div>
       <div className="text-right flex flex-col items-end gap-1">
