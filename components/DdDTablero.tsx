@@ -269,7 +269,9 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                 <span className="px-3 py-1 bg-ionizado text-[11px] font-black rounded-lg uppercase tracking-widest shadow-lg shadow-ionizado/20">Tablero M1</span>
                             </div>
                             <h1 className="text-5xl font-black tracking-tighter uppercase italic leading-none">DIÁLOGO DE DESEMPEÑO</h1>
-                            <p className="text-violeta/50 font-bold uppercase tracking-[0.4em] text-[10px] mt-2">Visibilidad Operacional • Gestión de Transporte • SQM Litio</p>
+                            <p className="font-bold uppercase tracking-[0.4em] text-[10px] mt-2 text-violeta/50">
+                                <span className="text-white">Gestión Diaria Despacho Litio</span> • SQM Litio
+                            </p>
                         </div>
                     </div>
 
