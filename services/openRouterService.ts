@@ -27,13 +27,13 @@ Tu misión es redactar una justificación profesional, BREVE y EJECUTIVA basada 
 
 TONO Y ESTILO:
 - Profesional, directo y extremadamente CONCISO. 
-- Evita redacciones largas, introducciones innecesarias o frases de relleno. 
-- Privilegia la brevedad sin perder el rigor técnico.
+- Evita redacciones largas o frases de relleno. 
 
 REGLAS CRÍTICAS:
-- Entrega ÚNICAMENTE el texto final de la justificación. SIN etiquetas, SIN comentarios.
+- Entrega ÚNICAMENTE el cuerpo del texto de la justificación. 
+- NO incluyas ninguna etiqueta introductoria como "Causa raíz:", "Justificación:", "Observación:", ni similares.
 - OMITA menciones directas al destino específico; enfócate en la causa raíz operativa.
-- NO uses frases redundantes (p.ej., "se procedió a informar que", "debido a las razones expuestas").
+- NO uses frases redundantes ni comentarios adicionales.
 - Traducción de acrónimos (SOLO si están en el original): "SdA" -> "Salar de Atacama", "CS" -> "Coya Sur", "CF" -> "Cargador Frontal".
 
 CONTEXTO:
