@@ -45,15 +45,15 @@ const MetricCard: React.FC<{
         <div className={`absolute top-0 right-0 w-24 h-24 ${color} opacity-5 rounded-bl-[4rem] -mr-8 -mt-8 group-hover:scale-110 transition-transform`} />
         
         <div className="flex items-start justify-between relative z-10">
-            <div className={`p-3 rounded-2xl ${color} bg-opacity-10 text-slate-700`}>
+            <div className={`p-3 rounded-2xl ${color} bg-opacity-10 text-black`}>
                 {icon}
             </div>
         </div>
 
         <div className="mt-4 relative z-10">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{title}</p>
-            <h3 className="text-3xl font-black text-slate-800 tracking-tighter italic">{value}</h3>
-            {subtitle && <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-tighter">{subtitle}</p>}
+            <p className="text-[10px] font-black text-black uppercase tracking-widest leading-none mb-1">{title}</p>
+            <h3 className="text-3xl font-black text-black tracking-tighter italic">{value}</h3>
+            {subtitle && <p className="text-[10px] text-black font-bold mt-1 uppercase tracking-tighter">{subtitle}</p>}
         </div>
     </div>
 );
@@ -405,7 +405,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                                     </div>
                                                 </td>
                                                 <td className="p-6 text-center">
-                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-nucleo' : 'text-ionizado'}`}>
+                                                    <div className={`flex flex-col items-center gap-1 font-black ${row.promTonReal < row.kpiPromTon ? 'text-rose-600' : 'text-ionizado'}`}>
                                                         <span className="text-xl tracking-tighter italic">{row.promTonReal.toFixed(1)} Tms</span>
                                                         <span className="text-[12px] text-slate-400 font-bold uppercase tracking-tighter">KPI Meta: {row.kpiPromTon}</span>
                                                     </div>

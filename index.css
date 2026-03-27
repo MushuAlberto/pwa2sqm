@@ -19,6 +19,16 @@
   break-before: page;
 }
 
+.page-break-after {
+  page-break-after: always;
+  break-after: page;
+}
+
+.no-page-break {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
 @media print {
   .no-print {
     display: none !important;
@@ -27,6 +37,11 @@
   .page-break-before {
     page-break-before: always !important;
     break-before: page !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
   }
 }
 

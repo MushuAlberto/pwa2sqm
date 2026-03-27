@@ -60,7 +60,7 @@ const App: React.FC = () => {
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: 'mm', format: 'legal', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      pagebreak: { mode: ['css'], before: '.page-break-before', after: '.page-break-after', avoid: '.no-page-break' }
     };
 
     try {
@@ -350,8 +350,8 @@ const App: React.FC = () => {
                         <div className="grid grid-cols-4 gap-4 pt-6">
                           {operationalKPIs?.map((kpi, idx) => (
                             <div key={idx} className="bg-white p-6 rounded-3xl border border-calido flex flex-col gap-2 shadow-sm border-b-4 border-b-levanda hover:border-ionizado/30 transition-all duration-300">
-                              <div className="flex items-center gap-2 text-violeta/30">{kpi.icon}<span className="text-[10px] font-black text-violeta/60 uppercase tracking-widest leading-none">{kpi.label}</span></div>
-                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-ionizado'} tracking-tighter my-1`}>{kpi.value}</span>
+                              <div className="flex items-center gap-2 text-black">{kpi.icon}<span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">{kpi.label}</span></div>
+                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-black'} tracking-tighter my-1`}>{kpi.value}</span>
                             </div>
                           ))}
                         </div>
@@ -372,7 +372,7 @@ const App: React.FC = () => {
                 </div>
 
                 {productList.map((prod, idx) => (
-                  <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white flex flex-col min-h-screen pt-4">
+                  <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white flex flex-col pt-4" style={{ pageBreakBefore: 'always', breakBefore: 'page', minHeight: '100vh' }}>
                     <div className="flex-1 px-4">
                       <ProductDetailSection
                         product={prod}
