@@ -1,7 +1,7 @@
 {
-    "name": "SQM Litio Dashboard",
+    "name": "Litio Dashboard",
     "short_name": "LitioDB",
-    "description": "Dashboard Operativo e Inteligencia Logística para SQM Litio",
+    "description": "Dashboard Operativo e Inteligencia Logística",
     "start_url": "./",
     "display": "standalone",
     "orientation": "any",

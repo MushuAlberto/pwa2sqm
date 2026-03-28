@@ -74,7 +74,7 @@ export const MemoryModule: React.FC<MemoryModuleProps> = ({ data, onBack, onSele
             </div>
             <div className="flex flex-col">
               <h1 className="text-xl font-black text-slate-900 tracking-tight leading-none uppercase">Memoria Operativa</h1>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Archivo de Justificaciones SQM</p>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Archivo de Justificaciones</p>
             </div>
           </div>
         </div>
@@ -170,7 +170,7 @@ export const MemoryModule: React.FC<MemoryModuleProps> = ({ data, onBack, onSele
       </main>
 
       <footer className="bg-white border-t border-slate-100 p-8 flex justify-center no-print">
-        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em]">SQM LITIO • ARCHIVO HISTÓRICO • 2026</p>
+        <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.4em]">ARCHIVO HISTÓRICO • 2026</p>
       </footer>
     </div>
   );

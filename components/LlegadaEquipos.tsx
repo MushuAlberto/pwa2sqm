@@ -290,7 +290,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
           <div className="h-8 w-px bg-slate-200" />
           <div className="flex flex-col">
             <h1 className="text-xl font-black text-nucleo tracking-tight leading-none uppercase">Llegada de Equipos</h1>
-            <p className="text-[10px] font-bold text-violeta/40 uppercase tracking-widest mt-1">SQM Litio - Control de Acceso</p>
+            <p className="text-[10px] font-bold text-violeta/40 uppercase tracking-widest mt-1">Control de Acceso</p>
           </div>
         </div>
 
@@ -517,7 +517,7 @@ export const LlegadaEquipos: React.FC<LlegadaEquiposProps> = ({ onBack }) => {
           </div>
           <div>
             <span className="block text-[10px] font-black text-nucleo uppercase tracking-[0.2em] leading-none mb-1">Sistema de Gestión Logística</span>
-            <span className="text-[9px] font-bold text-violeta/40 uppercase tracking-widest">SQM Litio S.A. • v3.10.0</span>
+            <span className="text-[9px] font-bold text-violeta/40 uppercase tracking-widest">v3.10.0</span>
           </div>
         </div>
         <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.3em] text-center md:text-right">Proyecto Dashboard Operativo • Confidencial</p>

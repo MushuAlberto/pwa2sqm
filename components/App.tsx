@@ -231,7 +231,6 @@ const App: React.FC = () => {
           </button>
 
           <div className="bg-white p-5 rounded-3xl border border-violeta/10 flex flex-col items-center gap-2 shadow-sm">
-            <h1 className="font-black text-[14px] tracking-[0.1em] uppercase text-nucleo leading-none">SQM LITIO</h1>
             <h2 className="font-black text-[10px] tracking-[0.2em] uppercase text-violeta">Management</h2>
           </div>
 
@@ -319,7 +318,7 @@ const App: React.FC = () => {
                     <div className="mt-32 pt-16 border-t border-calido w-72">
                       <p className="text-[11px] font-black text-violeta/30 uppercase tracking-[0.2em] leading-loose">
                         GERENCIA DE LOGÍSTICA<br />
-                        SALARES • SQM LITIO
+                        SALARES
                       </p>
                     </div>
                   </div>

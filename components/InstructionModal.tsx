@@ -25,7 +25,7 @@ const InstructionModal: React.FC<InstructionModalProps> = ({ isOpen, onClose }) 
             </div>
             <div>
               <h2 className="text-2xl font-[900] text-nucleo tracking-tighter uppercase leading-none">Guía de Operación Inteligente</h2>
-              <p className="text-[10px] font-black text-violeta/40 uppercase tracking-widest mt-1">SQM Litio • Sistema de Gestión Logística v3.1</p>
+              <p className="text-[10px] font-black text-violeta/40 uppercase tracking-widest mt-1">Sistema de Gestión Logística v3.1</p>
             </div>
           </div>
           <button
