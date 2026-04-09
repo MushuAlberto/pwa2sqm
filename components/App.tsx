@@ -130,11 +130,6 @@ const App: React.FC = () => {
         // 2. Header contiene el alias (el alias es un substring del header)
         // 3. Fallback al índice por defecto
         const getIdx = (fieldName: string, aliases: string[], fallback: number): number => {
-          // FORZAR COLUMNAS ESPECÍFICAS SEGÚN INDICACIÓN (AX=49, AY=50, AU=46)
-          if (fieldName === 'faenaMeta' || fieldName === 'faenaReal' || fieldName === 'regReal') {
-            console.log(`  ⭐ ${fieldName}: FORZANDO COLUMNA EXPLÍCITA -> ${fallback} (Header: "${rawHeaders[fallback] || 'Vacio'}")`);
-            return fallback;
-          }
 
           // NUEVA PRIORIDAD: Revisar si el fallback ya es un match válido antes de buscar en todo el archivo
           if (fallback >= 0 && fallback < normalizedHeaders.length) {
