@@ -130,10 +130,22 @@ const App: React.FC = () => {
         // 2. Header contiene el alias (el alias es un substring del header)
         // 3. Fallback al índice por defecto
         const getIdx = (fieldName: string, aliases: string[], fallback: number): number => {
+          // NUEVA PRIORIDAD: Revisar si el fallback ya es un match válido antes de buscar en todo el archivo
+          if (fallback >= 0 && fallback < normalizedHeaders.length) {
+            const fbHeader = normalizedHeaders[fallback];
+            for (const alias of aliases) {
+              const normAlias = normalizeHeader(alias);
+              if (normAlias.length >= 3 && (fbHeader === normAlias || fbHeader.includes(normAlias))) {
+                console.log(`  ⭐ ${fieldName}: PRIORIDAD FALLBACK confirmada en col ${fallback} ("${rawHeaders[fallback]}")`);
+                return fallback;
+              }
+            }
+          }
+
           // Nivel 1: Match exacto
           for (const alias of aliases) {
             const normAlias = normalizeHeader(alias);
-            if (normAlias.length < 2) continue; // Ignorar alias demasiado cortos
+            if (normAlias.length < 2) continue;
             const exactIdx = normalizedHeaders.findIndex(h => h === normAlias);
             if (exactIdx !== -1) {
               console.log(`  ✅ ${fieldName}: match exacto "${rawHeaders[exactIdx]}" (col ${exactIdx})`);
