@@ -100,33 +100,87 @@ const App: React.FC = () => {
 
         if (jsonData.length < 2) throw new Error("Archivo vacío.");
 
-        const normalizedHeaders = jsonData[0].map(h => normalizeHeader(h));
+        // Conservar headers originales para debug
+        const rawHeaders = jsonData[0].map(h => String(h || '').trim());
+        const normalizedHeaders = rawHeaders.map(h => normalizeHeader(h));
         
-        const getIdx = (aliases: string[], fallback: number) => {
+        console.log("=== DIAGNÓSTICO DE COLUMNAS ===");
+        console.log("Hoja usada:", sheetName);
+        console.log("Total filas:", jsonData.length);
+        console.log("Headers originales:", rawHeaders);
+        console.log("Headers normalizados:", normalizedHeaders);
+
+        // Función de búsqueda robusta con 3 niveles:
+        // 1. Coincidencia exacta normalizada
+        // 2. Header contiene el alias (el alias es un substring del header)
+        // 3. Fallback al índice por defecto
+        const getIdx = (fieldName: string, aliases: string[], fallback: number): number => {
+          // Nivel 1: Match exacto
           for (const alias of aliases) {
             const normAlias = normalizeHeader(alias);
-            const found = normalizedHeaders.findIndex(h => h.includes(normAlias) || normAlias.includes(h));
-            if (found !== -1) return found;
+            if (normAlias.length < 2) continue; // Ignorar alias demasiado cortos
+            const exactIdx = normalizedHeaders.findIndex(h => h === normAlias);
+            if (exactIdx !== -1) {
+              console.log(`  ✅ ${fieldName}: match exacto "${rawHeaders[exactIdx]}" (col ${exactIdx})`);
+              return exactIdx;
+            }
           }
+          // Nivel 2: El header CONTIENE el alias (no al revés)
+          for (const alias of aliases) {
+            const normAlias = normalizeHeader(alias);
+            if (normAlias.length < 3) continue; // Solo buscar substrings de 3+ chars
+            const partialIdx = normalizedHeaders.findIndex(h => h.includes(normAlias));
+            if (partialIdx !== -1) {
+              console.log(`  ✅ ${fieldName}: match parcial "${rawHeaders[partialIdx]}" contiene "${alias}" (col ${partialIdx})`);
+              return partialIdx;
+            }
+          }
+          // Nivel 3: El alias CONTIENE el header (solo para headers largos, min 5 chars)
+          for (const alias of aliases) {
+            const normAlias = normalizeHeader(alias);
+            const reverseIdx = normalizedHeaders.findIndex(h => h.length >= 5 && normAlias.includes(h));
+            if (reverseIdx !== -1) {
+              console.log(`  ✅ ${fieldName}: match reverso "${alias}" contiene "${rawHeaders[reverseIdx]}" (col ${reverseIdx})`);
+              return reverseIdx;
+            }
+          }
+          console.warn(`  ⚠️ ${fieldName}: NO encontrado, usando fallback col ${fallback}. Buscaba: [${aliases.join(', ')}]`);
           return fallback;
         };
 
         const idx = {
-          fecha: getIdx(["FECHA", "JORNADA"], 1),
-          producto: getIdx(["PRODUCTO", "NIVEL"], 31),
-          destino: getIdx(["DESTINO", "UBICACION"], 32),
-          tonProg: getIdx(["TON_PROG", "TON PROG", "TONELADAS PROGRAMADAS"], 33),
-          tonReal: getIdx(["TON_REAL", "TON REAL", "TONELADAS REALES"], 34),
-          eqProg: getIdx(["EQ_PROG", "EQ PROG", "EQUIPOS PROGRAMADOS"], 35),
-          eqReal: getIdx(["EQ_REAL", "EQ REAL", "EQUIPOS REALES"], 36),
-          regReal: getIdx(["REGULACION", "REG.", "REG", "TOTAL REGULACIONES"], 46),
-          sda: getIdx(["TPO SDA", "SDA", "TIEMPO SDA"], 4),
-          pang: getIdx(["TPO PANG", "PANG", "TIEMPO PANG", "NY"], 5),
-          faenaMeta: getIdx(["FAENA META", "META HRS"], 49),
-          faenaReal: getIdx(["FAENA REAL", "REAL HRS"], 50)
+          fecha: getIdx("fecha", ["FECHA", "JORNADA"], 1),
+          producto: getIdx("producto", ["PRODUCTO", "NIVEL"], 31),
+          destino: getIdx("destino", ["DESTINO", "UBICACION"], 32),
+          tonProg: getIdx("tonProg", ["TON PROG", "TON_PROG", "TONELADAS PROGRAMADAS", "TONELAJE PROGRAMADO"], 33),
+          tonReal: getIdx("tonReal", ["TON REAL", "TON_REAL", "TONELADAS REALES", "TONELAJE REAL"], 34),
+          eqProg: getIdx("eqProg", ["EQ PROG", "EQ_PROG", "EQUIPOS PROGRAMADOS", "EQUIPOS PROG"], 35),
+          eqReal: getIdx("eqReal", ["EQ REAL", "EQ_REAL", "EQUIPOS REALES"], 36),
+          regReal: getIdx("regReal", ["REGULACION", "REGULACIONES", "TOTAL REGULACIONES", "REG REAL"], 46),
+          sda: getIdx("sda", ["TPO SDA", "TPO. SDA", "TIEMPO SDA"], 4),
+          pang: getIdx("pang", ["TPO PANG", "TPO. PANG", "TIEMPO PANG", "TPO NY", "TPO. NY"], 5),
+          faenaMeta: getIdx("faenaMeta", ["FAENA META", "META HRS", "TPO FAENA META", "TPO. FAENA META"], 49),
+          faenaReal: getIdx("faenaReal", ["FAENA REAL", "REAL HRS", "TPO FAENA REAL", "TPO. FAENA REAL"], 50)
         };
 
-        console.log("Columnas detectadas (indices):", idx);
+        console.log("=== RESULTADO FINAL INDICES ===", idx);
+        
+        // Validar primera fila de datos como diagnóstico
+        const sampleRow = jsonData[1];
+        if (sampleRow) {
+          console.log("=== MUESTRA PRIMERA FILA ===");
+          console.log("  Fecha raw:", sampleRow[idx.fecha]);
+          console.log("  Producto raw:", sampleRow[idx.producto]);
+          console.log("  TonProg raw:", sampleRow[idx.tonProg]);
+          console.log("  TonReal raw:", sampleRow[idx.tonReal]);
+          console.log("  EqProg raw:", sampleRow[idx.eqProg]);
+          console.log("  EqReal raw:", sampleRow[idx.eqReal]);
+          console.log("  Regulacion raw:", sampleRow[idx.regReal]);
+          console.log("  SDA raw:", sampleRow[idx.sda]);
+          console.log("  Pang raw:", sampleRow[idx.pang]);
+          console.log("  FaenaMeta raw:", sampleRow[idx.faenaMeta]);
+          console.log("  FaenaReal raw:", sampleRow[idx.faenaReal]);
+        }
 
         const processed = jsonData.slice(1).map((row) => {
           if (!row || row.length < 2) return null;
@@ -155,11 +209,26 @@ const App: React.FC = () => {
           };
         }).filter(r => r !== null);
 
+        // Limpiar caché anterior antes de guardar los nuevos datos
+        localStorage.removeItem('sqm_raw_data');
+        
         setRawData(processed);
         localStorage.setItem('sqm_raw_data', JSON.stringify(processed));
         const dates = [...new Set(processed.map(r => r.Fecha))].sort().reverse();
         if (dates.length > 0) setSelectedDate(dates[0]);
-        alert("Archivo procesado con éxito.");
+        
+        // Diagnóstico: verificar si los datos numéricos tienen valores
+        const totalTonCheck = processed.reduce((a: number, b: any) => a + (b.Ton_Real || 0), 0);
+        const totalEqCheck = processed.reduce((a: number, b: any) => a + (b.Eq_Real || 0), 0);
+        console.log(`=== VALIDACIÓN: ${processed.length} registros, TonReal total: ${totalTonCheck}, EqReal total: ${totalEqCheck} ===`);
+        
+        if (totalTonCheck === 0 && processed.length > 0) {
+          const headerList = rawHeaders.map((h: string, i: number) => `[${i}] ${h}`).join('\n');
+          console.warn("⚠️ TODAS las toneladas son 0. Headers del archivo:\n" + headerList);
+          alert(`Advertencia: Se procesaron ${processed.length} registros pero las columnas de tonelaje no contienen datos.\n\nPor favor revise la consola (F12) para ver los headers detectados y reporte el problema.`);
+        } else {
+          alert(`Archivo procesado con éxito: ${processed.length} registros, ${dates.length} fechas.`);
+        }
       } catch (err: any) {
         console.error("Error procesando archivo:", err);
         alert(`Error al procesar el archivo: ${err.message || 'Error desconocido'}`);
