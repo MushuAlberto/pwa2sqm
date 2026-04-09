@@ -119,7 +119,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     { name: 'Equipos', Programado: stats.eqProg, Real: stats.eqReal }
   ];
 
-  const isTimeDeviation = stats.avgFaenaReal > 0 && stats.avgFaenaMeta > 0 && (stats.avgFaenaReal - stats.avgFaenaMeta) > 0;
+  const isTimeDeviation = stats.avgFaenaReal > 0 && stats.avgFaenaMeta > 0 && (stats.avgFaenaReal - stats.avgFaenaMeta) >= (10 / 60);
   const isTonDeviation = stats.compliance < 85;
   const hasAnyDeviation = isTonDeviation || isTimeDeviation;
 

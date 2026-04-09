@@ -171,7 +171,7 @@ const ChartCard: React.FC<ChartCardProps> = ({
               {aggregatedData.map((row, idx) => {
                 const isUnderperformingTon = row[yAxes[0]] > 0 && row[yAxes[1]] < (row[yAxes[0]] * 0.85);
                 // Cambio: De 10/60 a 15/60 para reflejar el nuevo umbral solicitado de 15 minutos
-                const isTimeDeviated = row[yAxes[3]] > 0 && row[yAxes[2]] > 0 && (row[yAxes[3]] - row[yAxes[2]]) > 0;
+                const isTimeDeviated = row[yAxes[3]] > 0 && row[yAxes[2]] > 0 && (row[yAxes[3]] - row[yAxes[2]]) >= (10 / 60);
                 return (
                   <tr key={idx} className="border-b border-calido last:border-0 hover:bg-calido/50 transition-colors">
                     <td className="py-4 px-6 text-[13px] font-black text-tecnico truncate max-w-[150px]">{row.name}</td>
