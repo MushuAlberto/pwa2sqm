@@ -114,7 +114,10 @@ const App: React.FC = () => {
           tonReal: getIdx("TON_REAL", 34),
           eqProg: getIdx("EQ_PROG", 35),
           eqReal: getIdx("EQ_REAL", 36),
-          regReal: getIdx("REGULACION", 46),
+          regReal: (() => {
+            const found = headers.findIndex(h => h.includes("REGULACION") || h.includes("REG.") || h === "REG");
+            return found !== -1 ? found : 46;
+          })(),
           sda: getIdx("TPO SDA", 4),
           pang: getIdx("TPO PANG", 5),
           faenaMeta: 49,
