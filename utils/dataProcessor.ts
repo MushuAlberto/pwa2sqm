@@ -4,7 +4,8 @@ export const normalizeHeader = (h: any): string => {
     .toUpperCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // Remove accents
-    .replace(/[._\s]+/g, ' ')       // Normalize spaces, dots, underscores to a single space
+    .replace(/[^A-Z0-9%]/g, ' ')      // Replace symbols with spaces (keep %)
+    .replace(/\s+/g, ' ')            // Collapse spaces
     .trim();
 };
 

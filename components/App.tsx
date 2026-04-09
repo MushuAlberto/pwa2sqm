@@ -164,18 +164,18 @@ const App: React.FC = () => {
         };
 
         const idx = {
-          fecha: getIdx("fecha", ["FECHA", "JORNADA"], 1),
-          producto: getIdx("producto", ["PRODUCTO", "NIVEL"], 31),
-          destino: getIdx("destino", ["DESTINO", "UBICACION"], 32),
-          tonProg: getIdx("tonProg", ["TON PROG", "TON_PROG", "TONELADAS PROGRAMADAS", "TONELAJE PROGRAMADO"], 33),
-          tonReal: getIdx("tonReal", ["TON REAL", "TON_REAL", "TONELADAS REALES", "TONELAJE REAL"], 34),
-          eqProg: getIdx("eqProg", ["EQ PROG", "EQ_PROG", "EQUIPOS PROGRAMADOS", "EQUIPOS PROG"], 35),
-          eqReal: getIdx("eqReal", ["EQ REAL", "EQ_REAL", "EQUIPOS REALES"], 36),
-          regReal: getIdx("regReal", ["REGULACION", "REGULACIONES", "TOTAL REGULACIONES", "REG REAL"], 46),
-          sda: getIdx("sda", ["TPO SDA", "TPO. SDA", "TIEMPO SDA"], 4),
-          pang: getIdx("pang", ["TPO PANG", "TPO. PANG", "TIEMPO PANG", "TPO NY", "TPO. NY"], 5),
-          faenaMeta: getIdx("faenaMeta", ["FAENA META", "META HRS", "TPO FAENA META", "TPO. FAENA META"], 49),
-          faenaReal: getIdx("faenaReal", ["FAENA REAL", "REAL HRS", "TPO FAENA REAL", "TPO. FAENA REAL"], 50)
+          fecha: getIdx("fecha", ["FECHA", "JORNADA", "DIA"], 1),
+          producto: getIdx("producto", ["PRODUCTO", "NIVEL", "PROD"], 5),
+          destino: getIdx("destino", ["DESTINO", "UBICACION", "DEST"], 6),
+          tonProg: getIdx("tonProg", ["TON PROG", "PROGRAMADO", "TONELADAS PROGRAMADAS"], 7),
+          tonReal: getIdx("tonReal", ["TON REAL", "REAL", "TONELADAS REALES"], 8),
+          eqProg: getIdx("eqProg", ["EQUIPOS PROG", "EQ PROG", "EQUIPOS PROGRAMADOS"], 9),
+          eqReal: getIdx("eqReal", ["EQUIPOS REAL", "EQ REAL", "EQUIPOS REALES"], 10),
+          regReal: getIdx("regReal", ["% REGULACION (REAL)", "TOTAL REGULACIONES", "REG REAL", "REGULACION REAL"], 46),
+          sda: getIdx("sda", ["TPO SDA", "SDA", "TIEMPO SDA"], 2),
+          pang: getIdx("pang", ["TPO N Y", "TPO PANG", "NY", "PANG"], 3),
+          faenaMeta: getIdx("faenaMeta", ["META", "FAENA META", "TPO FAENA META"], 16),
+          faenaReal: getIdx("faenaReal", ["REAL", "FAENA REAL", "TPO FAENA REAL"], 17)
         };
 
         console.log("=== RESULTADO FINAL INDICES ===", idx);
