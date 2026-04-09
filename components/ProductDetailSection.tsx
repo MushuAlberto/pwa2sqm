@@ -142,7 +142,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       <div className="grid grid-cols-4 gap-3">
         <MetricCard icon={<Package className="w-4 h-4" />} label="Carga Real" value={`${stats.tonReal.toLocaleString()} Ton`} diff={stats.tonDiff} unit="vs Prog" />
         <MetricCard icon={<Truck className="w-4 h-4" />} label="Flota Real" value={`${stats.eqReal} EQ`} diff={stats.eqDiff} unit="vs Prog" />
-        <MetricCard icon={<Target className="w-4 h-4" />} label="Compliance" value={`${stats.compliance.toFixed(1)}%`} diff={stats.compliance - 100} isPerc />
+        <MetricCard icon={<Target className="w-4 h-4" />} label="Cumplimiento" value={`${stats.compliance.toFixed(1)}%`} diff={stats.compliance - 100} isPerc />
         <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-3">
           <div className="flex items-center gap-2 text-violeta/70"><MapPin className="w-4 h-4" /><span className="text-[9px] font-black uppercase tracking-wider">Destino Crítico</span></div>
           <p className="text-lg font-black text-nucleo leading-tight truncate uppercase">{stats.mainDest}</p>
