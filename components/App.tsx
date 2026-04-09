@@ -254,8 +254,6 @@ const App: React.FC = () => {
           const headerList = rawHeaders.map((h: string, i: number) => `[${i}] ${h}`).join('\n');
           console.warn("⚠️ TODAS las toneladas son 0. Headers del archivo:\n" + headerList);
           alert(`Advertencia: Se procesaron ${processed.length} registros pero las columnas de tonelaje no contienen datos.\n\nPor favor revise la consola (F12) para ver los headers detectados y reporte el problema.`);
-        } else {
-          alert(`Archivo procesado con éxito: ${processed.length} registros, ${dates.length} fechas.`);
         }
       } catch (err: any) {
         console.error("Error procesando archivo:", err);
