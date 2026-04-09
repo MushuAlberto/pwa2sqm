@@ -29,17 +29,32 @@ const App: React.FC = () => {
   const [exportingImage, setExportingImage] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
 
-  // Cargar datos persistidos al iniciar
+  // Cargar datos persistidos al iniciar (con validación de integridad)
   useEffect(() => {
     const savedData = localStorage.getItem('sqm_raw_data');
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
+        
+        // Validar que los datos no estén corruptos (todos los valores numéricos en 0)
+        if (parsed.length > 0) {
+          const totalTon = parsed.reduce((a: number, b: any) => a + (Number(b.Ton_Real) || 0), 0);
+          const totalEq = parsed.reduce((a: number, b: any) => a + (Number(b.Eq_Real) || 0), 0);
+          
+          if (totalTon === 0 && totalEq === 0) {
+            // Datos corruptos: limpiar caché y forzar re-subida
+            console.warn("⚠️ Caché de datos corrupto detectado (todos los valores en 0). Limpiando...");
+            localStorage.removeItem('sqm_raw_data');
+            return; // No cargar datos corruptos
+          }
+        }
+        
         setRawData(parsed);
         const dates = [...new Set(parsed.map((r: any) => r.Fecha))].sort().reverse();
         if (dates.length > 0) setSelectedDate(dates[0] as string);
       } catch (e) {
-        console.error("Error cargando caché de datos");
+        console.error("Error cargando caché de datos, limpiando...");
+        localStorage.removeItem('sqm_raw_data');
       }
     }
   }, []);
