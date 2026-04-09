@@ -1,4 +1,13 @@
 
+export const normalizeHeader = (h: any): string => {
+  return String(h || '')
+    .toUpperCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove accents
+    .replace(/[._\s]+/g, ' ')       // Normalize spaces, dots, underscores to a single space
+    .trim();
+};
+
 export const cleanNumeric = (val: any): number => {
   if (val === undefined || val === null || val === '') return 0;
   if (typeof val === 'number') return val;

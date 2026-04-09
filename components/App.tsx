@@ -15,7 +15,7 @@ import { MemoryModule } from './MemoryModule';
 import { DdDTablero } from './DdDTablero';
 import ReportFooter from './ReportFooter';
 import InstructionModal from './InstructionModal';
-import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON } from '../utils/dataProcessor';
+import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
 
 declare const html2pdf: any;
 declare const html2canvas: any;
@@ -100,29 +100,33 @@ const App: React.FC = () => {
 
         if (jsonData.length < 2) throw new Error("Archivo vacío.");
 
-        const headers = jsonData[0].map(h => String(h || '').toUpperCase().trim());
-        const getIdx = (name: string, fallback: number) => {
-          const found = headers.findIndex(h => h.includes(name.toUpperCase()));
-          return found !== -1 ? found : fallback;
+        const normalizedHeaders = jsonData[0].map(h => normalizeHeader(h));
+        
+        const getIdx = (aliases: string[], fallback: number) => {
+          for (const alias of aliases) {
+            const normAlias = normalizeHeader(alias);
+            const found = normalizedHeaders.findIndex(h => h.includes(normAlias) || normAlias.includes(h));
+            if (found !== -1) return found;
+          }
+          return fallback;
         };
 
         const idx = {
-          fecha: getIdx("FECHA", 1),
-          producto: getIdx("PRODUCTO", 31),
-          destino: getIdx("DESTINO", 32),
-          tonProg: getIdx("TON_PROG", 33),
-          tonReal: getIdx("TON_REAL", 34),
-          eqProg: getIdx("EQ_PROG", 35),
-          eqReal: getIdx("EQ_REAL", 36),
-          regReal: (() => {
-            const found = headers.findIndex(h => h.includes("REGULACION") || h.includes("REG.") || h === "REG");
-            return found !== -1 ? found : 46;
-          })(),
-          sda: getIdx("TPO SDA", 4),
-          pang: getIdx("TPO PANG", 5),
-          faenaMeta: 49,
-          faenaReal: 50
+          fecha: getIdx(["FECHA", "JORNADA"], 1),
+          producto: getIdx(["PRODUCTO", "NIVEL"], 31),
+          destino: getIdx(["DESTINO", "UBICACION"], 32),
+          tonProg: getIdx(["TON_PROG", "TON PROG", "TONELADAS PROGRAMADAS"], 33),
+          tonReal: getIdx(["TON_REAL", "TON REAL", "TONELADAS REALES"], 34),
+          eqProg: getIdx(["EQ_PROG", "EQ PROG", "EQUIPOS PROGRAMADOS"], 35),
+          eqReal: getIdx(["EQ_REAL", "EQ REAL", "EQUIPOS REALES"], 36),
+          regReal: getIdx(["REGULACION", "REG.", "REG", "TOTAL REGULACIONES"], 46),
+          sda: getIdx(["TPO SDA", "SDA", "TIEMPO SDA"], 4),
+          pang: getIdx(["TPO PANG", "PANG", "TIEMPO PANG", "NY"], 5),
+          faenaMeta: getIdx(["FAENA META", "META HRS"], 49),
+          faenaReal: getIdx(["FAENA REAL", "REAL HRS"], 50)
         };
+
+        console.log("Columnas detectadas (indices):", idx);
 
         const processed = jsonData.slice(1).map((row) => {
           if (!row || row.length < 2) return null;
@@ -155,6 +159,10 @@ const App: React.FC = () => {
         localStorage.setItem('sqm_raw_data', JSON.stringify(processed));
         const dates = [...new Set(processed.map(r => r.Fecha))].sort().reverse();
         if (dates.length > 0) setSelectedDate(dates[0]);
+        alert("Archivo procesado con éxito.");
+      } catch (err: any) {
+        console.error("Error procesando archivo:", err);
+        alert(`Error al procesar el archivo: ${err.message || 'Error desconocido'}`);
       } finally {
         setLoading(false);
       }
