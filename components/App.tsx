@@ -229,7 +229,14 @@ const App: React.FC = () => {
             Ton_Real: cleanNumeric(row[idx.tonReal]),
             Eq_Prog: cleanNumeric(row[idx.eqProg]),
             Eq_Real: cleanNumeric(row[idx.eqReal]),
-            Regulacion_Real: cleanNumeric(row[idx.regReal]),
+            Regulacion_Real: (() => {
+              const raw = row[idx.regReal];
+              const val = cleanNumeric(raw);
+              if (typeof raw === 'number' && raw > 0 && raw <= 1.0) {
+                return raw * 100;
+              }
+              return val;
+            })(),
             sdaHours: parseExcelTime(row[idx.sda]),
             pangHours: parseExcelTime(row[idx.pang]),
             faenaMetaHours: parseExcelTime(row[idx.faenaMeta]),
