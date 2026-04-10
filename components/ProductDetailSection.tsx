@@ -169,7 +169,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
           </div>
         </div>
         <div className="bg-white p-6 rounded-[1.5rem] border border-calido shadow-sm flex flex-col justify-center space-y-4">
-          <IndicatorRow label="Regulaciones" value={`${stats.totalReg.toFixed(1)}%`} />
+          <IndicatorRow label="Regulaciones" value={`${Math.round(stats.totalReg)}%`} />
           <IndicatorRow label="Factor Carga" value={`${stats.avgLoad.toFixed(1)} T/EQ`} />
           <div className="h-px bg-calido w-full" />
           <IndicatorRow label="Tpo. Real" value={formatHoursToTime(stats.avgFaenaReal)} color={isTimeDeviation ? 'text-rose-600' : 'text-tecnico'} />

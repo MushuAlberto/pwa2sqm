@@ -297,7 +297,7 @@ const App: React.FC = () => {
       { label: "Cumplimiento Programa", value: `${compliance.toFixed(1)}%`, icon: <Target className="w-3.5 h-3.5" />, status: compliance < 85 ? 'danger' : 'normal' },
       { label: "Intensidad de Flota", value: `${totalEqReal} EQ`, icon: <Users className="w-3.5 h-3.5" /> },
       { label: "Factor de Carga (Eficiencia)", value: `${avgLoad.toFixed(1)} T/EQ`, icon: <Scale className="w-3.5 h-3.5" /> },
-      { label: "Porcentaje de Regulación", value: `${avgReg.toFixed(1)}%`, icon: <ClipboardCheck className="w-3.5 h-3.5" /> },
+      { label: "Porcentaje de Regulación", value: `${Math.round(avgReg)}%`, icon: <ClipboardCheck className="w-3.5 h-3.5" /> },
     ];
   }, [filteredData]);
 
