@@ -85,7 +85,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     const tonReal = data.reduce((a, b) => a + (Number(b.Ton_Real) || 0), 0);
     const eqProg = data.reduce((a, b) => a + (Number(b.Eq_Prog) || 0), 0);
     const eqReal = data.reduce((a, b) => a + (Number(b.Eq_Real) || 0), 0);
-    const regSum = data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0);
+    const regAvg = data.length > 0 ? data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0) / data.length : 0;
 
     const faenaRealHoursList = data.map(d => Number(d.faenaRealHours) || 0).filter(v => v > 0);
     const faenaMetaHoursList = data.map(d => Number(d.faenaMetaHours) || 0).filter(v => v > 0);
@@ -104,7 +104,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       tonProg, tonReal, tonDiff: tonReal - tonProg,
       eqProg, eqReal, eqDiff: eqReal - eqProg,
       compliance: tonProg > 0 ? (tonReal / tonProg) * 100 : 0,
-      totalReg: regSum,
+      totalReg: regAvg,
       avgLoad: eqReal > 0 ? tonReal / eqReal : 0,
       avgFaenaReal,
       avgFaenaMeta,
@@ -169,7 +169,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
           </div>
         </div>
         <div className="bg-white p-6 rounded-[1.5rem] border border-calido shadow-sm flex flex-col justify-center space-y-4">
-          <IndicatorRow label="Regulaciones" value={`${Math.round(stats.totalReg)}`} />
+          <IndicatorRow label="Regulaciones" value={`${stats.totalReg.toFixed(1)}%`} />
           <IndicatorRow label="Factor Carga" value={`${stats.avgLoad.toFixed(1)} T/EQ`} />
           <div className="h-px bg-calido w-full" />
           <IndicatorRow label="Tpo. Real" value={formatHoursToTime(stats.avgFaenaReal)} color={isTimeDeviation ? 'text-rose-600' : 'text-tecnico'} />

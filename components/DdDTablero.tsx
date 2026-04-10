@@ -95,7 +95,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                     kpiFaena: metaFaena,
                     realFaena,
                     kpiReg: 10,
-                    realReg: (item.Regulacion_Real / (item.Eq_Real || 1)) * 100,
+                    realReg: item.Regulacion_Real,
                     kpiPromTon,
                     promTonReal
                 });

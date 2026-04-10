@@ -272,7 +272,7 @@ const App: React.FC = () => {
     const totalTonReal = filteredData.reduce((a, b) => a + b.Ton_Real, 0);
     const totalTonProg = filteredData.reduce((a, b) => a + b.Ton_Prog, 0);
     const totalEqReal = filteredData.reduce((a, b) => a + b.Eq_Real, 0);
-    const totalReg = filteredData.reduce((acc, d) => acc + (Number(d.Regulacion_Real) || 0), 0);
+    const avgReg = filteredData.length > 0 ? filteredData.reduce((acc, d) => acc + (Number(d.Regulacion_Real) || 0), 0) / filteredData.length : 0;
     const validSdaTimes = filteredData.map(d => d.sdaHours).filter(v => v > 0);
     const avgSda = validSdaTimes.length > 0 ? validSdaTimes.reduce((a, b) => a + b, 0) / validSdaTimes.length : 0;
     const validPangTimes = filteredData.map(d => d.pangHours).filter(v => v > 0);
@@ -290,7 +290,7 @@ const App: React.FC = () => {
       { label: "Cumplimiento Programa", value: `${compliance.toFixed(1)}%`, icon: <Target className="w-3.5 h-3.5" />, status: compliance < 85 ? 'danger' : 'normal' },
       { label: "Intensidad de Flota", value: `${totalEqReal} EQ`, icon: <Users className="w-3.5 h-3.5" /> },
       { label: "Factor de Carga (Eficiencia)", value: `${avgLoad.toFixed(1)} T/EQ`, icon: <Scale className="w-3.5 h-3.5" /> },
-      { label: "Cantidad Total Regulaciones", value: `${Math.round(totalReg)} Reg.`, icon: <ClipboardCheck className="w-3.5 h-3.5" /> },
+      { label: "Porcentaje de Regulación", value: `${avgReg.toFixed(1)}%`, icon: <ClipboardCheck className="w-3.5 h-3.5" /> },
     ];
   }, [filteredData]);
 
