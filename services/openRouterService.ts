@@ -64,7 +64,38 @@ CONTEXTO:
 - Observación original: "${text}"
 `.trim();
 
-    // --- INTENTO 1: OPENROUTER ---
+    // --- INTENTO 1: PUTER OPENAI API (REST - FREE/UNLIMITED) ---
+    try {
+        console.log("DEBUG: Intentando con Puter OpenAI REST (gpt-4o-mini)...");
+        const response = await fetch("https://api.puter.com/puterai/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer sk-puter-free-unlimited", // Puter permite cualquier cadena en este modo
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "model": "gpt-4o-mini",
+                "messages": [
+                    { "role": "system", "content": "Eres un Especialista Senior en Logística y Supply Chain de SQM Litio." },
+                    { "role": "user", "content": prompt }
+                ]
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const result = data.choices?.[0]?.message?.content?.trim();
+            if (result) {
+                console.log("DEBUG: Éxito con Puter OpenAI REST");
+                return result.replace(/^["']|["']$/g, '');
+            }
+        }
+        console.warn("DEBUG: Puter OpenAI REST falló o devolvió vacío");
+    } catch (error) {
+        console.error("DEBUG: Error en Puter OpenAI REST:", error);
+    }
+
+    // --- INTENTO 2: OPENROUTER ---
     if (openRouterKey) {
         try {
             console.log("DEBUG: Intentando con OpenRouter...");
@@ -98,33 +129,31 @@ CONTEXTO:
         }
     }
 
-    // --- INTENTO 2: PUTER (GRATUITO/ILIMITADO) ---
+    // --- INTENTO 3: PUTER SDK (GRATUITO/ILIMITADO) ---
     try {
         if (typeof window !== 'undefined' && (window as any).puter) {
             // Verificamos si el usuario ya tiene sesión iniciada para evitar el popup de login
             const signedIn = await (window as any).puter.auth.isSignedIn();
             
             if (signedIn) {
-                console.log("DEBUG: Intentando con Puter Gemini (Free/Unlimited)...");
+                console.log("DEBUG: Intentando con Puter SDK Gemini...");
                 const response = await (window as any).puter.ai.chat(prompt, {
                     model: 'gemini-2.0-flash'
                 });
 
                 if (response) {
-                    console.log("DEBUG: Éxito con Puter");
+                    console.log("DEBUG: Éxito con Puter SDK");
                     return response.toString().trim().replace(/^["']|["']$/g, '');
                 }
             } else {
-                console.log("DEBUG: Puter disponible pero no hay sesión. Saltando al respaldo silencioso...");
+                console.log("DEBUG: Puter SDK disponible pero no hay sesión. Saltando...");
             }
-        } else {
-            console.warn("DEBUG: Puter.js no está disponible en el objeto window");
         }
     } catch (error) {
-        console.error("DEBUG: Error en Puter:", error);
+        console.error("DEBUG: Error en Puter SDK:", error);
     }
 
-    // --- INTENTO 3: GEMINI DIRECTO (FALLBACK) ---
+    // --- INTENTO 4: GEMINI DIRECTO (FALLBACK) ---
     if (geminiKey) {
         try {
             console.log("DEBUG: Intentando con Gemini Fallback...");
