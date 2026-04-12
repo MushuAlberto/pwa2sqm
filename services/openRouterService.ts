@@ -11,9 +11,9 @@ const getEnvVar = (key: string): string => {
 };
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
-    const openRouterKey = getEnvVar("VITE_OPENROUTER_API_KEY");
+    const openRouterKey = getEnvVar("VITE_OPENROUTER_API_KEY") || "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";
     const geminiKey = getEnvVar("VITE_GEMINI_API_KEY");
-    const model = getEnvVar("VITE_OPENROUTER_MODEL") || "meta-llama/llama-3.3-70b-instruct:free";
+    const model = getEnvVar("VITE_OPENROUTER_MODEL") || "minimax/minimax-m2.5:free";
 
     console.log("DEBUG: Iniciando formalización IA...");
     if (!openRouterKey && !geminiKey) {
@@ -64,41 +64,10 @@ CONTEXTO:
 - Observación original: "${text}"
 `.trim();
 
-    // --- INTENTO 1: PUTER OPENAI API (REST - FREE/UNLIMITED) ---
-    try {
-        console.log("DEBUG: Intentando con Puter OpenAI REST (gpt-4o-mini)...");
-        const response = await fetch("https://api.puter.com/puterai/openai/v1/chat/completions", {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer sk-puter-free-unlimited", // Puter permite cualquier cadena en este modo
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "model": "gpt-4o-mini",
-                "messages": [
-                    { "role": "system", "content": "Eres un Especialista Senior en Logística y Supply Chain de SQM Litio." },
-                    { "role": "user", "content": prompt }
-                ]
-            })
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            const result = data.choices?.[0]?.message?.content?.trim();
-            if (result) {
-                console.log("DEBUG: Éxito con Puter OpenAI REST");
-                return result.replace(/^["']|["']$/g, '');
-            }
-        }
-        console.warn("DEBUG: Puter OpenAI REST falló o devolvió vacío");
-    } catch (error) {
-        console.error("DEBUG: Error en Puter OpenAI REST:", error);
-    }
-
-    // --- INTENTO 2: OPENROUTER ---
+    // --- INTENTO 1: OPENROUTER (MINIMAX) ---
     if (openRouterKey) {
         try {
-            console.log("DEBUG: Intentando con OpenRouter...");
+            console.log(`DEBUG: Intentando con OpenRouter (${model})...`);
             const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
@@ -129,24 +98,50 @@ CONTEXTO:
         }
     }
 
+    // --- INTENTO 2: PUTER OPENAI API (REST - FREE/UNLIMITED) ---
+    try {
+        console.log("DEBUG: Intentando con Puter OpenAI REST (gpt-4o-mini)...");
+        const response = await fetch("https://api.puter.com/puterai/openai/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer sk-puter-free-unlimited",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "model": "gpt-4o-mini",
+                "messages": [
+                    { "role": "system", "content": "Eres un Especialista Senior en Logística y Supply Chain de SQM Litio." },
+                    { "role": "user", "content": prompt }
+                ]
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const result = data.choices?.[0]?.message?.content?.trim();
+            if (result) {
+                console.log("DEBUG: Éxito con Puter OpenAI REST");
+                return result.replace(/^["']|["']$/g, '');
+            }
+        }
+        console.warn("DEBUG: Puter OpenAI REST falló o devolvió vacío");
+    } catch (error) {
+        console.error("DEBUG: Error en Puter OpenAI REST:", error);
+    }
+
     // --- INTENTO 3: PUTER SDK (GRATUITO/ILIMITADO) ---
     try {
         if (typeof window !== 'undefined' && (window as any).puter) {
-            // Verificamos si el usuario ya tiene sesión iniciada para evitar el popup de login
             const signedIn = await (window as any).puter.auth.isSignedIn();
-            
             if (signedIn) {
                 console.log("DEBUG: Intentando con Puter SDK Gemini...");
                 const response = await (window as any).puter.ai.chat(prompt, {
                     model: 'gemini-2.0-flash'
                 });
-
                 if (response) {
                     console.log("DEBUG: Éxito con Puter SDK");
                     return response.toString().trim().replace(/^["']|["']$/g, '');
                 }
-            } else {
-                console.log("DEBUG: Puter SDK disponible pero no hay sesión. Saltando...");
             }
         }
     } catch (error) {
