@@ -10,7 +10,7 @@ const getEnvVar = (key: string): string => {
     return (import.meta as any).env?.[key] || (window as any).process?.env?.[key] || "";
 };
 
-export const refineJustificationWithAI = async (text: string, product: string, destination?: string): Promise<string> => {
+export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
     const openRouterKey = getEnvVar("VITE_OPENROUTER_API_KEY");
     const geminiKey = getEnvVar("VITE_GEMINI_API_KEY");
     const model = getEnvVar("VITE_OPENROUTER_MODEL") || "meta-llama/llama-3.3-70b-instruct:free";
@@ -21,17 +21,40 @@ export const refineJustificationWithAI = async (text: string, product: string, d
         throw new Error("Configuración de IA incompleta");
     }
 
+    const isGeneration = !text || text.trim().length === 0;
+    const statsContext = stats ? `
+ESTADÍSTICAS DE DESVIACIÓN:
+- Producto: ${product}
+- Cumplimiento: ${stats.compliance?.toFixed(1)}%
+- Tonelaje: ${stats.tonReal?.toLocaleString()} Real vs ${stats.tonProg?.toLocaleString()} Programado
+- Desv. Tiempos: ${stats.avgFaenaReal > stats.avgFaenaMeta ? 'Retraso detectado en ciclo de faena' : 'Dentro de parámetros'}
+- Destino: ${stats.mainDest}
+`.trim() : "";
+
     const prompt = `
 Actúa como un Especialista Senior en Supply Chain, Logística y Transporte. 
-Tu misión es redactar una justificación profesional, BREVE y EJECUTIVA basada en la observación proporcionada.
+Tu misión es redactar una justificación profesional, BREVE y EJECUTIVA.
+
+${isGeneration ? `
+INSTRUCCIÓN DE GENERACIÓN:
+No se proporcionó una observación manual. Genera una PROPUESTA TÉCNICA PROBABLE basada en los siguientes datos:
+${statsContext}
+Utiliza causas raíz comunes en logística (congestión, demoras en pesaje, incidencias técnicas menores, transición de turnos) que justifiquen estas desviaciones.
+` : `
+INSTRUCCIÓN DE REFINAMIENTO:
+Refina la siguiente observación proporcionada por el usuario:
+- Observación original: "${text}"
+
+${statsContext}
+`}
 
 TONO Y ESTILO:
-- Profesional, directo y extremadamente CONCISO. 
+- Profesional, directo y extremadamente CONCISO (Máximo 2 oraciones). 
 - Evita redacciones largas o frases de relleno. 
 
 REGLAS CRÍTICAS:
 - Entrega ÚNICAMENTE el cuerpo del texto de la justificación. 
-- NO incluyas ninguna etiqueta introductoria como "Causa raíz:", "Justificación:", "Observación:", ni similares.
+- NO incluyas ninguna etiqueta introductoria como "Causa raíz:", "Justificación:", "Propuesta:", ni similares.
 - OMITA menciones directas al destino específico; enfócate en la causa raíz operativa.
 - NO uses frases redundantes ni comentarios adicionales.
 - Traducción de acrónimos (SOLO si están en el original): "SdA" -> "Salar de Atacama", "CS" -> "Coya Sur", "CF" -> "Cargador Frontal".

@@ -46,10 +46,10 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   };
 
   const handleBlur = async () => {
-    if (!justification.trim() || isRefining) return;
+    if (isRefining) return;
     
-    // Si ya parece profesional (ej. oraciones largas con términos técnicos), podríamos saltar,
-    // pero el usuario pidió que al hacer click fuera se reescriba.
+    // Si no hay texto y no hay desviación, no tiene sentido generar
+    if (!justification.trim() && !hasAnyDeviation) return;
     
     try {
       setIsRefining(true);
@@ -57,7 +57,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       const refined = await refineJustificationWithAI(
         justification, 
         product, 
-        stats?.mainDest
+        stats
       );
       
       if (refined && refined !== justification) {
@@ -207,7 +207,7 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
               onChange={handleTextChange}
               onBlur={handleBlur}
               disabled={isRefining}
-              placeholder={isRefining ? "Formalizando con IA..." : "Escriba aquí la justificación técnica manual de la desviación..."}
+              placeholder={isRefining ? "Redacción ejecutiva y técnica..." : "Escriba aquí la justificación técnica manual de la desviación..."}
               className={`w-full h-32 bg-white border-2 rounded-2xl p-5 text-sm font-medium transition-all shadow-inner resize-none no-pdf mb-2 ${
                 isRefining 
                   ? 'border-emerald-200 text-slate-400' 
@@ -216,9 +216,9 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             />
 
             {isRefining && (
-              <div className="absolute top-4 right-4 flex items-center gap-2 text-emerald-500 animate-pulse">
+              <div className="absolute top-4 right-4 flex items-center gap-2 text-ionizado animate-pulse">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-[10px] font-black uppercase tracking-widest">IA Formalizando</span>
+                <span className="text-[10px] font-black uppercase tracking-widest">Redacción ejecutiva y técnica</span>
               </div>
             )}
 
