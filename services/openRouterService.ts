@@ -13,7 +13,9 @@ const getEnvVar = (key: string): string => {
 
 // Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
 const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY");
-const MODEL_ID = "openai/gpt-oss-20b:free";
+// Permite cambiar el modelo desde Vercel usando VITE_OPENROUTER_MODEL. 
+// Si no se configura, usa el modelo de 20b por defecto.
+const MODEL_ID = getEnvVar("VITE_OPENROUTER_MODEL") || "openai/gpt-oss-20b:free";
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
     if (!API_KEY) {
@@ -21,7 +23,7 @@ export const refineJustificationWithAI = async (text: string, product: string, s
         throw new Error("ERROR_CONFIG_API: La API Key no está configurada en Vercel.");
     }
 
-    console.log(`DEBUG: Iniciando formalización con GPT-OSS 20B...`);
+    console.log(`DEBUG: Iniciando formalización con modelo: ${MODEL_ID}`);
     
     // Construcción del contexto estadístico para la IA
     const statsContext = stats ? `
