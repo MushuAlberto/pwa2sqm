@@ -55,6 +55,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   const storageKey = `sqm_justification_${date}_${product}`;
   const [justification, setJustification] = useState(() => localStorage.getItem(storageKey) || "");
   const [isRefining, setIsRefining] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem(storageKey, justification);
@@ -113,6 +114,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     
     try {
       setIsRefining(true);
+      setAiError(null);
       console.log("DEBUG: Iniciando auto-formalización onBlur...");
       const refined = await refineJustificationWithAI(
         justification, 
@@ -125,8 +127,9 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         localStorage.setItem(storageKey, refined);
         console.log("DEBUG: Auto-formalización exitosa");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("DEBUG: Falló la auto-formalización:", error);
+      setAiError(error.message || "Error desconocido");
     } finally {
       setIsRefining(false);
     }
@@ -242,7 +245,17 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
           {isRefining && (
             <div className="absolute top-4 right-4 flex items-center gap-2 text-ionizado animate-pulse">
               <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Redacción ejecutiva y técnica</span>
+              <span className="text-[10px] font-black uppercase tracking-widest">Formalizando Justificación</span>
+            </div>
+          )}
+
+          {aiError && (
+            <div className="absolute top-4 right-4 flex items-center gap-2 text-rose-500 bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-100 shadow-sm animate-in fade-in zoom-in slide-in-from-right-2">
+              <AlertCircle className="w-4 h-4" />
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Error de IA</span>
+                <span className="text-[8px] font-medium opacity-80 whitespace-nowrap">{aiError.includes('API') ? 'Error de Configuración' : aiError}</span>
+              </div>
             </div>
           )}
 

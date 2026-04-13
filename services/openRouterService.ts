@@ -13,15 +13,15 @@ const getEnvVar = (key: string): string => {
 
 // Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
 const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY");
-const MODEL_ID = "google/gemini-2.0-flash-lite-preview-02-05:free";
+const MODEL_ID = "google/gemma-4-31b-it:free";
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
     if (!API_KEY) {
         console.error("DEBUG: Falta VITE_OPENROUTER_API_KEY en las variables de entorno");
-        throw new Error("Configuración de Seguridad: La API Key no está configurada. Por favor, revisa tu archivo .env o la configuración del servidor.");
+        throw new Error("ERROR_CONFIG_API: La API Key no está configurada en Vercel.");
     }
 
-    console.log("DEBUG: Iniciando formalización con Gemini 2.0 Flash Lite...");
+    console.log(`DEBUG: Iniciando formalización con Gemma 4 31B...`);
     
     // Construcción del contexto estadístico para la IA
     const statsContext = stats ? `
