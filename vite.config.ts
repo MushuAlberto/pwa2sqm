@@ -12,10 +12,8 @@ export default defineConfig(({ mode }) => {
     base: './',
     plugins: [react()],
     define: {
-      'process.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || ""),
-      'process.env.API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY || ""),
       'process.env.VITE_OPENROUTER_API_KEY': JSON.stringify(env.VITE_OPENROUTER_API_KEY || ""),
-      'process.env.VITE_OPENROUTER_MODEL': JSON.stringify(env.VITE_OPENROUTER_MODEL || "nousresearch/hermes-3-llama-3.1-405b:free"),
+      'process.env.VITE_OPENROUTER_MODEL': JSON.stringify(env.VITE_OPENROUTER_MODEL || "minimax/minimax-m2.5:free"),
     },
     resolve: {
       alias: {
@@ -33,7 +31,6 @@ export default defineConfig(({ mode }) => {
             if (id.includes('node_modules')) {
               if (id.includes('xlsx')) return 'vendor-excel';
               if (id.includes('recharts') || id.includes('d3')) return 'vendor-charts';
-              if (id.includes('@google/genai')) return 'vendor-ai';
               return 'vendor-core';
             }
           },

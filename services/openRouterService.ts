@@ -4,7 +4,11 @@
  */
 
 const getEnvVar = (key: string): string => {
-    return (import.meta as any).env?.[key] || (window as any).process?.env?.[key] || "";
+    try {
+        return (import.meta as any).env?.[key] || "";
+    } catch {
+        return "";
+    }
 };
 
 // Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
