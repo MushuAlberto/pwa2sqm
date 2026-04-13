@@ -8,11 +8,16 @@ const getEnvVar = (key: string): string => {
     return (import.meta as any).env?.[key] || (window as any).process?.env?.[key] || "";
 };
 
-// Clave proporcionada por el usuario (Prioridad: Variable de Entorno > Hardcoded)
-const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY") || "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";
+// Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
+const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY");
 const MODEL_ID = "minimax/minimax-m2.5:free";
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
+    if (!API_KEY) {
+        console.error("DEBUG: Falta VITE_OPENROUTER_API_KEY en las variables de entorno");
+        throw new Error("Configuración de Seguridad: La API Key no está configurada. Por favor, revisa tu archivo .env o la configuración del servidor.");
+    }
+
     console.log("DEBUG: Iniciando formalización con MiniMax-M2.5...");
     
     // Construcción del contexto estadístico para la IA
