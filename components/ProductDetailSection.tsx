@@ -250,7 +250,8 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             {justification || "No se registraron observaciones para este ítem."}
           </div>
         </div>
-      )}
+      </div>
+    )}
 
       <div className="flex justify-end items-center no-print no-pdf">
         <div className="text-[8px] font-black text-violeta/60 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
