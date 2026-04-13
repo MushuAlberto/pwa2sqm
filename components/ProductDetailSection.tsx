@@ -30,7 +30,7 @@ const MetricCard = ({ icon, label, value, diff, unit = '', isPerc = false }: any
         <div className="p-2 bg-slate-50 rounded-lg text-violeta/70 group-hover:text-ionizado transition-colors">{icon}</div>
         {diff !== undefined && (
           <div className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isPositive ? 'bg-tecnico/10 text-tecnico' : 'bg-nucleo/10 text-nucleo'} uppercase tracking-tighter`}>
-            {isPositive ? '+' : ''}{isPerc ? diff.toFixed(1) : diff} {isPerc ? '%' : unit}
+            {isPositive ? '+' : ''}{isPerc ? diff.toFixed(1) : Math.round(diff).toLocaleString()} {isPerc ? '%' : unit}
           </div>
         )}
       </div>
@@ -66,8 +66,8 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
   const stats = useMemo(() => {
     if (!data || data.length === 0) return null;
-    const tonProg = data.reduce((a, b) => a + (Number(b.Ton_Prog) || 0), 0);
-    const tonReal = data.reduce((a, b) => a + (Number(b.Ton_Real) || 0), 0);
+    const tonProg = Math.round(data.reduce((a, b) => a + (Number(b.Ton_Prog) || 0), 0));
+    const tonReal = Math.round(data.reduce((a, b) => a + (Number(b.Ton_Real) || 0), 0));
     const eqProg = data.reduce((a, b) => a + (Number(b.Eq_Prog) || 0), 0);
     const eqReal = data.reduce((a, b) => a + (Number(b.Eq_Real) || 0), 0);
     const regAvg = data.length > 0 ? data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0) / data.length : 0;
