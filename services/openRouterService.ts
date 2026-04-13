@@ -13,7 +13,7 @@ const getEnvVar = (key: string): string => {
 
 // Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
 const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY");
-const MODEL_ID = "minimax/minimax-m2.5:free";
+const MODEL_ID = "google/gemini-2.0-flash-lite-preview-02-05:free";
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
     if (!API_KEY) {
@@ -21,7 +21,7 @@ export const refineJustificationWithAI = async (text: string, product: string, s
         throw new Error("Configuración de Seguridad: La API Key no está configurada. Por favor, revisa tu archivo .env o la configuración del servidor.");
     }
 
-    console.log("DEBUG: Iniciando formalización con MiniMax-M2.5...");
+    console.log("DEBUG: Iniciando formalización con Gemini 2.0 Flash Lite...");
     
     // Construcción del contexto estadístico para la IA
     const statsContext = stats ? `
@@ -70,7 +70,7 @@ REGLAS:
                     { "role": "user", "content": prompt }
                 ],
                 "temperature": 0.5,
-                "max_tokens": 150
+                "max_tokens": 100
             })
         });
 
