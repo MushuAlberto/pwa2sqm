@@ -13,43 +13,62 @@ import { refineJustificationWithAI } from '../services/openRouterService';
 interface ProductDetailSectionProps {
   product: string;
   data: any[];
+  index: number;
+  total: number;
   date: string;
-  index?: number;
-  total?: number;
 }
 
+const MetricCard = ({ icon, label, value, diff, unit = '', isPerc = false }: any) => {
+  const isPositive = diff > 0;
+  const colorClass = isPerc 
+    ? (value === '100.0%' ? 'text-ionizado' : 'text-nucleo')
+    : (isPositive ? 'text-tecnico' : 'text-nucleo');
 
-const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
-  product, data, date, index = 1, total = 1
+  return (
+    <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-3 relative overflow-hidden group hover:border-ionizado/30 transition-all duration-300">
+      <div className="flex items-center justify-between">
+        <div className="p-2 bg-slate-50 rounded-lg text-violeta/70 group-hover:text-ionizado transition-colors">{icon}</div>
+        {diff !== undefined && (
+          <div className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isPositive ? 'bg-tecnico/10 text-tecnico' : 'bg-nucleo/10 text-nucleo'} uppercase tracking-tighter`}>
+            {isPositive ? '+' : ''}{isPerc ? diff.toFixed(1) : diff} {isPerc ? '%' : unit}
+          </div>
+        )}
+      </div>
+      <div>
+        <p className="text-[9px] font-black text-violeta/50 uppercase tracking-widest mb-1">{label}</p>
+        <p className={`text-2xl font-black ${colorClass} tracking-tighter leading-none`}>{value}</p>
+      </div>
+    </div>
+  );
+};
+
+const IndicatorRow = ({ label, value, color = 'text-nucleo' }: any) => (
+  <div className="flex justify-between items-center py-2 border-b border-calido/50 last:border-0 hover:bg-slate-50/50 px-1 rounded-md transition-colors">
+    <span className="text-[10px] font-black text-violeta/60 uppercase tracking-widest">{label}</span>
+    <span className={`text-xs font-black ${color} tracking-tight uppercase`}>{value}</span>
+  </div>
+);
+
+export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({ 
+  product, data, index, total, date 
 }) => {
-  const [justification, setJustification] = useState('');
-  const [isRefining, setIsRefining] = useState(false);
   const storageKey = `sqm_justification_${date}_${product}`;
-  // Cargar justificación al cambiar producto o fecha
+  const [justification, setJustification] = useState(() => localStorage.getItem(storageKey) || "");
+  const [isRefining, setIsRefining] = useState(false);
+
   useEffect(() => {
-    const saved = localStorage.getItem(storageKey);
-    if (saved) {
-      setJustification(saved);
-    } else {
-      setJustification('');
-    }
-  }, [date, product, storageKey]);
+    localStorage.setItem(storageKey, justification);
+  }, [justification, storageKey]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newText = e.target.value;
-    setJustification(newText);
-    if (newText.trim()) {
-      localStorage.setItem(storageKey, newText.trim());
-    } else {
-      localStorage.removeItem(storageKey);
-    }
+    setJustification(e.target.value);
   };
 
   const handleBlur = async () => {
     if (isRefining) return;
     
-    // Si no hay texto y no hay desviación, no tiene sentido generar
-    if (!justification.trim() && !hasAnyDeviation) return;
+    // Solo activar si hay al menos 5 caracteres para evitar llamadas vacías o accidentales
+    if (justification.trim().length < 5) return;
     
     try {
       setIsRefining(true);
@@ -121,7 +140,6 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
   const isTimeDeviation = stats.avgFaenaReal > 0 && stats.avgFaenaMeta > 0 && (stats.avgFaenaReal - stats.avgFaenaMeta) >= (10 / 60);
   const isTonDeviation = stats.compliance < 85;
-  const hasAnyDeviation = isTonDeviation || isTimeDeviation;
 
   return (
     <div className="flex flex-col space-y-4 w-full bg-white overflow-hidden pb-8">
@@ -177,83 +195,59 @@ const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         </div>
       </div>
 
-      {hasAnyDeviation && (
-        <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
-          <div className="flex justify-between items-start border-b border-calido pb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm border border-calido">
-                <ClipboardEdit className="w-5 h-5" />
-              </div>
-              <div className="flex-1">
-                <p className="text-[9px] font-black text-violeta/70 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
-                <div className="flex items-center gap-2">
-                  <h4 className="text-xl font-black text-nucleo tracking-tighter uppercase leading-none">Justificación por Desviación</h4>
-                  <div className="flex gap-1.5 ml-2">
-                    {isTimeDeviation && (
-                      <span className="bg-nucleo/10 text-nucleo border border-nucleo/20 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Tpo.</span>
-                    )}
-                    {isTonDeviation && (
-                      <span className="bg-mineral/10 text-mineral border border-mineral/20 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Ton.</span>
-                    )}
-                  </div>
+      <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
+        <div className="flex justify-between items-start border-b border-calido pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm border border-calido">
+              <ClipboardEdit className="w-5 h-5" />
+            </div>
+            <div className="flex-1">
+              <p className="text-[9px] font-black text-violeta/70 uppercase tracking-widest leading-none mb-1">Registro Operativo</p>
+              <div className="flex items-center gap-2">
+                <h4 className="text-xl font-black text-nucleo tracking-tighter uppercase leading-none">Justificación de Desempeño</h4>
+                <div className="flex gap-1.5 ml-2">
+                  {isTimeDeviation && (
+                    <span className="bg-nucleo/10 text-nucleo border border-nucleo/20 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Tpo.</span>
+                  )}
+                  {isTonDeviation && (
+                    <span className="bg-mineral/10 text-mineral border border-mineral/20 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter">Desviación Ton.</span>
+                  )}
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="relative">
-            <textarea
-              value={justification}
-              onChange={handleTextChange}
-              onBlur={handleBlur}
-              disabled={isRefining}
-              placeholder={isRefining ? "Redacción ejecutiva y técnica..." : "Escriba aquí la justificación técnica manual de la desviación..."}
-              className={`w-full h-32 bg-white border-2 rounded-2xl p-5 text-sm font-medium transition-all shadow-inner resize-none no-pdf mb-2 ${
-                isRefining 
-                  ? 'border-emerald-200 text-slate-400' 
-                  : 'border-slate-100 text-slate-700 placeholder:text-slate-300 focus:ring-0'
-              }`}
-            />
+        <div className="relative">
+          <textarea
+            value={justification}
+            onChange={handleTextChange}
+            onBlur={handleBlur}
+            disabled={isRefining}
+            placeholder={isRefining ? "Redacción ejecutiva y técnica..." : "Escriba aquí la justificación técnica manual..."}
+            className={`w-full h-32 bg-white border-2 rounded-2xl p-5 text-sm font-medium transition-all shadow-inner resize-none no-pdf mb-2 ${
+              isRefining 
+                ? 'border-emerald-200 text-slate-400' 
+                : 'border-slate-100 text-slate-700 placeholder:text-slate-300 focus:ring-0'
+            }`}
+          />
 
-            {isRefining && (
-              <div className="absolute top-4 right-4 flex items-center gap-2 text-ionizado animate-pulse">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Redacción ejecutiva y técnica</span>
-              </div>
-            )}
-
-            <div className="hidden pdf-only-block bg-white border-2 border-calido rounded-2xl p-6 text-sm font-medium text-tecnico h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
-              {justification || "No se registraron observaciones para este ítem."}
+          {isRefining && (
+            <div className="absolute top-4 right-4 flex items-center gap-2 text-ionizado animate-pulse">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Redacción ejecutiva y técnica</span>
             </div>
-          </div>
-          <div className="flex justify-end items-center no-print no-pdf">
-            <div className="text-[8px] font-black text-violeta/60 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
+          )}
+
+          <div className="hidden pdf-only-block bg-white border-2 border-calido rounded-2xl p-6 text-sm font-medium text-tecnico h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
+            {justification || "No se registraron observaciones para este ítem."}
           </div>
         </div>
-      )}
-    </div>
-  );
-};
+      </div>
 
-const MetricCard = ({ icon, label, value, diff, unit, isPerc }: any) => {
-  const isPos = diff >= 0;
-  return (
-    <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-4">
-      <div className="flex items-center gap-2 text-violeta/70">{icon}<span className="text-[9px] font-black uppercase tracking-wider">{label}</span></div>
-      <p className="text-2xl font-black text-nucleo tracking-tighter leading-none">{value}</p>
-      <div className={`flex items-center gap-1.5 text-[10.5px] font-black px-3.5 py-1.5 rounded-lg w-fit ${isPos ? 'bg-ionizado/10 text-ionizado' : 'bg-nucleo/10 text-nucleo'}`}>
-        {isPos ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
-        {isPos ? '+' : ''}{isPerc ? diff.toFixed(1) : diff.toLocaleString()} {unit || ''}
+      <div className="flex justify-end items-center no-print no-pdf">
+        <div className="text-[8px] font-black text-violeta/60 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
       </div>
     </div>
   );
 };
-
-const IndicatorRow = ({ label, value, color }: any) => (
-  <div className="flex justify-between items-center">
-    <span className="text-[10px] font-bold text-violeta/70 uppercase tracking-widest">{label}</span>
-    <span className={`text-xl font-black ${color || 'text-nucleo'} tracking-tighter`}>{value}</span>
-  </div>
-);
-
-export default ProductDetailSection;
