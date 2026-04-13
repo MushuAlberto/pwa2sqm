@@ -70,6 +70,8 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     const tonReal = Math.round(data.reduce((a, b) => a + (Number(b.Ton_Real) || 0), 0));
     const eqProg = data.reduce((a, b) => a + (Number(b.Eq_Prog) || 0), 0);
     const eqReal = data.reduce((a, b) => a + (Number(b.Eq_Real) || 0), 0);
+    const compliance = tonProg > 0 ? (tonReal / tonProg) * 100 : 0;
+    const isTonDeviation = compliance < 85;
     const regAvg = data.length > 0 ? data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0) / data.length : 0;
 
     const faenaRealHoursList = data.map(d => Number(d.faenaRealHours) || 0).filter(v => v > 0);
@@ -77,6 +79,9 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 
     const avgFaenaReal = faenaRealHoursList.length > 0 ? (faenaRealHoursList.reduce((a, b) => a + b, 0) / faenaRealHoursList.length) : 0;
     const avgFaenaMeta = faenaMetaHoursList.length > 0 ? (faenaMetaHoursList.reduce((a, b) => a + b, 0) / faenaMetaHoursList.length) : 0;
+    const isTimeDeviation = avgFaenaReal > 0 && avgFaenaMeta > 0 && (avgFaenaReal - avgFaenaMeta) >= (10 / 60);
+
+    const hasAnyDeviation = isTonDeviation || isTimeDeviation;
 
     const destinations: Record<string, number> = {};
     data.forEach(d => {
@@ -88,7 +93,10 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     return {
       tonProg, tonReal, tonDiff: tonReal - tonProg,
       eqProg, eqReal, eqDiff: eqReal - eqProg,
-      compliance: tonProg > 0 ? (tonReal / tonProg) * 100 : 0,
+      compliance,
+      hasAnyDeviation,
+      isTonDeviation,
+      isTimeDeviation,
       totalReg: regAvg,
       avgLoad: eqReal > 0 ? tonReal / eqReal : 0,
       avgFaenaReal,
@@ -100,8 +108,8 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   const handleBlur = async () => {
     if (isRefining) return;
     
-    // Solo activar si hay al menos 5 caracteres para evitar llamadas vacías o accidentales
-    if (justification.trim().length < 5) return;
+    // Solo activar si hay al menos 5 caracteres y existe una desviación
+    if (justification.trim().length < 5 || !stats?.hasAnyDeviation) return;
     
     try {
       setIsRefining(true);
@@ -132,14 +140,12 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   };
 
   if (!stats) return null;
+  const { isTimeDeviation, isTonDeviation, hasAnyDeviation } = stats;
 
   const chartData = [
     { name: 'Tonelaje', Programado: stats.tonProg, Real: stats.tonReal },
     { name: 'Equipos', Programado: stats.eqProg, Real: stats.eqReal }
   ];
-
-  const isTimeDeviation = stats.avgFaenaReal > 0 && stats.avgFaenaMeta > 0 && (stats.avgFaenaReal - stats.avgFaenaMeta) >= (10 / 60);
-  const isTonDeviation = stats.compliance < 85;
 
   return (
     <div className="flex flex-col space-y-4 w-full bg-white overflow-hidden pb-8">
@@ -195,7 +201,8 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         </div>
       </div>
 
-      <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
+      {hasAnyDeviation && (
+        <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
         <div className="flex justify-between items-start border-b border-calido pb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm border border-calido">
@@ -243,7 +250,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             {justification || "No se registraron observaciones para este ítem."}
           </div>
         </div>
-      </div>
+      )}
 
       <div className="flex justify-end items-center no-print no-pdf">
         <div className="text-[8px] font-black text-violeta/60 uppercase tracking-widest">Persistencia Local: {date} • {product}</div>
