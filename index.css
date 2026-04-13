@@ -35,6 +35,19 @@
     print-color-adjust: exact !important;
   }
 
+  /* Forzar diseño de bloque para evitar fallos de salto de página en Flexbox */
+  #dashboard-report, 
+  .flex-col, 
+  .grid {
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  #dashboard-report {
+    width: 216mm !important; /* Ancho Legal */
+    margin: 0 auto !important;
+  }
+
   .no-print {
     display: none !important;
   }
@@ -42,11 +55,27 @@
   .page-break-before {
     page-break-before: always !important;
     break-before: page !important;
+    display: block !important;
+    width: 100% !important;
   }
 
   .page-break-after {
     page-break-after: always !important;
     break-after: page !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .no-page-break,
+  .bg-white.p-5,
+  .bg-white.p-6,
+  .grid-cols-4 > div,
+  .grid-cols-3 > div {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
   }
 }
 

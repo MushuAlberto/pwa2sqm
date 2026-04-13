@@ -151,7 +151,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
   ];
 
   return (
-    <div className="flex flex-col space-y-4 w-full bg-white overflow-hidden pb-8 page-break-after">
+    <div className="w-full bg-white pb-8 print:block">
       <div className="flex justify-between items-end border-b border-slate-100 pb-3">
         <div className="space-y-0.5">
           <p className="text-[8px] font-black text-ionizado uppercase tracking-[0.3em]">Auditoría de Desempeño</p>

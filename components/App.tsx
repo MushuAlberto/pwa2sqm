@@ -75,7 +75,7 @@ const App: React.FC = () => {
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2, useCORS: true, logging: false },
       jsPDF: { unit: 'mm', format: 'legal', orientation: 'portrait' },
-      pagebreak: { mode: ['css'], before: '.page-break-before', after: '.page-break-after', avoid: '.no-page-break' }
+      pagebreak: { mode: 'css' }
     };
 
     try {
@@ -484,8 +484,8 @@ const App: React.FC = () => {
                 </div>
 
                 {productList.map((prod, idx) => (
-                  <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white flex flex-col pt-4" style={{ pageBreakBefore: 'always', breakBefore: 'page', minHeight: '100vh' }}>
-                    <div className="flex-1 px-4">
+                  <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white block w-full pt-4" style={{ minHeight: '330mm' }}>
+                    <div className="px-4">
                       <ProductDetailSection
                         product={prod}
                         data={filteredData.filter(d => d.Producto === prod)}
@@ -494,7 +494,7 @@ const App: React.FC = () => {
                         total={productList.length}
                       />
                     </div>
-                    <div className="mt-auto px-4 pb-6"><ReportFooter /></div>
+                    <div className="px-4 pb-6 mt-8"><ReportFooter /></div>
                   </div>
                 ))}
               </>
