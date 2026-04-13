@@ -64,6 +64,39 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     setJustification(e.target.value);
   };
 
+  const stats = useMemo(() => {
+    if (!data || data.length === 0) return null;
+    const tonProg = data.reduce((a, b) => a + (Number(b.Ton_Prog) || 0), 0);
+    const tonReal = data.reduce((a, b) => a + (Number(b.Ton_Real) || 0), 0);
+    const eqProg = data.reduce((a, b) => a + (Number(b.Eq_Prog) || 0), 0);
+    const eqReal = data.reduce((a, b) => a + (Number(b.Eq_Real) || 0), 0);
+    const regAvg = data.length > 0 ? data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0) / data.length : 0;
+
+    const faenaRealHoursList = data.map(d => Number(d.faenaRealHours) || 0).filter(v => v > 0);
+    const faenaMetaHoursList = data.map(d => Number(d.faenaMetaHours) || 0).filter(v => v > 0);
+
+    const avgFaenaReal = faenaRealHoursList.length > 0 ? (faenaRealHoursList.reduce((a, b) => a + b, 0) / faenaRealHoursList.length) : 0;
+    const avgFaenaMeta = faenaMetaHoursList.length > 0 ? (faenaMetaHoursList.reduce((a, b) => a + b, 0) / faenaMetaHoursList.length) : 0;
+
+    const destinations: Record<string, number> = {};
+    data.forEach(d => {
+      const dest = String(d.Destino || 'S/D');
+      destinations[dest] = (destinations[dest] || 0) + 1;
+    });
+    const mainDestEntry = Object.entries(destinations).sort((a, b) => b[1] - a[1])[0];
+
+    return {
+      tonProg, tonReal, tonDiff: tonReal - tonProg,
+      eqProg, eqReal, eqDiff: eqReal - eqProg,
+      compliance: tonProg > 0 ? (tonReal / tonProg) * 100 : 0,
+      totalReg: regAvg,
+      avgLoad: eqReal > 0 ? tonReal / eqReal : 0,
+      avgFaenaReal,
+      avgFaenaMeta,
+      mainDest: mainDestEntry ? mainDestEntry[0] : 'S/D'
+    };
+  }, [data]);
+
   const handleBlur = async () => {
     if (isRefining) return;
     
@@ -97,39 +130,6 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     const m = Math.round((hours - h) * 60);
     return `${h}:${String(m).padStart(2, '0')}`;
   };
-
-  const stats = useMemo(() => {
-    if (!data || data.length === 0) return null;
-    const tonProg = data.reduce((a, b) => a + (Number(b.Ton_Prog) || 0), 0);
-    const tonReal = data.reduce((a, b) => a + (Number(b.Ton_Real) || 0), 0);
-    const eqProg = data.reduce((a, b) => a + (Number(b.Eq_Prog) || 0), 0);
-    const eqReal = data.reduce((a, b) => a + (Number(b.Eq_Real) || 0), 0);
-    const regAvg = data.length > 0 ? data.reduce((a, b) => a + (Number(b.Regulacion_Real) || 0), 0) / data.length : 0;
-
-    const faenaRealHoursList = data.map(d => Number(d.faenaRealHours) || 0).filter(v => v > 0);
-    const faenaMetaHoursList = data.map(d => Number(d.faenaMetaHours) || 0).filter(v => v > 0);
-
-    const avgFaenaReal = faenaRealHoursList.length > 0 ? (faenaRealHoursList.reduce((a, b) => a + b, 0) / faenaRealHoursList.length) : 0;
-    const avgFaenaMeta = faenaMetaHoursList.length > 0 ? (faenaMetaHoursList.reduce((a, b) => a + b, 0) / faenaMetaHoursList.length) : 0;
-
-    const destinations: Record<string, number> = {};
-    data.forEach(d => {
-      const dest = String(d.Destino || 'S/D');
-      destinations[dest] = (destinations[dest] || 0) + 1;
-    });
-    const mainDestEntry = Object.entries(destinations).sort((a, b) => b[1] - a[1])[0];
-
-    return {
-      tonProg, tonReal, tonDiff: tonReal - tonProg,
-      eqProg, eqReal, eqDiff: eqReal - eqProg,
-      compliance: tonProg > 0 ? (tonReal / tonProg) * 100 : 0,
-      totalReg: regAvg,
-      avgLoad: eqReal > 0 ? tonReal / eqReal : 0,
-      avgFaenaReal,
-      avgFaenaMeta,
-      mainDest: mainDestEntry ? mainDestEntry[0] : 'S/D'
-    };
-  }, [data]);
 
   if (!stats) return null;
 

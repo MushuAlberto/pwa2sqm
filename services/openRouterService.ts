@@ -1,4 +1,3 @@
-
 /**
  * Servicio simplificado para integración exclusiva con OpenRouter AI.
  * Utiliza el modelo MiniMax-M2.5 (free) para redacción ejecutiva y técnica.
@@ -57,7 +56,7 @@ REGLAS:
             headers: {
                 "Authorization": `Bearer ${API_KEY}`,
                 "Content-Type": "application/json",
-                "HTTP-Referer": window.location.origin,
+                "HTTP-Referer": typeof window !== 'undefined' ? window.location.origin : 'https://sqm-litio.vercel.app',
                 "X-Title": "SQM Logistics Dashboard",
             },
             body: JSON.stringify({
