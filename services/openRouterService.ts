@@ -32,7 +32,6 @@ ESTADÍSTICAS OPERATIVAS:
 - Cumplimiento: ${stats.compliance?.toFixed(1)}%
 - Tonelaje: ${stats.tonReal?.toLocaleString()} Real vs ${stats.tonProg?.toLocaleString()} Programado
 - Desv. Tiempos: ${stats.avgFaenaReal > stats.avgFaenaMeta ? 'Retraso detectado' : 'Sin cambios significativos'}
-- Destino: ${stats.mainDest}
 `.trim() : "";
 
     const isGeneration = !text || text.trim().length === 0;
@@ -54,6 +53,8 @@ REGLAS:
 - Entrega SOLO el texto de la justificación.
 - NO incluyas introducciones como "Causa raíz:" o "Justificación:".
 - Mantén un tono ejecutivo de alto nivel.
+- Siempre usa la abreviatura "ton." en minúscula para toneladas (NUNCA uses "tvs" ni la palabra completa como "toneladas").
+- NO menciones ningún destino, locación externa, ni el nombre del cliente en el reporte.
 `.trim();
 
     try {
