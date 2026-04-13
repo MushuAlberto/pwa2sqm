@@ -13,7 +13,7 @@ const getEnvVar = (key: string): string => {
 
 // Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
 const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY");
-const MODEL_ID = "google/gemma-4-31b-it:free";
+const MODEL_ID = "meta-llama/llama-3.1-8b-instruct:free";
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
     if (!API_KEY) {
@@ -21,7 +21,7 @@ export const refineJustificationWithAI = async (text: string, product: string, s
         throw new Error("ERROR_CONFIG_API: La API Key no está configurada en Vercel.");
     }
 
-    console.log(`DEBUG: Iniciando formalización con Gemma 4 31B...`);
+    console.log(`DEBUG: Iniciando formalización con Llama 3.1 8B...`);
     
     // Construcción del contexto estadístico para la IA
     const statsContext = stats ? `
