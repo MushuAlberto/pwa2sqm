@@ -251,3 +251,5 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
     </div>
   );
 };
+
+export default ProductDetailSection;

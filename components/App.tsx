@@ -12,7 +12,7 @@ import ProductDetailSection from './ProductDetailSection';
 import MainMenu from './MainMenu';
 import { LlegadaEquipos } from './LlegadaEquipos';
 import { MemoryModule } from './MemoryModule';
-import { DdDTablero } from './DdDTablero';
+import DdDTablero from './DdDTablero';
 import ReportFooter from './ReportFooter';
 import InstructionModal from './InstructionModal';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
