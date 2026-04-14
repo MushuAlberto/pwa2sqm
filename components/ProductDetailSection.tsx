@@ -25,7 +25,7 @@ const MetricCard = ({ icon, label, value, diff, unit = '', isPerc = false }: any
     : (isPositive ? 'text-tecnico' : 'text-nucleo');
 
   return (
-    <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-3 relative overflow-hidden group hover:border-ionizado/30 transition-all duration-300">
+    <div className="bg-white p-5 rounded-[1.2rem] shadow-sm flex flex-col space-y-3 relative overflow-hidden group transition-all duration-300">
       <div className="flex items-center justify-between">
         <div className="p-2 bg-slate-50 rounded-lg text-violeta/70 group-hover:text-ionizado transition-colors">{icon}</div>
         {diff !== undefined && (
@@ -161,7 +161,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       </div>
 
       <div className="flex flex-col items-center space-y-2 pt-1">
-        <div className={`px-8 py-1.5 rounded-full ${stats.compliance < 85 ? 'bg-nucleo text-white border-nucleo' : 'bg-ionizado/10 text-ionizado border-ionizado/20'} text-[9px] font-black tracking-[0.2em] shadow-sm border uppercase`}>
+        <div className={`px-8 py-1.5 rounded-full ${stats.compliance < 85 ? 'bg-nucleo text-white' : 'bg-ionizado/10 text-ionizado'} text-[9px] font-black tracking-[0.2em] shadow-sm uppercase`}>
           {stats.compliance < 85 ? 'Requiere Justificación Técnica' : 'Cumplimiento Operativo Exitoso'}
         </div>
       </div>
@@ -170,14 +170,14 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         <MetricCard icon={<Package className="w-4 h-4" />} label="Carga Real" value={`${stats.tonReal.toLocaleString()} Ton`} diff={stats.tonDiff} unit="vs Prog" />
         <MetricCard icon={<Truck className="w-4 h-4" />} label="Flota Real" value={`${stats.eqReal} EQ`} diff={stats.eqDiff} unit="vs Prog" />
         <MetricCard icon={<Target className="w-4 h-4" />} label="Cumplimiento" value={`${stats.compliance.toFixed(1)}%`} diff={stats.compliance - 100} isPerc />
-        <div className="bg-white p-5 rounded-[1.2rem] border border-calido shadow-sm flex flex-col space-y-3">
+        <div className="bg-white p-5 rounded-[1.2rem] shadow-sm flex flex-col space-y-3">
           <div className="flex items-center gap-2 text-violeta/70"><MapPin className="w-4 h-4" /><span className="text-[9px] font-black uppercase tracking-wider">Destino Crítico</span></div>
           <p className="text-lg font-black text-nucleo leading-tight truncate uppercase">{stats.mainDest}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-6 pt-2">
-        <div className="col-span-2 bg-white p-6 rounded-[1.5rem] border border-slate-100 shadow-sm flex flex-col space-y-4">
+        <div className="col-span-2 bg-white p-6 rounded-[1.5rem] shadow-sm flex flex-col space-y-4">
           <div className="h-[240px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} barGap={15} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
@@ -195,7 +195,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             </ResponsiveContainer>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-[1.5rem] border border-calido shadow-sm flex flex-col justify-center space-y-4">
+        <div className="bg-white p-6 rounded-[1.5rem] shadow-sm flex flex-col justify-center space-y-4">
           <IndicatorRow label="Regulaciones" value={`${Math.round(stats.totalReg)}%`} />
           <IndicatorRow label="Factor Carga" value={`${stats.avgLoad.toFixed(1)} T/EQ`} />
           <div className="h-px bg-calido w-full" />
@@ -208,7 +208,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
         <div className="mt-6 bg-slate-50/50 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
         <div className="flex justify-between items-start border-b border-calido pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm border border-calido">
+            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm">
               <ClipboardEdit className="w-5 h-5" />
             </div>
             <div className="flex-1">
