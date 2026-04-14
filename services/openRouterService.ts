@@ -80,7 +80,13 @@ REGLAS:
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             console.error("DEBUG: Error de OpenRouter:", response.status, errorData);
-            throw new Error(errorData.error?.message || `Error ${response.status}`);
+            
+            if (response.status === 429) throw new Error("Servidor saturado, reintenta en 10 seg.");
+            if (response.status === 401) throw new Error("Clave de API no válida o expirada.");
+            if (response.status === 402) throw new Error("Créditos insuficientes en OpenRouter.");
+            if (response.status >= 500) throw new Error("Error del proveedor, intenta en un momento.");
+            
+            throw new Error(errorData.error?.message || `Error ${response.status}: Servicio no disponible.`);
         }
 
         const data = await response.json();
