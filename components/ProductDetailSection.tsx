@@ -205,7 +205,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       </div>
 
       {hasAnyDeviation && (
-        <div className="mt-6 bg-slate-50/50 border-2 border-dashed border-slate-200 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
+        <div className="mt-6 bg-slate-50/50 p-8 rounded-[1.8rem] space-y-6 transition-all duration-300">
         <div className="flex justify-between items-start border-b border-calido pb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violeta/70 shadow-sm border border-calido">
