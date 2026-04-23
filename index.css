@@ -78,16 +78,16 @@
   }
 }
 
-/* Estilos específicos para la clase is-exporting usada por html2pdf */
-.is-exporting .bg-white.p-5,
-.is-exporting .bg-white.p-6,
-.is-exporting .grid-cols-4 > div,
-.is-exporting .grid-cols-3 > div,
-.is-exporting .rounded-[1.2rem],
-.is-exporting .rounded-[1.5rem] {
+/* Regla global: eliminar TODAS las sombras y bordes dentro del reporte durante exportación PDF */
+.is-exporting #dashboard-report * {
     box-shadow: none !important;
-    border: none !important;
     outline: none !important;
+}
+
+.is-exporting #dashboard-report .shadow-sm,
+.is-exporting #dashboard-report .shadow-md,
+.is-exporting #dashboard-report .shadow-lg {
+    box-shadow: none !important;
 }
 
 
