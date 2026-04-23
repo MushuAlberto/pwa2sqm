@@ -259,7 +259,7 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
             </div>
           )}
 
-          <div className="hidden pdf-only-block bg-white border-2 border-calido rounded-2xl p-6 text-sm font-medium text-tecnico h-auto min-h-[6rem] shadow-sm leading-relaxed whitespace-pre-wrap">
+          <div className="hidden pdf-only-block bg-white border border-slate-100 rounded-2xl p-6 text-sm font-medium text-tecnico h-auto min-h-[6rem] leading-relaxed whitespace-pre-wrap">
             {justification || "No se registraron observaciones para este ítem."}
           </div>
         </div>

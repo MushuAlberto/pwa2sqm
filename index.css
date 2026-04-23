@@ -73,11 +73,23 @@
   .grid-cols-3 > div {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    display: block !important;
-    width: 100% !important;
-    margin-bottom: 1rem !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 }
+
+/* Estilos específicos para la clase is-exporting usada por html2pdf */
+.is-exporting .bg-white.p-5,
+.is-exporting .bg-white.p-6,
+.is-exporting .grid-cols-4 > div,
+.is-exporting .grid-cols-3 > div,
+.is-exporting .rounded-[1.2rem],
+.is-exporting .rounded-[1.5rem] {
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
 
 @layer base {
   html {
