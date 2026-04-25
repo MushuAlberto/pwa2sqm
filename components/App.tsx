@@ -16,6 +16,7 @@ import DdDTablero from './DdDTablero';
 import ReportFooter from './ReportFooter';
 import InstructionModal from './InstructionModal';
 import { ImageGallery } from './ImageGallery';
+import { PasswordPrompt } from './PasswordPrompt';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
 
 declare const html2canvas: any;
@@ -29,6 +30,7 @@ const App: React.FC = () => {
   const [exportingPDF, setExportingPDF] = useState(false);
   const [exportingImage, setExportingImage] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
+  const [passwordRequest, setPasswordRequest] = useState<{ view: 'memoria' | 'galeria', name: string } | null>(null);
 
   // Cargar datos persistidos al iniciar (con validación de integridad)
   useEffect(() => {
@@ -364,9 +366,30 @@ const App: React.FC = () => {
     });
   }, [filteredData]);
 
+  const handleViewChange = (v: 'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria') => {
+    if (v === 'memoria') {
+      setPasswordRequest({ view: 'memoria', name: 'Memoria' });
+    } else if (v === 'galeria') {
+      setPasswordRequest({ view: 'galeria', name: 'Galería Operativa' });
+    } else {
+      setView(v);
+    }
+  };
+
   if (view === 'menu') return (
     <>
-      <MainMenu onSelectView={(v) => setView(v)} />
+      <MainMenu onSelectView={handleViewChange} />
+      {passwordRequest && (
+        <PasswordPrompt 
+          correctPassword="MIRAME"
+          moduleName={passwordRequest.name}
+          onSuccess={() => {
+            setView(passwordRequest.view);
+            setPasswordRequest(null);
+          }}
+          onCancel={() => setPasswordRequest(null)}
+        />
+      )}
     </>
   );
   if (view === 'llegada') return <LlegadaEquipos onBack={() => setView('menu')} />;
@@ -433,7 +456,7 @@ const App: React.FC = () => {
                 <button onClick={handleExportImage} disabled={exportingImage} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
                   {exportingImage ? <Loader2 size={12} className="animate-spin" /> : <ImageIcon size={12} />} Descargar PNG
                 </button>
-                <button onClick={() => setView('galeria')} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
+                <button onClick={() => handleViewChange('galeria')} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
                   <ImageIcon size={12} /> Galería Operativa
                 </button>
                 <button onClick={downloadBackupJSON} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
