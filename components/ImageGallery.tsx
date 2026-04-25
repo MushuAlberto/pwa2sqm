@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Upload, Trash2, ChevronLeft, ChevronRight, 
   Image as ImageIcon, X, Home, Plus,
-  Maximize2, Minimize2
+  Maximize2, Minimize2, Play, Pause, Timer
 } from 'lucide-react';
 
 interface GalleryImage {
@@ -22,6 +22,8 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(false);
+  const [intervalTime, setIntervalTime] = useState(5); // en segundos
 
   // Persistence
   useEffect(() => {
@@ -38,6 +40,17 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
   useEffect(() => {
     localStorage.setItem('sqm_gallery_images', JSON.stringify(images));
   }, [images]);
+
+  // Autoplay Effect
+  useEffect(() => {
+    let interval: any;
+    if (autoPlay && images.length > 0 && !isFullScreen) {
+      interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+      }, intervalTime * 1000);
+    }
+    return () => clearInterval(interval);
+  }, [autoPlay, images.length, intervalTime, isFullScreen]);
 
   const handleFileUpload = (files: FileList | null) => {
     if (!files) return;
@@ -104,16 +117,45 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
           </div>
         </div>
 
-        <label className="bg-nucleo text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-nucleo/90 transition-all cursor-pointer shadow-lg shadow-nucleo/10 active:scale-95">
-          <Plus size={14} strokeWidth={3} /> Subir Imágenes
-          <input 
-            type="file" 
-            className="hidden" 
-            multiple 
-            accept="image/*" 
-            onChange={(e) => handleFileUpload(e.target.files)} 
-          />
-        </label>
+        <div className="flex items-center gap-4">
+          {/* Autoplay Controls */}
+          {images.length > 0 && (
+            <div className="bg-calido/50 rounded-2xl p-1 flex items-center gap-1 border border-violeta/5">
+              <button 
+                onClick={() => setAutoPlay(!autoPlay)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${autoPlay ? 'bg-ionizado text-white shadow-lg' : 'bg-white text-violeta hover:bg-white'}`}
+              >
+                {autoPlay ? <Pause size={12} fill="currentColor" /> : <Play size={12} fill="currentColor" />}
+                {autoPlay ? 'Reproduciendo' : 'Autoplay'}
+              </button>
+              
+              <div className="flex items-center gap-2 px-3">
+                <Timer size={12} className="text-violeta/40" />
+                <select 
+                  value={intervalTime} 
+                  onChange={(e) => setIntervalTime(Number(e.target.value))}
+                  className="bg-transparent text-[10px] font-black text-violeta uppercase outline-none cursor-pointer"
+                >
+                  <option value={3}>3s</option>
+                  <option value={5}>5s</option>
+                  <option value={10}>10s</option>
+                  <option value={15}>15s</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          <label className="bg-nucleo text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-nucleo/90 transition-all cursor-pointer shadow-lg shadow-nucleo/10 active:scale-95">
+            <Plus size={14} strokeWidth={3} /> Subir Imágenes
+            <input 
+              type="file" 
+              className="hidden" 
+              multiple 
+              accept="image/*" 
+              onChange={(e) => handleFileUpload(e.target.files)} 
+            />
+          </label>
+        </div>
       </header>
 
       <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-12">
