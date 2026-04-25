@@ -136,10 +136,12 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
                   onChange={(e) => setIntervalTime(Number(e.target.value))}
                   className="bg-transparent text-[10px] font-black text-violeta uppercase outline-none cursor-pointer"
                 >
-                  <option value={3}>3s</option>
                   <option value={5}>5s</option>
                   <option value={10}>10s</option>
                   <option value={15}>15s</option>
+                  <option value={30}>30s</option>
+                  <option value={40}>40s</option>
+                  <option value={45}>45s</option>
                 </select>
               </div>
             </div>
