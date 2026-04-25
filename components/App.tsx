@@ -6,7 +6,6 @@ import {
   Home, Truck, Image as ImageIcon,
   Clock, BarChart3, TrendingUp, Target, Users, Scale, ClipboardCheck, FileText, Download
 } from 'lucide-react';
-// import { analyzeLogisticsWithGemini } from '../services/geminiService.ts'; // Eliminado
 import ChartCard from './ChartCard';
 import ProductDetailSection from './ProductDetailSection';
 import MainMenu from './MainMenu';
@@ -32,31 +31,23 @@ const App: React.FC = () => {
   const [showInstructions, setShowInstructions] = useState(false);
   const [passwordRequest, setPasswordRequest] = useState<{ view: 'memoria' | 'galeria', name: string } | null>(null);
 
-  // Cargar datos persistidos al iniciar (con validación de integridad)
   useEffect(() => {
     const savedData = localStorage.getItem('sqm_raw_data');
     if (savedData) {
       try {
         const parsed = JSON.parse(savedData);
-        
-        // Validar que los datos no estén corruptos (todos los valores numéricos en 0)
         if (parsed.length > 0) {
           const totalTon = parsed.reduce((a: number, b: any) => a + (Number(b.Ton_Real) || 0), 0);
           const totalEq = parsed.reduce((a: number, b: any) => a + (Number(b.Eq_Real) || 0), 0);
-          
           if (totalTon === 0 && totalEq === 0) {
-            // Datos corruptos: limpiar caché y forzar re-subida
-            console.warn("⚠️ Caché de datos corrupto detectado (todos los valores en 0). Limpiando...");
             localStorage.removeItem('sqm_raw_data');
-            return; // No cargar datos corruptos
+            return;
           }
         }
-        
         setRawData(parsed);
         const dates = [...new Set(parsed.map((r: any) => r.Fecha))].sort().reverse();
         if (dates.length > 0) setSelectedDate(dates[0] as string);
       } catch (e) {
-        console.error("Error cargando caché de datos, limpiando...");
         localStorage.removeItem('sqm_raw_data');
       }
     }
@@ -64,53 +55,28 @@ const App: React.FC = () => {
 
   const isRunning = loading || exportingPDF || exportingImage;
 
-  // Análisis de IA eliminado; ya no es necesario triggerAnalysis ni manejar llaves API.
-
   const handleExportPDF = async () => {
     if (exportingPDF) return;
     setExportingPDF(true);
     document.body.classList.add('is-exporting');
-
-    // Esperar un tick para que el DOM aplique las clases de visibilidad (pdf-only, no-pdf, etc.)
     await new Promise(r => setTimeout(r, 300));
-
     try {
       const { jsPDF } = (window as any).jspdf;
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'legal',
-        compress: true
-      });
-
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'legal', compress: true });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
       const margin = 8;
       const usableWidth = pdfWidth - margin * 2;
-
-      const captureOptions = {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        imageTimeout: 15000
-      };
-
-      // 1. Capturar la portada
+      const captureOptions = { scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff', imageTimeout: 15000 };
       const coverEl = document.getElementById('pdf-cover-page');
       if (coverEl) {
         const coverCanvas = await html2canvas(coverEl, captureOptions);
         const coverImg = coverCanvas.toDataURL('image/jpeg', 0.95);
         const coverRatio = coverCanvas.height / coverCanvas.width;
         const coverHeight = usableWidth * coverRatio;
-        // Centrar verticalmente si la portada es más corta que la página
-        const coverY = coverHeight < pdfHeight - margin * 2
-          ? (pdfHeight - coverHeight) / 2
-          : margin;
+        const coverY = coverHeight < pdfHeight - margin * 2 ? (pdfHeight - coverHeight) / 2 : margin;
         pdf.addImage(coverImg, 'JPEG', margin, coverY, usableWidth, coverHeight);
       }
-
-      // 2. Capturar cada sección de producto
       const productSections = document.querySelectorAll('[id^="product-section-"]');
       for (let i = 0; i < productSections.length; i++) {
         pdf.addPage('legal', 'portrait');
@@ -119,8 +85,6 @@ const App: React.FC = () => {
         const img = canvas.toDataURL('image/jpeg', 0.95);
         const ratio = canvas.height / canvas.width;
         let imgHeight = usableWidth * ratio;
-
-        // Si la imagen es más alta que la página, escalar para que quepa
         if (imgHeight > pdfHeight - margin * 2) {
           const scaledWidth = (pdfHeight - margin * 2) / ratio;
           const xOffset = margin + (usableWidth - scaledWidth) / 2;
@@ -129,7 +93,6 @@ const App: React.FC = () => {
           pdf.addImage(img, 'JPEG', margin, margin, usableWidth, imgHeight);
         }
       }
-
       pdf.save(`Informe_Operativo_${selectedDate}.pdf`);
     } catch (error) {
       console.error('Error en exportación PDF:', error);
@@ -166,70 +129,31 @@ const App: React.FC = () => {
         const sheetName = workbook.SheetNames.find(n => n === "Base de Datos") || workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][];
-
         if (jsonData.length < 2) throw new Error("Archivo vacío.");
-
-        // Conservar headers originales para debug
         const rawHeaders = jsonData[0].map(h => String(h || '').trim());
         const normalizedHeaders = rawHeaders.map(h => normalizeHeader(h));
-        
-        console.log("=== DIAGNÓSTICO DE COLUMNAS ===");
-        console.log("Hoja usada:", sheetName);
-        console.log("Total filas:", jsonData.length);
-        console.log("Headers originales:", rawHeaders);
-        console.log("Headers normalizados:", normalizedHeaders);
-
-        // Función de búsqueda robusta con 3 niveles:
-        // 1. Coincidencia exacta normalizada
-        // 2. Header contiene el alias (el alias es un substring del header)
-        // 3. Fallback al índice por defecto
         const getIdx = (fieldName: string, aliases: string[], fallback: number): number => {
-
-          // NUEVA PRIORIDAD: Revisar si el fallback ya es un match válido antes de buscar en todo el archivo
           if (fallback >= 0 && fallback < normalizedHeaders.length) {
             const fbHeader = normalizedHeaders[fallback];
             for (const alias of aliases) {
               const normAlias = normalizeHeader(alias);
-              if (normAlias.length >= 3 && (fbHeader === normAlias || fbHeader.includes(normAlias))) {
-                console.log(`  ⭐ ${fieldName}: PRIORIDAD FALLBACK confirmada en col ${fallback} ("${rawHeaders[fallback]}")`);
-                return fallback;
-              }
+              if (normAlias.length >= 3 && (fbHeader === normAlias || fbHeader.includes(normAlias))) return fallback;
             }
           }
-
-          // Nivel 1: Match exacto
           for (const alias of aliases) {
             const normAlias = normalizeHeader(alias);
             if (normAlias.length < 2) continue;
             const exactIdx = normalizedHeaders.findIndex(h => h === normAlias);
-            if (exactIdx !== -1) {
-              console.log(`  ✅ ${fieldName}: match exacto "${rawHeaders[exactIdx]}" (col ${exactIdx})`);
-              return exactIdx;
-            }
+            if (exactIdx !== -1) return exactIdx;
           }
-          // Nivel 2: El header CONTIENE el alias (no al revés)
           for (const alias of aliases) {
             const normAlias = normalizeHeader(alias);
-            if (normAlias.length < 3) continue; // Solo buscar substrings de 3+ chars
+            if (normAlias.length < 3) continue;
             const partialIdx = normalizedHeaders.findIndex(h => h.includes(normAlias));
-            if (partialIdx !== -1) {
-              console.log(`  ✅ ${fieldName}: match parcial "${rawHeaders[partialIdx]}" contiene "${alias}" (col ${partialIdx})`);
-              return partialIdx;
-            }
+            if (partialIdx !== -1) return partialIdx;
           }
-          // Nivel 3: El alias CONTIENE el header (solo para headers largos, min 5 chars)
-          for (const alias of aliases) {
-            const normAlias = normalizeHeader(alias);
-            const reverseIdx = normalizedHeaders.findIndex(h => h.length >= 5 && normAlias.includes(h));
-            if (reverseIdx !== -1) {
-              console.log(`  ✅ ${fieldName}: match reverso "${alias}" contiene "${rawHeaders[reverseIdx]}" (col ${reverseIdx})`);
-              return reverseIdx;
-            }
-          }
-          console.warn(`  ⚠️ ${fieldName}: NO encontrado, usando fallback col ${fallback}. Buscaba: [${aliases.join(', ')}]`);
           return fallback;
         };
-
         const idx = {
           fecha: getIdx("fecha", ["FECHA", "JORNADA", "DIA"], 1),
           producto: getIdx("producto", ["PRODUCTO", "NIVEL"], 5),
@@ -244,26 +168,6 @@ const App: React.FC = () => {
           faenaMeta: getIdx("faenaMeta", ["TIEMPO INTERIOR FAENA PRODUCTO META", "FAENA META", "META HRS"], 49),
           faenaReal: getIdx("faenaReal", ["TIEMPO INTERIOR FAENA REAL", "FAENA REAL", "REAL HRS"], 50)
         };
-
-        console.log("=== RESULTADO FINAL INDICES ===", idx);
-        
-        // Validar primera fila de datos como diagnóstico
-        const sampleRow = jsonData[1];
-        if (sampleRow) {
-          console.log("=== MUESTRA PRIMERA FILA ===");
-          console.log("  Fecha raw:", sampleRow[idx.fecha]);
-          console.log("  Producto raw:", sampleRow[idx.producto]);
-          console.log("  TonProg raw:", sampleRow[idx.tonProg]);
-          console.log("  TonReal raw:", sampleRow[idx.tonReal]);
-          console.log("  EqProg raw:", sampleRow[idx.eqProg]);
-          console.log("  EqReal raw:", sampleRow[idx.eqReal]);
-          console.log("  Regulacion raw:", sampleRow[idx.regReal]);
-          console.log("  SDA raw:", sampleRow[idx.sda]);
-          console.log("  Pang raw:", sampleRow[idx.pang]);
-          console.log("  FaenaMeta raw:", sampleRow[idx.faenaMeta]);
-          console.log("  FaenaReal raw:", sampleRow[idx.faenaReal]);
-        }
-
         const processed = jsonData.slice(1).map((row) => {
           if (!row || row.length < 2) return null;
           let dateVal = null;
@@ -274,7 +178,6 @@ const App: React.FC = () => {
             if (!isNaN(d.getTime())) dateVal = d.toISOString().split('T')[0];
           }
           if (!dateVal) return null;
-
           return {
             Fecha: dateVal,
             Producto: String(row[idx.producto] || 'SIN PRODUCTO').toUpperCase().trim(),
@@ -286,9 +189,7 @@ const App: React.FC = () => {
             Regulacion_Real: (() => {
               const raw = row[idx.regReal];
               const val = cleanNumeric(raw);
-              if (typeof raw === 'number' && raw > 0 && raw <= 1.0) {
-                return raw * 100;
-              }
+              if (typeof raw === 'number' && raw > 0 && raw <= 1.0) return raw * 100;
               return val;
             })(),
             sdaHours: parseExcelTime(row[idx.sda]),
@@ -297,27 +198,12 @@ const App: React.FC = () => {
             faenaRealHours: parseExcelTime(row[idx.faenaReal])
           };
         }).filter(r => r !== null);
-
-        // Limpiar caché anterior antes de guardar los nuevos datos
         localStorage.removeItem('sqm_raw_data');
-        
         setRawData(processed);
         localStorage.setItem('sqm_raw_data', JSON.stringify(processed));
         const dates = [...new Set(processed.map(r => r.Fecha))].sort().reverse();
         if (dates.length > 0) setSelectedDate(dates[0]);
-        
-        // Diagnóstico: verificar si los datos numéricos tienen valores
-        const totalTonCheck = processed.reduce((a: number, b: any) => a + (b.Ton_Real || 0), 0);
-        const totalEqCheck = processed.reduce((a: number, b: any) => a + (b.Eq_Real || 0), 0);
-        console.log(`=== VALIDACIÓN: ${processed.length} registros, TonReal total: ${totalTonCheck}, EqReal total: ${totalEqCheck} ===`);
-        
-        if (totalTonCheck === 0 && processed.length > 0) {
-          const headerList = rawHeaders.map((h: string, i: number) => `[${i}] ${h}`).join('\n');
-          console.warn("⚠️ TODAS las toneladas son 0. Headers del archivo:\n" + headerList);
-          alert(`Advertencia: Se procesaron ${processed.length} registros pero las columnas de tonelaje no contienen datos.\n\nPor favor revise la consola (F12) para ver los headers detectados y reporte el problema.`);
-        }
       } catch (err: any) {
-        console.error("Error procesando archivo:", err);
         alert(`Error al procesar el archivo: ${err.message || 'Error desconocido'}`);
       } finally {
         setLoading(false);
@@ -342,7 +228,6 @@ const App: React.FC = () => {
     const productivity = totalHoursInFaena > 0 ? totalTonReal / totalHoursInFaena : 0;
     const compliance = totalTonProg > 0 ? (totalTonReal / totalTonProg) * 100 : 0;
     const avgLoad = totalEqReal > 0 ? totalTonReal / totalEqReal : 0;
-
     return [
       { label: "Tiempo Gral. Faena (SdA)", value: formatHoursToTime(avgSda), icon: <Clock className="w-3.5 h-3.5" /> },
       { label: "TIEMPO GRAL: FAENA (NY)", value: formatHoursToTime(avgPang), icon: <Clock className="w-3.5 h-3.5" /> },
@@ -376,107 +261,79 @@ const App: React.FC = () => {
     }
   };
 
-  if (view === 'menu') return (
-    <>
-      <MainMenu onSelectView={handleViewChange} />
-      {passwordRequest && (
-        <PasswordPrompt 
-          correctPassword="MIRAME"
-          moduleName={passwordRequest.name}
-          onSuccess={() => {
-            setView(passwordRequest.view);
-            setPasswordRequest(null);
-          }}
-          onCancel={() => setPasswordRequest(null)}
-        />
-      )}
-    </>
-  );
-  if (view === 'llegada') return <LlegadaEquipos onBack={() => setView('menu')} />;
-  if (view === 'memoria') return (
-    <MemoryModule
-      data={rawData}
-      onBack={() => setView('menu')}
-      onSelectDate={(d) => { setSelectedDate(d); setView('informe'); }}
-    />
-  );
+  const renderCurrentView = () => {
+    if (view === 'menu') return <MainMenu onSelectView={handleViewChange} />;
+    if (view === 'llegada') return <LlegadaEquipos onBack={() => setView('menu')} />;
+    if (view === 'memoria') return (
+      <MemoryModule
+        data={rawData}
+        onBack={() => setView('menu')}
+        onSelectDate={(d) => { setSelectedDate(d); setView('informe'); }}
+      />
+    );
+    if (view === 'ddd') return (
+      <DdDTablero
+        data={rawData}
+        selectedDate={selectedDate}
+        onBack={() => setView('menu')}
+      />
+    );
+    if (view === 'galeria') return <ImageGallery onBack={() => setView('menu')} />;
 
-  if (view === 'ddd') return (
-    <DdDTablero
-      data={rawData}
-      selectedDate={selectedDate}
-      onBack={() => setView('menu')}
-    />
-  );
-
-  if (view === 'galeria') return (
-    <ImageGallery onBack={() => setView('menu')} />
-  );
-
-  return (
-    <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">
-
-      <aside className="w-[300px] bg-levanda border-r border-violeta/20 flex flex-col no-print shrink-0">
-        <div className="p-6 overflow-y-auto flex-1 space-y-8">
-          <button onClick={() => setView('menu')} className="flex items-center gap-2 text-violeta hover:text-nucleo font-black text-[10px] uppercase tracking-widest transition-colors mb-4 group">
-            <Home size={14} className="group-hover:-translate-x-1 transition-transform" /> Menú Principal
-          </button>
-
-          <div className="bg-white p-5 rounded-3xl border border-violeta/10 flex flex-col items-center gap-2 shadow-sm">
-            <h2 className="font-black text-[10px] tracking-[0.2em] uppercase text-violeta">Management</h2>
+    return (
+      <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">
+        <aside className="w-[300px] bg-levanda border-r border-violeta/20 flex flex-col no-print shrink-0">
+          <div className="p-6 overflow-y-auto flex-1 space-y-8">
+            <button onClick={() => setView('menu')} className="flex items-center gap-2 text-violeta hover:text-nucleo font-black text-[10px] uppercase tracking-widest transition-colors mb-4 group">
+              <Home size={14} className="group-hover:-translate-x-1 transition-transform" /> Menú Principal
+            </button>
+            <div className="bg-white p-5 rounded-3xl border border-violeta/10 flex flex-col items-center gap-2 shadow-sm">
+              <h2 className="font-black text-[10px] tracking-[0.2em] uppercase text-violeta">Management</h2>
+            </div>
+            <div className="space-y-2">
+              <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Cargar Datos</p>
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-violeta/20 rounded-3xl cursor-pointer bg-white hover:border-ionizado hover:bg-calido transition-all">
+                <div className="flex flex-col items-center justify-center p-4 text-center">
+                  <Upload className="w-8 h-8 text-violeta/30 mb-2" />
+                  <p className="text-[10px] text-violeta/60 uppercase font-black tracking-widest">Base Excel</p>
+                </div>
+                <input type="file" className="hidden" accept=".xlsx,.xlsm" onChange={e => e.target.files?.[0] && processFile(e.target.files[0])} />
+              </label>
+            </div>
+            {rawData.length > 0 && (
+              <>
+                <div className="space-y-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Jornada</p>
+                  <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full bg-white border border-violeta/20 rounded-2xl px-4 py-3 text-sm font-black text-tecnico outline-none focus:ring-4 focus:ring-ionizado/10">
+                    {[...new Set(rawData.map(r => r.Fecha))].sort().reverse().map(d => <option key={d as string} value={d as string}>{formatDateToCL(d as string)}</option>)}
+                  </select>
+                </div>
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Herramientas</p>
+                  <button onClick={handleExportPDF} disabled={exportingPDF} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
+                    {exportingPDF ? <Loader2 size={12} className="animate-spin" /> : <FileText size={12} />} Exportar PDF
+                  </button>
+                  <button onClick={handleExportImage} disabled={exportingImage} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
+                    {exportingImage ? <Loader2 size={12} className="animate-spin" /> : <ImageIcon size={12} />} Descargar PNG
+                  </button>
+                  <button onClick={() => handleViewChange('galeria')} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
+                    <ImageIcon size={12} /> Galería Operativa
+                  </button>
+                  <button onClick={downloadBackupJSON} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
+                    <Download size={12} /> Descargar Historial
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-
-          <div className="space-y-2">
-            <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Cargar Datos</p>
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-violeta/20 rounded-3xl cursor-pointer bg-white hover:border-ionizado hover:bg-calido transition-all">
-              <div className="flex flex-col items-center justify-center p-4 text-center">
-                <Upload className="w-8 h-8 text-violeta/30 mb-2" />
-                <p className="text-[10px] text-violeta/60 uppercase font-black tracking-widest">Base Excel</p>
-              </div>
-              <input type="file" className="hidden" accept=".xlsx,.xlsm" onChange={e => e.target.files?.[0] && processFile(e.target.files[0])} />
-            </label>
-          </div>
-
-          {/* Notificación de Error de IA eliminada */}
-
-          {rawData.length > 0 && (
-            <>
-              <div className="space-y-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Jornada</p>
-                <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} className="w-full bg-white border border-violeta/20 rounded-2xl px-4 py-3 text-sm font-black text-tecnico outline-none focus:ring-4 focus:ring-ionizado/10">
-                  {[...new Set(rawData.map(r => r.Fecha))].sort().reverse().map(d => <option key={d as string} value={d as string}>{formatDateToCL(d as string)}</option>)}
-                </select>
-              </div>
-
-              <div className="space-y-3 pt-4 border-t border-slate-100">
-                <p className="text-[10px] font-black uppercase tracking-widest text-violeta">Herramientas</p>
-                <button onClick={handleExportPDF} disabled={exportingPDF} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
-                  {exportingPDF ? <Loader2 size={12} className="animate-spin" /> : <FileText size={12} />} Exportar PDF
-                </button>
-                <button onClick={handleExportImage} disabled={exportingImage} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
-                  {exportingImage ? <Loader2 size={12} className="animate-spin" /> : <ImageIcon size={12} />} Descargar PNG
-                </button>
-                <button onClick={() => handleViewChange('galeria')} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
-                  <ImageIcon size={12} /> Galería Operativa
-                </button>
-                <button onClick={downloadBackupJSON} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
-                  <Download size={12} /> Descargar Historial
-                </button>
-              </div>
-            </>
+        </aside>
+        <main className="flex-1 overflow-y-auto relative bg-white">
+          {isRunning && (
+            <div className="absolute top-4 right-8 z-50 flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-2xl border border-violeta/10 animate-in fade-in slide-in-from-top-2 no-print">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-ionizado" />
+              <span className="text-[10px] font-black text-violeta uppercase tracking-[0.2em]">Cargando Informe...</span>
+            </div>
           )}
-        </div>
-      </aside>
-
-      <main className="flex-1 overflow-y-auto relative bg-white">
-        {isRunning && (
-          <div className="absolute top-4 right-8 z-50 flex items-center gap-3 bg-white px-5 py-2 rounded-full shadow-2xl border border-violeta/10 animate-in fade-in slide-in-from-top-2 no-print">
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-ionizado" />
-            <span className="text-[10px] font-black text-violeta uppercase tracking-[0.2em]">Cargando Informe...</span>
-          </div>
-        )}
-
-        {view === 'informe' && (
           <div className="max-w-5xl mx-auto p-8 space-y-0" id="dashboard-report">
             {rawData.length === 0 ? (
               <div className="py-20 flex flex-col items-center text-center space-y-8">
@@ -486,39 +343,21 @@ const App: React.FC = () => {
               </div>
             ) : (
               <>
-                {/* PORTADA EXCLUSIVA PARA PDF */}
                 <div id="pdf-cover-page" className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
                   <div className="space-y-24 flex flex-col items-center w-full">
-                    {/* Bloque Principal (Imagen) */}
                     <div className="flex flex-col items-center justify-center text-center w-full">
                       <div className="flex flex-col items-center text-center">
                         <img src="/novandino.png" alt="Novandino Logo" className="h-40 w-auto object-contain mb-10" />
-                        <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">
-                          INFORME OPERATIVO
-                        </h1>
-                        <p className="text-slate-400 font-bold text-sm tracking-[0.4em] uppercase mt-3 whitespace-nowrap">
-                          SUBGERENCIA LOGÍSTICA LITIO <span className="text-slate-300 mx-2">-</span> DESPACHO LITIO
-                        </p>
+                        <h1 className="text-[60px] font-[950] text-[#1e293b] tracking-[-0.04em] leading-none uppercase whitespace-nowrap">INFORME OPERATIVO</h1>
+                        <p className="text-slate-400 font-bold text-sm tracking-[0.4em] uppercase mt-3 whitespace-nowrap">SUBGERENCIA LOGÍSTICA LITIO - DESPACHO LITIO</p>
                       </div>
                     </div>
-
-                    {/* Fecha de la Jornada */}
                     <div className="pt-20">
                       <p className="text-violeta/30 font-black text-xs tracking-[0.4em] uppercase mb-6">JORNADA CORRESPONDIENTE</p>
-                      <p className="text-6xl font-[950] text-ionizado tracking-tighter">
-                        {formatDateToCL(selectedDate)}
-                      </p>
-                    </div>
-
-                    <div className="mt-32 pt-16 border-t border-calido w-72">
-                      <p className="text-[11px] font-black text-violeta/30 uppercase tracking-[0.2em] leading-loose">
-                        GERENCIA DE LOGÍSTICA<br />
-                        SALARES
-                      </p>
+                      <p className="text-6xl font-[950] text-ionizado tracking-tighter">{formatDateToCL(selectedDate)}</p>
                     </div>
                   </div>
                 </div>
-
                 <div id="executive-summary-capture" className="no-pdf space-y-8 bg-white min-h-[1000px] flex flex-col mb-10 no-page-break">
                   <div className="bg-white p-8 space-y-10 flex-1">
                     <div className="flex justify-between items-start pb-8 border-b-2 border-calido">
@@ -534,47 +373,32 @@ const App: React.FC = () => {
                         <p className="text-4xl font-[900] text-ionizado tracking-tighter">{formatDateToCL(selectedDate)}</p>
                       </div>
                     </div>
-
                     {filteredData.length > 0 && (
-                      <div className="bg-white rounded-[2.5rem] p-10 border-2 border-ionizado/10 border-l-[12px] border-l-ionizado space-y-8 relative overflow-hidden shadow-sm">
+                      <div className="bg-white rounded-[2.5rem] p-10 border-2 border-ionizado/10 border-l-[12px] border-l-ionizado space-y-8 shadow-sm">
                         <div className="space-y-2">
                           <div className="flex items-center gap-2 text-ionizado"><span className="font-black uppercase tracking-[0.3em] text-[10px]">KPIs OPERATIVOS</span></div>
                           <h2 className="text-4xl font-[900] text-nucleo tracking-tighter uppercase">Cumplimiento Global</h2>
                         </div>
                         <div className="grid grid-cols-4 gap-4 pt-6">
                           {operationalKPIs?.map((kpi, idx) => (
-                            <div key={idx} className="bg-white p-6 rounded-3xl border border-calido flex flex-col gap-2 shadow-sm border-b-4 border-b-levanda hover:border-ionizado/30 transition-all duration-300">
-                              <div className="flex items-center gap-2 text-black">{kpi.icon}<span className="text-[10px] font-black text-black uppercase tracking-widest leading-none">{kpi.label}</span></div>
-                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-black'} tracking-tighter my-1`}>{kpi.value}</span>
+                            <div key={idx} className="bg-white p-6 rounded-3xl border border-calido flex flex-col gap-2 shadow-sm border-b-4 border-b-levanda">
+                              <div className="flex items-center gap-2 text-black">{kpi.icon}<span className="text-[10px] font-black text-black uppercase tracking-widest">{kpi.label}</span></div>
+                              <span className={`text-2xl font-[900] ${kpi.status === 'danger' ? 'text-rose-600' : 'text-black'} tracking-tighter`}>{kpi.value}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
-
                     <div className="pt-6">
-                      <ChartCard
-                        type="composed"
-                        xAxis="Producto"
-                        yAxis={['Ton_Prog', 'Ton_Real', 'faenaMetaHours', 'faenaRealHours']}
-                        title="Análisis Comparativo: Tonelaje vs Horas de Operación"
-                        data={filteredData}
-                      />
+                      <ChartCard type="composed" xAxis="Producto" yAxis={['Ton_Prog', 'Ton_Real', 'faenaMetaHours', 'faenaRealHours']} title="Análisis Comparativo" data={filteredData} />
                     </div>
                   </div>
                   <div className="px-8 pb-8 mt-auto"><ReportFooter /></div>
                 </div>
-
                 {productList.map((prod, idx) => (
                   <div key={`${selectedDate}-${prod}`} id={`product-section-${idx}`} className="page-break-before bg-white block w-full pt-4" style={{ minHeight: '330mm' }}>
                     <div className="px-4">
-                      <ProductDetailSection
-                        product={prod}
-                        data={filteredData.filter(d => d.Producto === prod)}
-                        date={selectedDate}
-                        index={idx + 1}
-                        total={productList.length}
-                      />
+                      <ProductDetailSection product={prod} data={filteredData.filter(d => d.Producto === prod)} date={selectedDate} index={idx + 1} total={productList.length} />
                     </div>
                     <div className="px-4 pb-6 mt-8"><ReportFooter /></div>
                   </div>
@@ -582,9 +406,23 @@ const App: React.FC = () => {
               </>
             )}
           </div>
-        )}
-      </main>
-    </div>
+        </main>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {renderCurrentView()}
+      {passwordRequest && (
+        <PasswordPrompt 
+          correctPassword="MIRAME"
+          moduleName={passwordRequest.name}
+          onSuccess={() => { setView(passwordRequest.view); setPasswordRequest(null); }}
+          onCancel={() => setPasswordRequest(null)}
+        />
+      )}
+    </>
   );
 };
 
