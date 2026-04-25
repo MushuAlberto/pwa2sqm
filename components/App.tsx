@@ -15,13 +15,14 @@ import { MemoryModule } from './MemoryModule';
 import DdDTablero from './DdDTablero';
 import ReportFooter from './ReportFooter';
 import InstructionModal from './InstructionModal';
+import { ImageGallery } from './ImageGallery';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
 
 declare const html2canvas: any;
 declare const jspdf: any;
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd'>('menu');
+  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria'>('menu');
   const [rawData, setRawData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -385,6 +386,10 @@ const App: React.FC = () => {
     />
   );
 
+  if (view === 'galeria') return (
+    <ImageGallery onBack={() => setView('menu')} />
+  );
+
   return (
     <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">
 
@@ -427,6 +432,9 @@ const App: React.FC = () => {
                 </button>
                 <button onClick={handleExportImage} disabled={exportingImage} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
                   {exportingImage ? <Loader2 size={12} className="animate-spin" /> : <ImageIcon size={12} />} Descargar PNG
+                </button>
+                <button onClick={() => setView('galeria')} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
+                  <ImageIcon size={12} /> Galería Operativa
                 </button>
                 <button onClick={downloadBackupJSON} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
                   <Download size={12} /> Descargar Historial
