@@ -78,16 +78,9 @@
   }
 }
 
-/* Regla global: eliminar TODAS las sombras y bordes dentro del reporte durante exportación PDF */
+/* Regla global para exportación PDF: fondo blanco limpio en cada sección capturada */
 .is-exporting #dashboard-report * {
-    box-shadow: none !important;
     outline: none !important;
-}
-
-.is-exporting #dashboard-report .shadow-sm,
-.is-exporting #dashboard-report .shadow-md,
-.is-exporting #dashboard-report .shadow-lg {
-    box-shadow: none !important;
 }
 
 

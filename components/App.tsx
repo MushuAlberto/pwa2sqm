@@ -17,8 +17,8 @@ import ReportFooter from './ReportFooter';
 import InstructionModal from './InstructionModal';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
 
-declare const html2pdf: any;
 declare const html2canvas: any;
+declare const jspdf: any;
 
 const App: React.FC = () => {
   const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd'>('menu');
@@ -68,18 +68,69 @@ const App: React.FC = () => {
     setExportingPDF(true);
     document.body.classList.add('is-exporting');
 
-    const element = document.getElementById('dashboard-report');
-    const opt = {
-      margin: [10, 10],
-      filename: `Informe_Operativo_${selectedDate}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF: { unit: 'mm', format: 'legal', orientation: 'portrait' },
-      pagebreak: { mode: 'css' }
-    };
+    // Esperar un tick para que el DOM aplique las clases de visibilidad (pdf-only, no-pdf, etc.)
+    await new Promise(r => setTimeout(r, 300));
 
     try {
-      await html2pdf().set(opt).from(element).save();
+      const { jsPDF } = (window as any).jspdf;
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'legal',
+        compress: true
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const margin = 8;
+      const usableWidth = pdfWidth - margin * 2;
+
+      const captureOptions = {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        imageTimeout: 15000
+      };
+
+      // 1. Capturar la portada
+      const coverEl = document.getElementById('pdf-cover-page');
+      if (coverEl) {
+        const coverCanvas = await html2canvas(coverEl, captureOptions);
+        const coverImg = coverCanvas.toDataURL('image/jpeg', 0.95);
+        const coverRatio = coverCanvas.height / coverCanvas.width;
+        const coverHeight = usableWidth * coverRatio;
+        // Centrar verticalmente si la portada es más corta que la página
+        const coverY = coverHeight < pdfHeight - margin * 2
+          ? (pdfHeight - coverHeight) / 2
+          : margin;
+        pdf.addImage(coverImg, 'JPEG', margin, coverY, usableWidth, coverHeight);
+      }
+
+      // 2. Capturar cada sección de producto
+      const productSections = document.querySelectorAll('[id^="product-section-"]');
+      for (let i = 0; i < productSections.length; i++) {
+        pdf.addPage('legal', 'portrait');
+        const section = productSections[i] as HTMLElement;
+        const canvas = await html2canvas(section, captureOptions);
+        const img = canvas.toDataURL('image/jpeg', 0.95);
+        const ratio = canvas.height / canvas.width;
+        let imgHeight = usableWidth * ratio;
+
+        // Si la imagen es más alta que la página, escalar para que quepa
+        if (imgHeight > pdfHeight - margin * 2) {
+          const scaledWidth = (pdfHeight - margin * 2) / ratio;
+          const xOffset = margin + (usableWidth - scaledWidth) / 2;
+          pdf.addImage(img, 'JPEG', xOffset, margin, scaledWidth, pdfHeight - margin * 2);
+        } else {
+          pdf.addImage(img, 'JPEG', margin, margin, usableWidth, imgHeight);
+        }
+      }
+
+      pdf.save(`Informe_Operativo_${selectedDate}.pdf`);
+    } catch (error) {
+      console.error('Error en exportación PDF:', error);
+      alert('Error al generar el PDF. Intente nuevamente.');
     } finally {
       document.body.classList.remove('is-exporting');
       setExportingPDF(false);
@@ -405,7 +456,7 @@ const App: React.FC = () => {
             ) : (
               <>
                 {/* PORTADA EXCLUSIVA PARA PDF */}
-                <div className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
+                <div id="pdf-cover-page" className="pdf-only page-break-after flex flex-col items-center justify-center min-h-[1000px] w-full bg-white text-center">
                   <div className="space-y-24 flex flex-col items-center w-full">
                     {/* Bloque Principal (Imagen) */}
                     <div className="flex flex-col items-center justify-center text-center w-full">
@@ -484,7 +535,7 @@ const App: React.FC = () => {
                 </div>
 
                 {productList.map((prod, idx) => (
-                  <div key={`${selectedDate}-${prod}`} className="page-break-before bg-white block w-full pt-4" style={{ minHeight: '330mm' }}>
+                  <div key={`${selectedDate}-${prod}`} id={`product-section-${idx}`} className="page-break-before bg-white block w-full pt-4" style={{ minHeight: '330mm' }}>
                     <div className="px-4">
                       <ProductDetailSection
                         product={prod}
