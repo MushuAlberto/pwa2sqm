@@ -81,26 +81,37 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
   };
 
   const nextSlide = useCallback(() => {
+    if (images.length === 0) return;
     setCurrentIndex((prev) => (prev + 1) % images.length);
   }, [images.length]);
 
   const prevSlide = useCallback(() => {
+    if (images.length === 0) return;
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   }, [images.length]);
+
+  const openFullScreen = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFullScreen(true);
+  };
+
+  const closeFullScreen = () => {
+    setIsFullScreen(false);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (images.length === 0) return;
       if (e.key === 'ArrowRight') nextSlide();
       if (e.key === 'ArrowLeft') prevSlide();
-      if (e.key === 'Escape') setIsFullScreen(false);
+      if (e.key === 'Escape') closeFullScreen();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [images.length, nextSlide, prevSlide]);
 
   return (
-    <div className="min-h-screen bg-calido flex flex-col font-sans text-tecnico">
+    <div className="min-h-screen bg-calido flex flex-col font-sans text-tecnico relative">
       {/* Header */}
       <header className="bg-white border-b border-violeta/10 p-6 flex justify-between items-center sticky top-0 z-30">
         <div className="flex items-center gap-6">
@@ -193,7 +204,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
                     key={img.id}
                     className={`
                       absolute inset-0 transition-all duration-700 ease-in-out flex items-center justify-center
-                      ${idx === currentIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-110 pointer-events-none'}
+                      ${idx === currentIndex ? 'opacity-100 scale-100 z-10' : 'opacity-0 scale-110 pointer-events-none z-0'}
                     `}
                   >
                     <img 
@@ -208,8 +219,8 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
                         <h3 className="text-3xl font-black tracking-tight">{img.name}</h3>
                       </div>
                       <button 
-                        onClick={() => setIsFullScreen(true)}
-                        className="w-14 h-14 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white hover:bg-white hover:text-nucleo transition-all border border-white/20"
+                        onClick={openFullScreen}
+                        className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white hover:bg-white hover:text-nucleo transition-all border border-white/30 cursor-pointer shadow-xl z-20"
                       >
                         <Maximize2 size={24} />
                       </button>
@@ -218,7 +229,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
                 ))}
 
                 {/* Controls */}
-                <div className="absolute inset-y-0 left-0 w-32 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute inset-y-0 left-0 w-32 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   <button 
                     onClick={prevSlide}
                     className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-nucleo transition-all border border-white/20"
@@ -226,7 +237,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
                     <ChevronLeft size={32} />
                   </button>
                 </div>
-                <div className="absolute inset-y-0 right-0 w-32 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute inset-y-0 right-0 w-32 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
                   <button 
                     onClick={nextSlide}
                     className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white hover:bg-white hover:text-nucleo transition-all border border-white/20"
@@ -287,28 +298,28 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
 
       {/* Fullscreen Overlay */}
       {isFullScreen && images[currentIndex] && (
-        <div className="fixed inset-0 z-[100] bg-tecnico/95 backdrop-blur-2xl flex flex-col animate-in fade-in duration-300">
-          <div className="flex justify-between items-center p-8 text-white">
+        <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-3xl flex flex-col animate-in fade-in duration-300">
+          <div className="flex justify-between items-center p-8 text-white z-10">
             <div className="flex flex-col">
               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">{images[currentIndex].date}</p>
               <h3 className="text-2xl font-black tracking-tight">{images[currentIndex].name}</h3>
             </div>
             <button 
-              onClick={() => setIsFullScreen(false)}
-              className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center hover:bg-white hover:text-tecnico transition-all border border-white/10"
+              onClick={closeFullScreen}
+              className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center hover:bg-white hover:text-black transition-all border border-white/20 shadow-2xl cursor-pointer"
             >
               <X size={28} />
             </button>
           </div>
           
           <div className="flex-1 relative flex items-center justify-center p-12">
-            <button onClick={prevSlide} className="absolute left-8 w-20 h-20 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all"><ChevronLeft size={48} color="white" /></button>
+            <button onClick={prevSlide} className="absolute left-8 w-20 h-20 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all z-20 cursor-pointer"><ChevronLeft size={48} color="white" /></button>
             <img 
               src={images[currentIndex].url} 
               alt={images[currentIndex].name} 
               className="max-w-full max-h-full object-contain shadow-2xl rounded-lg" 
             />
-            <button onClick={nextSlide} className="absolute right-8 w-20 h-20 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all"><ChevronRight size={48} color="white" /></button>
+            <button onClick={nextSlide} className="absolute right-8 w-20 h-20 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-all z-20 cursor-pointer"><ChevronRight size={48} color="white" /></button>
           </div>
         </div>
       )}
