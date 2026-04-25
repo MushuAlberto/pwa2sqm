@@ -90,9 +90,11 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   }, [images.length]);
 
-  const openFullScreen = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsFullScreen(true);
+  const openFullScreen = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    if (images.length > 0) {
+      setIsFullScreen(true);
+    }
   };
 
   const closeFullScreen = () => {
@@ -101,14 +103,21 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isFullScreen) {
+          closeFullScreen();
+        } else {
+          onBack();
+        }
+      }
+      
       if (images.length === 0) return;
       if (e.key === 'ArrowRight') nextSlide();
       if (e.key === 'ArrowLeft') prevSlide();
-      if (e.key === 'Escape') closeFullScreen();
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [images.length, nextSlide, prevSlide]);
+  }, [images.length, nextSlide, prevSlide, isFullScreen, onBack]);
 
   return (
     <div className="min-h-screen bg-calido flex flex-col font-sans text-tecnico relative">
@@ -212,21 +221,27 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
                       alt={img.name} 
                       className="w-full h-full object-cover"
                     />
-                    {/* Overlay Info */}
-                    <div className="absolute bottom-0 left-0 right-0 p-12 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex justify-between items-end">
+                    
+                    {/* Overlay Info (Static per slide but simplified) */}
+                    <div className="absolute bottom-0 left-0 right-0 p-12 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none">
                       <div className="text-white space-y-1">
                         <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/50">{img.date}</p>
                         <h3 className="text-3xl font-black tracking-tight">{img.name}</h3>
                       </div>
-                      <button 
-                        onClick={openFullScreen}
-                        className="w-14 h-14 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center text-white hover:bg-white hover:text-nucleo transition-all border border-white/30 cursor-pointer shadow-xl z-20"
-                      >
-                        <Maximize2 size={24} />
-                      </button>
                     </div>
                   </div>
                 ))}
+
+                {/* Single Stable Fullscreen Button */}
+                <div className="absolute bottom-12 right-12 z-40">
+                  <button 
+                    onClick={openFullScreen}
+                    className="w-16 h-16 bg-white/20 backdrop-blur-2xl rounded-2xl flex items-center justify-center text-white hover:bg-white hover:text-nucleo transition-all border border-white/30 cursor-pointer shadow-[0_0_40px_rgba(0,0,0,0.3)] group/btn"
+                    title="Pantalla Completa"
+                  >
+                    <Maximize2 size={28} className="group-hover/btn:scale-110 transition-transform" />
+                  </button>
+                </div>
 
                 {/* Controls */}
                 <div className="absolute inset-y-0 left-0 w-32 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-20">
@@ -298,7 +313,7 @@ export const ImageGallery: React.FC<ImageGalleryProps> = ({ onBack }) => {
 
       {/* Fullscreen Overlay */}
       {isFullScreen && images[currentIndex] && (
-        <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-3xl flex flex-col animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-3xl flex flex-col">
           <div className="flex justify-between items-center p-8 text-white z-10">
             <div className="flex flex-col">
               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">{images[currentIndex].date}</p>
