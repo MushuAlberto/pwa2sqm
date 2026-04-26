@@ -113,13 +113,18 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
             const dayItems = data.filter(r => r.Fecha === date);
             const totalProg = dayItems.reduce((sum, r) => sum + (r.Ton_Prog || 0), 0);
             const totalReal = dayItems.reduce((sum, r) => sum + (r.Ton_Real || 0), 0);
-            const totalFaena = dayItems.reduce((sum, r) => sum + (r.faenaRealHours || 0), 0);
-            const countFaena = dayItems.filter(r => (r.faenaRealHours || 0) > 0).length;
+            
+            const validSdaItems = dayItems.filter(r => (r.sdaHours || 0) > 0);
+            const avgSda = validSdaItems.length > 0 ? validSdaItems.reduce((s, r) => s + r.sdaHours, 0) / validSdaItems.length : 0;
+            
+            const validPangItems = dayItems.filter(r => (r.pangHours || 0) > 0);
+            const avgPang = validPangItems.length > 0 ? validPangItems.reduce((s, r) => s + r.pangHours, 0) / validPangItems.length : 0;
 
             return {
                 fecha: String(date).split('-').slice(1).reverse().join('/'),
                 cumplimiento: totalProg > 0 ? (totalReal / totalProg) * 100 : 0,
-                tiempoFaena: countFaena > 0 ? totalFaena / countFaena : 0,
+                avgSda,
+                avgPang,
                 promTon: dayItems.reduce((sum, r) => sum + (r.Ton_Real || 0), 0) / dayItems.reduce((sum, r) => sum + (r.Eq_Real || 1), 0)
             };
         });
@@ -437,9 +442,13 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={historicalData}>
                                         <defs>
-                                            <linearGradient id="colorTime" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                                                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                                            <linearGradient id="colorSda" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#C59E4D" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#C59E4D" stopOpacity={0}/>
+                                            </linearGradient>
+                                            <linearGradient id="colorPang" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#7177EC" stopOpacity={0.3}/>
+                                                <stop offset="95%" stopColor="#7177EC" stopOpacity={0}/>
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -458,16 +467,31 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                         <Tooltip
                                             contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)' }}
                                             labelStyle={{ fontWeight: 'black', color: '#1e293b' }}
-                                            formatter={(value: number) => [formatHoursToTime(value), "Horas Reales"]}
+                                            formatter={(value: number) => [formatHoursToTime(value), ""]}
+                                        />
+                                        <Legend 
+                                            verticalAlign="top" 
+                                            height={36} 
+                                            iconType="circle" 
+                                            wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', paddingBottom: '20px' }} 
                                         />
                                         <Area 
                                             type="monotone" 
-                                            dataKey="tiempoFaena" 
-                                            stroke="#f59e0b" 
+                                            dataKey="avgSda" 
+                                            stroke="#C59E4D" 
                                             strokeWidth={4}
                                             fillOpacity={1} 
-                                            fill="url(#colorTime)" 
-                                            name="Horas Reales"
+                                            fill="url(#colorSda)" 
+                                            name="Promedio SdA"
+                                        />
+                                        <Area 
+                                            type="monotone" 
+                                            dataKey="avgPang" 
+                                            stroke="#7177EC" 
+                                            strokeWidth={4}
+                                            fillOpacity={1} 
+                                            fill="url(#colorPang)" 
+                                            name="Promedio N. Y."
                                         />
                                         <ReferenceLine y={2} stroke="#ef4444" strokeDasharray="6 6" strokeWidth={2} label={{ position: 'right', value: 'META', fill: '#ef4444', fontSize: 10, fontWeight: 'black' }} />
                                     </AreaChart>
