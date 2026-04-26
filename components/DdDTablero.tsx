@@ -456,12 +456,12 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                             dataKey="fecha"
                                             axisLine={false}
                                             tickLine={false}
-                                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 'bold' }}
+                                            tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 'bold' }}
                                         />
                                         <YAxis
                                             axisLine={false}
                                             tickLine={false}
-                                            tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 'bold' }}
+                                            tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 'bold' }}
                                             tickFormatter={(val) => formatHoursToTime(val)}
                                         />
                                         <Tooltip
@@ -473,7 +473,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                             verticalAlign="top" 
                                             height={36} 
                                             iconType="circle" 
-                                            wrapperStyle={{ fontSize: '10px', fontWeight: 'bold', textTransform: 'uppercase', paddingBottom: '20px' }} 
+                                            wrapperStyle={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', paddingBottom: '20px' }} 
                                         />
                                         <Area 
                                             type="monotone" 
@@ -493,7 +493,7 @@ export const DdDTablero: React.FC<DdDTableroProps> = ({ data, selectedDate, onBa
                                             fill="url(#colorPang)" 
                                             name="Promedio N. Y."
                                         />
-                                        <ReferenceLine y={2} stroke="#ef4444" strokeDasharray="6 6" strokeWidth={2} label={{ position: 'right', value: 'META', fill: '#ef4444', fontSize: 10, fontWeight: 'black' }} />
+                                        <ReferenceLine y={2} stroke="#ef4444" strokeDasharray="6 6" strokeWidth={2} label={{ position: 'right', value: 'META', fill: '#ef4444', fontSize: 12, fontWeight: 'black' }} />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
