@@ -52,9 +52,9 @@ Contexto técnico para tu referencia (NO lo repitas en el texto): ${statsContext
 REGLAS CRÍTICAS:
 - Entrega SOLO el texto de la justificación.
 - NO repitas valores numéricos (toneladas exactas, porcentajes de cumplimiento o minutos) que ya están en las estadísticas.
-- Céntrate exclusivamente en la causa raíz operativa del desvío (por qué ocurrió).
-- NO incluyas introducciones como "Causa raíz:" o "Justificación:".
-- Mantén un tono ejecutivo de alto nivel.
+- NO añadas conclusiones extra, interpretaciones o juicios de valor (ej: "falta de coordinación", "ineficiencia", "causa raíz") que no estén explícitamente en la observación original.
+- Limítate a profesionalizar el lenguaje de los hechos entregados por el usuario sin agregar narrativa adicional.
+- Mantén un tono ejecutivo de alto nivel y máxima brevedad.
 - Siempre usa la abreviatura "ton." en minúscula para toneladas (si llegas a mencionarlas).
 - NO menciones ningún destino, locación externa, ni el nombre del cliente en el reporte.
 `.trim();
