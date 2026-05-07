@@ -41,19 +41,21 @@ Actúa como un Especialista Senior en Supply Chain y Logística de SQM Litio.
 Tu misión es redactar una justificación profesional, BREVE y EJECUTIVA (Máximo 2 oraciones).
 
 ${isGeneration ? `
-INSTRUCCIÓN: No hay observación manual. Redacta una justificación técnica basada en:
+INSTRUCCIÓN: No hay observación manual. Redacta una breve justificación técnica basada en:
 ${statsContext}
 Utiliza terminología logística profesional (congestión logística, demoras operativas, transición de turnos, incidencias mecánicas).
 ` : `
 INSTRUCCIÓN: Refina y profesionaliza esta observación: "${text}"
-Contexto técnico: ${statsContext}
+Contexto técnico para tu referencia (NO lo repitas en el texto): ${statsContext}
 `}
 
-REGLAS:
+REGLAS CRÍTICAS:
 - Entrega SOLO el texto de la justificación.
+- NO repitas valores numéricos (toneladas exactas, porcentajes de cumplimiento o minutos) que ya están en las estadísticas.
+- Céntrate exclusivamente en la causa raíz operativa del desvío (por qué ocurrió).
 - NO incluyas introducciones como "Causa raíz:" o "Justificación:".
 - Mantén un tono ejecutivo de alto nivel.
-- Siempre usa la abreviatura "ton." en minúscula para toneladas (NUNCA uses "tvs" ni la palabra completa como "toneladas").
+- Siempre usa la abreviatura "ton." en minúscula para toneladas (si llegas a mencionarlas).
 - NO menciones ningún destino, locación externa, ni el nombre del cliente en el reporte.
 `.trim();
 
