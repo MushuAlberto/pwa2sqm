@@ -8,7 +8,6 @@ import {
   Package, Truck, Target, MapPin, TrendingDown, TrendingUp,
   ClipboardEdit, AlertCircle, Save, Loader2
 } from 'lucide-react';
-import { refineJustificationWithAI } from '../services/openRouterService';
 
 interface ProductDetailSectionProps {
   product: string;
@@ -54,8 +53,6 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
 }) => {
   const storageKey = `sqm_justification_${date}_${product}`;
   const [justification, setJustification] = useState(() => localStorage.getItem(storageKey) || "");
-  const [isRefining, setIsRefining] = useState(false);
-  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem(storageKey, justification);
@@ -105,35 +102,6 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
       mainDest: mainDestEntry ? mainDestEntry[0] : 'S/D'
     };
   }, [data]);
-
-  const handleBlur = async () => {
-    if (isRefining) return;
-    
-    // Solo activar si hay al menos 5 caracteres y existe una desviación
-    if (justification.trim().length < 5 || !stats?.hasAnyDeviation) return;
-    
-    try {
-      setIsRefining(true);
-      setAiError(null);
-      console.log("DEBUG: Iniciando auto-formalización onBlur...");
-      const refined = await refineJustificationWithAI(
-        justification, 
-        product, 
-        stats
-      );
-      
-      if (refined && refined !== justification) {
-        setJustification(refined);
-        localStorage.setItem(storageKey, refined);
-        console.log("DEBUG: Auto-formalización exitosa");
-      }
-    } catch (error: any) {
-      console.error("DEBUG: Falló la auto-formalización:", error);
-      setAiError(error.message || "Error desconocido");
-    } finally {
-      setIsRefining(false);
-    }
-  };
 
   const formatHoursToTime = (hours: number): string => {
     if (isNaN(hours) || hours <= 0) return "0:00";
@@ -232,32 +200,9 @@ export const ProductDetailSection: React.FC<ProductDetailSectionProps> = ({
           <textarea
             value={justification}
             onChange={handleTextChange}
-            onBlur={handleBlur}
-            disabled={isRefining}
-            placeholder={isRefining ? "Redacción ejecutiva y técnica..." : "Escriba aquí la justificación técnica manual..."}
-            className={`w-full h-32 bg-white border-2 rounded-2xl p-5 text-sm font-medium transition-all shadow-inner resize-none no-pdf mb-2 ${
-              isRefining 
-                ? 'border-emerald-200 text-slate-400' 
-                : 'border-slate-100 text-slate-700 placeholder:text-slate-300 focus:ring-0'
-            }`}
+            placeholder="Escriba aquí la justificación técnica manual..."
+            className="w-full h-32 bg-white border-2 border-slate-100 rounded-2xl p-5 text-sm font-medium transition-all shadow-inner resize-none no-pdf mb-2 text-slate-700 placeholder:text-slate-300 focus:ring-0"
           />
-
-          {isRefining && (
-            <div className="absolute top-4 right-4 flex items-center gap-2 text-ionizado animate-pulse">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Formalizando Justificación</span>
-            </div>
-          )}
-
-          {aiError && (
-            <div className="absolute top-4 right-4 flex items-center gap-3 text-rose-500 bg-rose-50 px-4 py-2 rounded-xl border border-rose-100 shadow-md animate-in fade-in zoom-in slide-in-from-right-2 z-20">
-              <AlertCircle className="w-5 h-5 shrink-0" />
-              <div className="flex flex-col">
-                <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Error de Servicio</span>
-                <span className="text-[11px] font-bold leading-tight">{aiError}</span>
-              </div>
-            </div>
-          )}
 
           <div className="hidden pdf-only-block bg-white border border-slate-100 rounded-2xl p-6 text-sm font-medium text-tecnico h-auto min-h-[6rem] leading-relaxed whitespace-pre-wrap">
             {justification || "No se registraron observaciones para este ítem."}
