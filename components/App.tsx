@@ -16,13 +16,14 @@ import ReportFooter from './ReportFooter';
 import InstructionModal from './InstructionModal';
 import { ImageGallery } from './ImageGallery';
 import { PasswordPrompt } from './PasswordPrompt';
+import CambioDeTurno from './CambioDeTurno';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
 
 declare const html2canvas: any;
 declare const jspdf: any;
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria'>('menu');
+  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria' | 'cambioTurno'>('menu');
   const [rawData, setRawData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -251,7 +252,7 @@ const App: React.FC = () => {
     });
   }, [filteredData]);
 
-  const handleViewChange = (v: 'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria') => {
+  const handleViewChange = (v: 'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria' | 'cambioTurno') => {
     if (v === 'memoria') {
       setPasswordRequest({ view: 'memoria', name: 'Memoria' });
     } else if (v === 'galeria') {
@@ -279,6 +280,7 @@ const App: React.FC = () => {
       />
     );
     if (view === 'galeria') return <ImageGallery onBack={() => setView('menu')} />;
+    if (view === 'cambioTurno') return <CambioDeTurno onBack={() => setView('menu')} />;
 
     return (
       <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">

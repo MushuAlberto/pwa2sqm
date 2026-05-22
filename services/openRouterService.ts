@@ -1,6 +1,6 @@
 /**
  * Servicio simplificado para integración exclusiva con OpenRouter AI.
- * Utiliza el modelo MiniMax-M2.5 (free) para redacción ejecutiva y técnica.
+ * Utiliza el modelo NVIDIA Nemotron (free) para redacción ejecutiva y técnica.
  */
 
 const getEnvVar = (key: string): string => {
@@ -14,8 +14,8 @@ const getEnvVar = (key: string): string => {
 // Clave de API (Se obtiene exclusivamente de variables de entorno por seguridad)
 const API_KEY = getEnvVar("VITE_OPENROUTER_API_KEY");
 // Permite cambiar el modelo desde Vercel usando VITE_OPENROUTER_MODEL. 
-// Si no se configura, usa el modelo de 20b por defecto.
-const MODEL_ID = getEnvVar("VITE_OPENROUTER_MODEL") || "openai/gpt-oss-20b:free";
+// Si no se configura, usa el modelo NVIDIA por defecto.
+const MODEL_ID = getEnvVar("VITE_OPENROUTER_MODEL") || "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free";
 
 export const refineJustificationWithAI = async (text: string, product: string, stats?: any): Promise<string> => {
     if (!API_KEY) {
