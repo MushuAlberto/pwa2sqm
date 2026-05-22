@@ -29,8 +29,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [exportingPDF, setExportingPDF] = useState(false);
   const [exportingImage, setExportingImage] = useState(false);
-  const [showInstructions, setShowInstructions] = useState(false);
-  const [passwordRequest, setPasswordRequest] = useState<{ view: 'memoria' | 'galeria', name: string } | null>(null);
+  const [passwordRequest, setPasswordRequest] = useState<{ view: 'memoria' | 'galeria' | 'cambioTurno', name: string } | null>(null);
 
   useEffect(() => {
     const savedData = localStorage.getItem('sqm_raw_data');
@@ -257,6 +256,8 @@ const App: React.FC = () => {
       setPasswordRequest({ view: 'memoria', name: 'Memoria' });
     } else if (v === 'galeria') {
       setPasswordRequest({ view: 'galeria', name: 'Galería Operativa' });
+    } else if (v === 'cambioTurno') {
+      setPasswordRequest({ view: 'cambioTurno', name: 'Cambio de Turno' });
     } else {
       setView(v);
     }
