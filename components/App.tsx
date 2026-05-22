@@ -321,7 +321,7 @@ const App: React.FC = () => {
                   <button onClick={() => handleViewChange('galeria')} className="w-full bg-white border border-violeta/20 text-nucleo py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-calido transition-all">
                     <ImageIcon size={12} /> Galería Operativa
                   </button>
-                  <button onClick={downloadBackupJSON} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
+                  <button onClick={() => downloadBackupJSON(selectedDate)} className="w-full bg-nucleo text-white py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-nucleo/90 transition-all shadow-lg shadow-nucleo/10">
                     <Download size={12} /> Descargar Historial
                   </button>
                 </div>
