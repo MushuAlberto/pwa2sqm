@@ -137,14 +137,6 @@ export function DashboardCharts({ logs, selectedDate, isCapturing }: DashboardCh
 
   const chart1Content = (
     <>
-      <defs>
-        {/* Gradient for bar glow */}
-        <linearGradient id="bar1Grad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#461D77" stopOpacity={0.85} />
-          <stop offset="100%" stopColor="#7177EC" stopOpacity={0.2} />
-        </linearGradient>
-      </defs>
-      
       <CartesianGrid stroke="rgba(70, 29, 119, 0.05)" strokeDasharray="3 3" vertical={false} />
       
       <XAxis
@@ -177,7 +169,7 @@ export function DashboardCharts({ logs, selectedDate, isCapturing }: DashboardCh
       {/* Realized trips / Vueltas Desp. Bar */}
       <Bar
         dataKey="Viajes Realizados (Vueltas Desp.)"
-        fill="url(#bar1Grad)"
+        fill="#461D77"
         name="Vueltas Desp."
         radius={[3, 3, 0, 0]}
         label={renderBar1Label}
@@ -201,14 +193,6 @@ export function DashboardCharts({ logs, selectedDate, isCapturing }: DashboardCh
 
   const chart2Content = (
     <>
-      <defs>
-        {/* LCE actual bar fill gradient */}
-        <linearGradient id="bar2Grad" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#3FAA88" stopOpacity={0.85} />
-          <stop offset="100%" stopColor="#4FD1C5" stopOpacity={0.2} />
-        </linearGradient>
-      </defs>
-      
       <CartesianGrid stroke="rgba(70, 29, 119, 0.05)" strokeDasharray="3 3" vertical={false} />
       
       <XAxis
@@ -240,7 +224,7 @@ export function DashboardCharts({ logs, selectedDate, isCapturing }: DashboardCh
       {/* LCE actual bar */}
       <Bar
         dataKey="LCE Actual (SdA)"
-        fill="url(#bar2Grad)"
+        fill="#3FAA88"
         name="LCE (SdA)"
         radius={[3, 3, 0, 0]}
         label={renderBar2Label}
