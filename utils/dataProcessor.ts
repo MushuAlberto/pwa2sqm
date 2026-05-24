@@ -87,7 +87,7 @@ export const formatDateToCL = (dateStr: string): string => {
 /**
  * Realiza una descarga del backup actual del localStorage (claves sqm_).
  */
-export const downloadBackupJSON = () => {
+export const downloadBackupJSON = (selectedDate?: string) => {
   const backup: Record<string, string> = {};
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -96,9 +96,12 @@ export const downloadBackupJSON = () => {
     }
   }
   
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const dateStr = yesterday.toISOString().split('T')[0];
+  let dateStr = selectedDate;
+  if (!dateStr) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    dateStr = yesterday.toISOString().split('T')[0];
+  }
   
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);

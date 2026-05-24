@@ -17,19 +17,20 @@ import InstructionModal from './InstructionModal';
 import { ImageGallery } from './ImageGallery';
 import { PasswordPrompt } from './PasswordPrompt';
 import CambioDeTurno from './CambioDeTurno';
+import LCEModule from './LCE/LCEModule';
 import { cleanNumeric, parseExcelTime, formatHoursToTime, formatDateToCL, downloadBackupJSON, normalizeHeader } from '../utils/dataProcessor';
 
 declare const html2canvas: any;
 declare const jspdf: any;
 
 const App: React.FC = () => {
-  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria' | 'cambioTurno'>('menu');
+  const [view, setView] = useState<'menu' | 'llegada' | 'informe' | 'memoria' | 'ddd' | 'galeria' | 'cambioTurno' | 'lce'>('menu');
   const [rawData, setRawData] = useState<any[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [exportingPDF, setExportingPDF] = useState(false);
   const [exportingImage, setExportingImage] = useState(false);
-  const [passwordRequest, setPasswordRequest] = useState<{ view: 'memoria' | 'galeria' | 'cambioTurno', name: string } | null>(null);
+  const [passwordRequest, setPasswordRequest] = useState<{ view: 'memoria' | 'galeria' | 'cambioTurno' | 'lce', name: string } | null>(null);
 
   useEffect(() => {
     const savedData = localStorage.getItem('sqm_raw_data');
@@ -258,6 +259,8 @@ const App: React.FC = () => {
       setPasswordRequest({ view: 'galeria', name: 'Galería Operativa' });
     } else if (v === 'cambioTurno') {
       setPasswordRequest({ view: 'cambioTurno', name: 'Cambio de Turno' });
+    } else if (v === 'lce') {
+      setPasswordRequest({ view: 'lce', name: 'Control LCE' });
     } else {
       setView(v);
     }
@@ -282,6 +285,7 @@ const App: React.FC = () => {
     );
     if (view === 'galeria') return <ImageGallery onBack={() => setView('menu')} />;
     if (view === 'cambioTurno') return <CambioDeTurno onBack={() => setView('menu')} />;
+    if (view === 'lce') return <LCEModule onBack={() => setView('menu')} />;
 
     return (
       <div className="flex h-screen bg-calido font-sans text-tecnico overflow-hidden">
