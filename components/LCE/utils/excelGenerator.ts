@@ -542,15 +542,57 @@ export function parseUploadedExcel(file: File): Promise<ParseResult> {
         if (jsonRows.length > 0 && hasDateColumn) {
           logs = jsonRows.map((row: any, index: number) => {
             // Identify keys using case-insensitive, whitespace-agnostic matching
+            // Improved to prioritize exact matches and avoid matching compound headers like "VIAJES PROGRAMADOS VS VIAJES REALIZADOS (DIARIO)"
             const findValue = (keywords: string[], fallbackVal: any = 0) => {
               const rowKeys = Object.keys(row);
+              
+              // Compound header patterns that are likely chart titles, not data columns
+              const compoundPatterns = [
+                "vs", "programadosvs", "realizadosdiario", "sdadiario", 
+                "programadosvsviajes", "lcesdadiario"
+              ];
+              
+              // First pass: look for exact or near-exact matches, excluding compound headers
               for (const key of rowKeys) {
                 const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+                
+                // Skip obvious compound headers in first pass
+                if (compoundPatterns.some(p => normalizedKey.includes(p))) {
+                  continue;
+                }
+                
+                for (const keyword of keywords) {
+                  const normalizedKeyword = keyword.toLowerCase().replace(/[^a-z0-9]/g, "");
+                  // Exact match or keyword is at least 70% of the key length
+                  if (normalizedKey === normalizedKeyword || 
+                      (normalizedKey.includes(normalizedKeyword) && normalizedKeyword.length >= normalizedKey.length * 0.7)) {
+                    const val = row[key];
+                    return val !== null && val !== undefined ? val : fallbackVal;
+                  }
+                }
+              }
+              
+              // Second pass: relaxed matching but still prefer non-compound headers
+              for (const key of rowKeys) {
+                const normalizedKey = key.toLowerCase().replace(/[^a-z0-9]/g, "");
+                
+                // In second pass, still try to avoid compound headers unless it's the only option
+                const isCompound = compoundPatterns.some(p => normalizedKey.includes(p));
+                
                 for (const keyword of keywords) {
                   const normalizedKeyword = keyword.toLowerCase().replace(/[^a-z0-9]/g, "");
                   if (normalizedKey.includes(normalizedKeyword) || normalizedKeyword.includes(normalizedKey)) {
-                    const val = row[key];
-                    return val !== null && val !== undefined ? val : fallbackVal;
+                    // Only accept compound header if no better match exists
+                    const hasBetterMatch = rowKeys.some(otherKey => {
+                      const otherNorm = otherKey.toLowerCase().replace(/[^a-z0-9]/g, "");
+                      return !compoundPatterns.some(p => otherNorm.includes(p)) && 
+                             (otherNorm.includes(normalizedKeyword) || normalizedKeyword.includes(otherNorm));
+                    });
+                    
+                    if (!isCompound || !hasBetterMatch) {
+                      const val = row[key];
+                      return val !== null && val !== undefined ? val : fallbackVal;
+                    }
                   }
                 }
               }
